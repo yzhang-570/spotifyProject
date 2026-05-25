@@ -12,19 +12,21 @@ backend/
 - /db           # all firebase interactions
 
 ## Getting Started
-1. Change directories into frontend folder
+1. Add firebase API keys to .env in /backend
+
+2. Change directories into frontend folder  
 `cd frontend`  
 
-2. Run react app
+3. Run react app  
 ```bash
 npm install
 npm run dev
 ```
 
-3. Change directories into backend folder in a **different terminal**
+4. Change directories into backend folder in a **different terminal**  
 `cd backend`  
 
-4. Run express server
+5. Run express server  
 ```bash
 npm install
 npm start

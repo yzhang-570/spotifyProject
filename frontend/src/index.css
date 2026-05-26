@@ -11,19 +11,19 @@ img {
 }
 
 html {
-  background: #3a3a3a;
+  background: #3B3B3B;
 }
 
 body {
   margin: 0;
   overflow-x: hidden;
-  background: #3a3a3a;
+  background: #3B3B3B;
 }
 
 .app-layout {
   display: flex;
   min-height: 100vh;
-  background: #3a3a3a;
+  background: #3B3B3B;
 }
 
 .main-content {
@@ -32,7 +32,7 @@ body {
   width: calc(100% - 220px);
   min-width: 0;
   min-height: 100vh;
-  background: #3a3a3a;
+  background: #3B3B3B;
 }
 
 .login-container {

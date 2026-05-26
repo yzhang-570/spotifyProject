@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import "./Navbar.css";
 
-const Navbar = () => {
+const Navbar = ({ user }) => {
   const location = useLocation();
 
   const links = [
@@ -30,8 +30,8 @@ const Navbar = () => {
       <div className="sidebar-user">
         <div className="sidebar-avatar" />
         <div className="sidebar-user-info">
-          <span className="sidebar-name">Name</span>
-          <span className="sidebar-username">@username</span>
+            <span className="sidebar-name">{user?.display_name}</span>
+            <span className="sidebar-username">{user?.email}</span>
         </div>
       </div>
     </nav>

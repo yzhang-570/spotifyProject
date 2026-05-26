@@ -9,6 +9,8 @@ import TopSongs from "./pages/topSongs";
 import Forums from "./pages/forums";
 import Inbox from "./pages/inbox";
 import Profile from "./pages/profile";
+import Login from "./pages/login";
+
 
 const App = () => {
   return (
@@ -27,6 +29,7 @@ const App = () => {
             <Route path="/forums" element={<Forums />} />
             <Route path="/inbox" element={<Inbox />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/login" element={<Login />} />
           </Routes>
         </main>
       </div>

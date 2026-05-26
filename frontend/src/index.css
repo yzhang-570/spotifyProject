@@ -4,9 +4,19 @@
   font-family: 'Raleway', sans-serif;
 }
 
+html {
+  background: #3a3a3a;
+}
+
+body {
+  margin: 0;
+  background: #3a3a3a;
+}
 
 .app-layout {
   display: flex;
+  min-height: 100vh;
+  background: #3a3a3a;
 }
 
 .main-content {
@@ -14,4 +24,17 @@
   padding: 2rem;
   width: 100%;
   min-height: 100vh;
+  box-sizing: border-box;
+  background: #3a3a3a;
+}
+
+@media (max-width: 760px) {
+  .app-layout {
+    display: block;
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding: 1rem;
+  }
 }

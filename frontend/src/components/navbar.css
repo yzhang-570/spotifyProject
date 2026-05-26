@@ -61,6 +61,14 @@
   flex-shrink: 0;
 }
 
+.sidebar-avatar-img {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
 .sidebar-user-info {
   display: flex;
   flex-direction: column;

@@ -28,7 +28,16 @@ const Navbar = ({ user }) => {
         </ul>
       </div>
       <div className="sidebar-user">
-        <div className="sidebar-avatar" />
+        {user?.images?.length > 0 ? (
+            <img
+                src={user.images[0].url}
+                alt="avatar"
+                className="sidebar-avatar-img"
+                style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }}
+            />
+        ) : (
+            <div className="sidebar-avatar-placeholder" />
+        )}
         <div className="sidebar-user-info">
             <span className="sidebar-name">{user?.display_name}</span>
             <span className="sidebar-username">{user?.email}</span>

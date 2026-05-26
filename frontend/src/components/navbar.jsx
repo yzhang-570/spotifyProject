@@ -6,7 +6,7 @@ const Navbar = () => {
 
   const links = [
     { path: "/discover", label: "Discover" },
-    { path: "/dashboard", label: "My Dashboard" },
+    { path: "/dashboard/123", label: "My Dashboard" },
     { path: "/inbox", label: "Inbox" },
   ];
 

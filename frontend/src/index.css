@@ -2,8 +2,15 @@
 
 * {
   font-family: 'Raleway', sans-serif;
-}
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 
+  /* TODO: update with useContext */
+  /* Color Variables */
+  --background-color: #2a2a2a; /*darkest gray*/
+  --navbar-gray: #272727; /*second darkest gray*/
+}
 
 .app-layout {
   display: flex;
@@ -14,4 +21,35 @@
   padding: 2rem;
   width: 100%;
   min-height: 100vh;
+  background-color: var(--background-color);
+  position: relative;
+}
+
+/*----------------------Typography*/
+
+/* Sizing Styles */
+.xs {
+  font-size: 0.9rem;
+}
+
+.s {
+  font-size: 1rem;
+}
+
+.m {
+  font-size: 1.25rem;
+}
+
+.l {
+  font-size: 1.5rem;
+}
+
+/*----------------------HTML elements*/
+/* Override Default Button */
+button {
+  border: none;
+  padding: 0.75rem 1.30rem;
+  border-radius: 5px;
+  font-size: 1rem;
+  /* background-color: gray; */
 }

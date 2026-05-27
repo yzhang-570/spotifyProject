@@ -5,9 +5,14 @@ import { useState, useEffect } from 'react';
 // Icons
 import { ArrowRight } from 'lucide-react';
 
+// Components
+import EditProfileModal from '../components/editProfileModal';
+
 const Dashboard = () => {
 
   const navigate = useNavigate();
+
+  const [editProfileModalShown, setEditProfileModalShown] = useState(false);
 
   // User's Forum Activity... most recent 3 comments/forum posts (or less)
   const [forumActivityData, setForumActivityData] = useState([
@@ -51,28 +56,28 @@ const Dashboard = () => {
           <div className="profile-info-div">
 
             {/* Name, Username */}
-            <p className="displayname-text"><strong>Name</strong> <br/> @username</p>
+            <p className="displayname-text"><strong>Name</strong> <br/> <span className="xs">@username</span></p>
 
             {/* Follower + Following Counts */}
             <div className="stats-div">
               {/* todo: open a popup showing following + followers */}
-              <p className="m stat-text"><strong>27</strong> <br/> <span className="s">Following</span></p>
-              <p className="m stat-text"><strong>1.1k+</strong> <br/> <span className="s">Followers</span></p>
+              <p className="m stat-text"><strong>27</strong> <br/> <span className="xs">Following</span></p>
+              <p className="m stat-text"><strong>1.1k+</strong> <br/> <span className="xs">Followers</span></p>
             </div>
 
             {/* Description */}
-            <p>Description lalalalaal hi! My name is [name] and...sdfgfgdgdgfdgfgdhgfdhfghfdhghdhghdfsd</p>
+            <p className="xs">Description lalalalaal hi! My name is [name] and...sdfgfgdgdgfdgfgdhgfdhfghfdhghdhghdfsd</p>
 
             {/* Follow + Message Buttons */}
             {/* todo: show edit profile instead if is current user */}
             <div className="buttons-div">
               {true === true ?
               // actual condition should be: if logged in user = user profile being viewed
-              (<button onClick={() => handleFollow()} className="follow-button profile-action-button">Edit Profile</button>)
+              (<button onClick={() => setEditProfileModalShown(true)} className="follow-button profile-action-button">Edit Profile</button>)
               :
               (<>
                 <button onClick={() => handleFollow()} className="follow-button profile-action-button">Follow</button>
-                {/* todo: update to pass in user's id */}
+                {/* todo: update to pass in user's id; follow or unfollow depending on if alr following */}
                 <button onClick={() => navigate('/inbox')} className="message-button profile-action-button">Message</button>
                 {/* todo: update to navigate to chat another user */}
               </>)
@@ -114,6 +119,22 @@ const Dashboard = () => {
           </article>)
         )}
       </section>
+
+      <EditProfileModal
+        isOpen={editProfileModalShown}
+        // todo: replace with profile that is currently loaded...
+        initialProfile={{
+          name: 'Name',
+          username: 'username',
+          description: 'Description lalalalaal hi! My name is [name] and...sdfgfgdgdgfdgfgdhgfdhfghfdhghdhghdfsd',
+        }}
+        onClose={() => setEditProfileModalShown(false)}
+        onSave={(updated) => {
+          // todo: persist to backend, then update displayed profile data -> add a refresh
+          console.log('Save profile', updated);
+          setEditProfileModalShown(false);
+        }}
+      />
 
     </main>
   )

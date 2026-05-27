@@ -106,7 +106,7 @@ h1, h2, h3, h4, h5, p, a {
   transition: background-color 0.25s ease,
 }
 .collection-div:hover {
-  /* background-color: var(--div-color-hover); */
+  background-color: var(--div-color-hover);
   cursor: pointer;
 }
 

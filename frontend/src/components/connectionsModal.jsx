@@ -1,20 +1,13 @@
 import ProfilePreview from './profilePreview.jsx'
 import "./connectionsModal.css"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 const ConnectionsModal = ({ isOpen, onClose }) => {
 
   const [tabSelected, setTabSelected] = useState("Followers");
 
   // todo: move to dashboard; fetch on display and pass as prop
-
-  // temporary: pass lint check
-  // will replace after connecting backend
-  useEffect(() => {
-    setFollowers(followers);
-    setFollowing(following);
-  }, [])
 
   // list of users the current user's followers
   const [followers, setFollowers] = useState([
@@ -25,6 +18,13 @@ const ConnectionsModal = ({ isOpen, onClose }) => {
       'profileImageURL': 'https://static.vecteezy.com/system/resources/thumbnails/057/068/323/small/single-fresh-red-strawberry-on-table-green-background-food-fruit-sweet-macro-juicy-plant-image-photo.jpg'
     }
   ])
+
+  // temporary: pass lint check
+  // will replace after connecting backend
+  useEffect(() => {
+    setFollowers(followers);
+    setFollowing(following);
+  }, [])
 
   // list of users the current user is following
   const [following, setFollowing] = useState([

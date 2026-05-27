@@ -11,18 +11,19 @@
   justify-content: space-between;
   padding: 2rem 1.5rem;
   font-family: 'Raleway', sans-serif;
-  background: var(--navbar-gray);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  background: #4b4d4b;
+  background: #4F4F4F;
+  /* var(--navbar-gray); */
   border-right: 1px solid rgba(255, 255, 255, 0.08);
   box-sizing: border-box;
 }
 
 .sidebar-logo {
-  font-size: 1.5rem;
+  font-size: 1.7rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  /* font-size: 1.5rem;
   font-weight: 700;
-  color: var(--accent-green);
+  color: var(--accent-green); */
   margin-bottom: 2.5rem;
 }
 
@@ -36,7 +37,7 @@
 }
 
 .sidebar-links a {
-  color: rgba(255, 255, 255, 0.82);
+  color: #FFFFFF;
   text-decoration: none;
   font-size: 1rem;
   transition: color 0.2s;
@@ -58,7 +59,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #8c8c8c;
+  background-color: #3B3B3B;
   flex-shrink: 0;
 }
 
@@ -78,12 +79,12 @@
 .sidebar-name {
   font-size: 0.9rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.88);
+  color: #FFFFFF;
 }
 
 .sidebar-username {
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.82);
+  color: #FFFFFF;
 }
 
 @media (max-width: 760px) {

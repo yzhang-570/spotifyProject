@@ -1,8 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Navbar from "./components/navbar";
-import Dashboard from "./pages/dashboard";
+import Home from "./pages/home";
 import Discover from "./pages/discover";
+import Dashboard from "./pages/dashboard";
 import LikedSongs from "./pages/likedSongs";
 import TopArtists from "./pages/topArtists";
 import TopSongs from "./pages/topSongs";
@@ -50,7 +51,7 @@ const App = () => {
             <Route path="/top-songs" element={<TopSongs />} />
             <Route path="/forums" element={<Forums />} />
             <Route path="/inbox" element={<Inbox />} />
-            <Route path="/login" element={<Login />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="*" element={<Navigate to="/home" />} />
           </Routes>
         </main>

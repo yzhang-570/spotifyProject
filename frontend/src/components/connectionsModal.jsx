@@ -1,12 +1,45 @@
-import { useNavigate } from "react-router-dom";
+import ProfilePreview from './profilePreview.jsx'
 import "./connectionsModal.css"
 
 import { useState } from 'react'
 
-const connectionsModal = ({ isOpen, onClose }) => {
+const ConnectionsModal = ({ isOpen, onClose }) => {
 
   const [tabSelected, setTabSelected] = useState("Followers");
-  const navigate = useNavigate();
+
+  // todo: move to dashboard; fetch on display and pass as prop
+
+  // list of users the current user's followers
+  const [followers, setFollowers] = useState([
+    {
+      'userID': 1,
+      'displayName': 'a follower',
+      'username': '@follower_username',
+      'profileImageURL': 'https://static.vecteezy.com/system/resources/thumbnails/057/068/323/small/single-fresh-red-strawberry-on-table-green-background-food-fruit-sweet-macro-juicy-plant-image-photo.jpg'
+    }
+  ])
+
+  // list of users the current user is following
+  const [following, setFollowing] = useState([
+    {
+      'userID': 1,
+      'displayName': 'a following 1',
+      'username': '@following_username',
+      'profileImageURL': 'https://static.vecteezy.com/system/resources/thumbnails/057/068/323/small/single-fresh-red-strawberry-on-table-green-background-food-fruit-sweet-macro-juicy-plant-image-photo.jpg'
+    },
+        {
+      'userID': 2,
+      'displayName': 'a following 2',
+      'username': '@following_username',
+      'profileImageURL': 'https://static.vecteezy.com/system/resources/thumbnails/057/068/323/small/single-fresh-red-strawberry-on-table-green-background-food-fruit-sweet-macro-juicy-plant-image-photo.jpg'
+    },
+        {
+      'userID': 3,
+      'displayName': 'a following 3',
+      'username': '@following_username',
+      'profileImageURL': 'https://static.vecteezy.com/system/resources/thumbnails/057/068/323/small/single-fresh-red-strawberry-on-table-green-background-food-fruit-sweet-macro-juicy-plant-image-photo.jpg'
+    }
+  ])
 
   // hide if not open
   if(!isOpen) return null;
@@ -21,7 +54,7 @@ const connectionsModal = ({ isOpen, onClose }) => {
       <div className="connections-modal">
 
         <header className="connections-modal-header">
-          <h3>[Username]</h3>
+          <h3 className="connections-modal-header-text">[Username]</h3>
           <button type="button" className="connections-modal-closeX" onClick={onClose} aria-label="Close">
               ×
           </button>
@@ -31,49 +64,31 @@ const connectionsModal = ({ isOpen, onClose }) => {
         <div className="connections-modal-tabs">
           <h2 className="xs connections-modal-tab-option"
             onClick={() => setTabSelected('Followers')}
-            style={(tabSelected === 'Followers') ? ({'--tab-option-color': 'var(--accent-green)'}) : ({'--tab-option-color': '#ffffff79'})}>
+            style={(tabSelected === 'Followers') ? ({'--tab-option-color': 'var(--accent-green)', 'borderBottom': '2px solid var(--tab-option-color)'}) : ({'--tab-option-color': '#ffffff79'})}>
             X Followers
           </h2>
           <h2 className="xs connections-modal-tab-option"
             onClick={() => setTabSelected('Following')}
-            style={(tabSelected === 'Following') ? ({'--tab-option-color': 'var(--accent-green)'}) : ({'--tab-option-color': '#ffffff79'})}>
+            style={(tabSelected === 'Following') ? ({'--tab-option-color': 'var(--accent-green)', 'borderBottom': '2px solid var(--tab-option-color)'}) : ({'--tab-option-color': '#ffffff79'})}>
             X Following
           </h2>
         </div>
 
         {/* List of Profiles */}
-        <article>
-          <div className="preview-user-information">
-            <div className="preview-image-mask">
-              <image className="preview-image" src="" />
-            </div>
-            <div className="preview-user-information">
-                <p>Name</p>
-                <p>@username</p>
-            </div>
-          </div>
-
-          {/* Buttons */}
-          <div className="preview-actions">
-
-            {/* todo: navgiate to user's dm */}
-            <button onClick={() => navigate('/inbox')}>Message</button>
-
-            {/* todo: popup confirm remove follower/unfollow */}
-            <button className="connections-modal-closeX" onClick={() => {}} aria-label="Close">
-              ×
-            </button>
-          </div>
-        </article>
+        {(tabSelected === 'Followers' ? (followers) : (following)).map(userData => 
+          (<div key={userData.userID}>
+            <ProfilePreview userData={userData} />
+          </div>)
+        )}
         
       </div>
 
-      <section className>
+      {/* <section className>
 
-      </section>
+      </section> */}
 
     </div>
   )
 };
 
-export default connectionsModal;
+export default ConnectionsModal;

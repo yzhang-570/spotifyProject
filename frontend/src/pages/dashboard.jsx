@@ -49,6 +49,8 @@ const Dashboard = () => {
 
   const handleSaveProfile = (updatedUserProfileData) => {
     console.log('Save profile', updatedUserProfileData);
+    // input validation
+
     // try catch - if failed (assume 400/500 causes error), don't set the user profile and show error
 
     // save the profile to db

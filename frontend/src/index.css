@@ -50,6 +50,10 @@
   font-size: 1.5rem;
 }
 
+.bold {
+  font-weight: 600;
+}
+
 /*----------------------HTML elements*/
 /* Override Default Button */
 button {

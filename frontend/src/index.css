@@ -3,6 +3,18 @@
 * {
   box-sizing: border-box;
   font-family: 'Raleway', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+  /* TODO: update with useContext */
+  /* Color Variables */
+  --background-color: #2a2a2a; /*darkest gray*/
+  --navbar-gray: #272727; /*second darkest gray*/
+  --accent-green: #1ED760;
+
+html {
+  background: #3a3a3a;
 }
 
 img {
@@ -32,8 +44,61 @@ body {
   width: calc(100% - 220px);
   min-width: 0;
   min-height: 100vh;
-  background: #3B3B3B;
+  background-color: var(--background-color);
+  position: relative;
 }
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+/*----------------------Typography*/
+
+/* Sizing Styles */
+.xs {
+  font-size: 0.9rem;
+}
+
+.s {
+  font-size: 1rem;
+}
+
+.m {
+  font-size: 1.25rem;
+}
+
+.l {
+  font-size: 1.5rem;
+}
+
+.bold {
+  font-weight: 600;
+}
+
+/*----------------------HTML elements*/
+/* Override Default Button */
+button {
+  border: none;
+  padding: 0.75rem 1.30rem;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  /* background-color: gray; */
+}
+}
+
+img {
+  max-width: 100%;
+  display: block;
+  box-sizing: border-box;
+  background: #3a3a3a;
+}
+
+
+
+
+/*----------------------Login styling*/
 
 .login-container {
   display: flex;

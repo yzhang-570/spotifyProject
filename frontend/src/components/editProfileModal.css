@@ -1,0 +1,139 @@
+
+/* Darkens screen when modal is open */
+.edit-modal-overlay {
+  
+  position: fixed; /*makes relative to viewport (?)*/
+  inset: 0; /*forces expand to have 0 distance on all sides*/
+
+  /* Semi-transparent black + on top of everything.... */
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+
+  /* Center edit profile popup */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Modal background */
+.edit-modal {
+  background-color: var(--background-color);
+  border-radius: 12px;
+  
+  width: 100%;
+  max-width: 28rem;
+  /* max-height: 90vh; */
+
+  padding: 3rem 1.5rem;
+  gap: 1rem;
+  
+  /* overflow-y: auto; */
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* ----------------------------Form wrapper - also apply column */
+.edit-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+
+/* Header (text + close X) */
+.edit-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* border-bottom: 1px solid rgba(255, 255, 255, 0.08); */
+}
+
+/* Close button */
+.edit-modal-closeX {
+  background: transparent; /*was a button*/
+  color: white;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* Input field wrapper */
+.edit-modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+/* Input field styling */
+.edit-modal-field input,
+.edit-modal-field textarea {
+  background-color: white;
+
+  border: 0px solid white;  /*no border*/
+
+  border-radius: 10px;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.95rem;
+
+  font-size: 0.9rem;
+}
+
+
+/* ----------------Buttons wrapper */
+.edit-modal-actions {
+  display: flex;
+  justify-content: start;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.edit-modal-button {
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.1s ease;
+  font-size: 0.95rem;
+}
+
+/* Cancel button */
+/* .edit-modal-cancel {
+  background-color: transparent;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+} */
+/* .edit-modal-cancel:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+} */
+
+/* Cancel button */
+.edit-modal-save {
+  /* background-color: white; */
+  background-color: white;
+  color: #1a1a1a;
+}
+.edit-modal-save:hover {
+  box-shadow: 0 6px 16px rgba(255, 255, 255, 0.25);
+}
+
+
+.edit-modal-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem
+}
+
+/* Radio button wrapper */
+.edit-modal-option {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+}
+
+.edit-modal-option-label {
+  color: white;
+}
+
+.edit-modal-option-button {
+  /* appearance: none; */
+}

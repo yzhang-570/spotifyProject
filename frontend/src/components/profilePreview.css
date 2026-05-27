@@ -1,0 +1,39 @@
+/*------------Profile Preview*/
+.preview-user-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+}
+
+/* Image + DisplayName + User name*/
+.preview-user-information {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+/* display name + user name */
+.prev-user-details {
+  display: flex;
+  flex-direction: column;
+}
+
+/* User Profile Image */
+.preview-image-mask {
+  width: 3.5rem;
+  height: 3.5rem;
+
+  overflow: hidden;
+  border-radius: 100px;
+}
+.preview-image {
+  width: auto;
+  height: 100%;
+  object-fit: fill;
+}
+
+/* Message User Button */
+.preview-message-button:hover {
+  box-shadow: 0px 4px 10px #ffffff45;
+}

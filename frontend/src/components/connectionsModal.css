@@ -65,6 +65,10 @@
   border-bottom: 2px solid rgb(138, 199, 138);
 }
 
+.connections-modal-preview-list {
+  overflow-y: auto;
+}
+
 
 /* Close button */
 .connections-modal-closeX {

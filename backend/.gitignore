@@ -3,3 +3,6 @@ node_modules
 
 # ignore API keys
 .env*
+
+key.pem
+cert.pem

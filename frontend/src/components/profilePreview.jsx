@@ -15,7 +15,7 @@ const ProfilePreview = ({ userData }) => {
         </div>
         <div className="preview-user-details">
             <p className="xs bold">{userData.displayName}</p>
-            <p className="xs">{userData.username}</p>
+            {/* <p className="xs">{userData.email}</p> */}
         </div>
       </div>
 

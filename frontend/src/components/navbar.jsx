@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import "./navbar.css";
 
-const Navbar = () => {
+const Navbar = ({ user }) => {
   const location = useLocation();
 
   const links = [
@@ -28,10 +28,19 @@ const Navbar = () => {
         </ul>
       </div>
       <div className="sidebar-user">
-        <div className="sidebar-avatar" />
+        {user?.images?.length > 0 ? (
+            <img
+                src={user.images[0].url}
+                alt="avatar"
+                className="sidebar-avatar-img"
+                style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }}
+            />
+        ) : (
+            <div className="sidebar-avatar-placeholder" />
+        )}
         <div className="sidebar-user-info">
-          <span className="sidebar-name">Name</span>
-          <span className="sidebar-username">@username</span>
+            <span className="sidebar-name">{user?.display_name}</span>
+            <span className="sidebar-username">{user?.email}</span>
         </div>
       </div>
     </nav>

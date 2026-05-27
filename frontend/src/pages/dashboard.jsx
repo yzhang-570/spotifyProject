@@ -20,7 +20,7 @@ const Dashboard = () => {
   const [userProfileData, setUserProfileData] = useState(
     {
       'displayName': 'Name',
-      'username': '@username', // note: username cannot be modified (tied to Spotify)
+      'email': '@email', // note: username cannot be modified (tied to Spotify)
       'bio': 'Description lalalalaal hi! My name is [name] and...sdfgfgdgdgfdgfgdhgfdhfghfdhghdhghdfsd',
       'isPrivate': false,
       'top_songs_isPrivate': false,
@@ -41,6 +41,9 @@ const Dashboard = () => {
   useEffect(() => {
     // load forum activity data
     // load user profile data
+
+    // fetch followers -> to pass down in props
+    // fetch updated top... 3
   }, [])
 
   const handleFollow = (otherUserID) => {
@@ -72,7 +75,7 @@ const Dashboard = () => {
           <div className="profile-info-div">
 
             {/* Name, Username */}
-            <p className="displayname-text"><strong>{userProfileData.displayName}</strong> <br/> <span className="xs">{userProfileData.username}</span></p>
+            <p className="displayname-text"><strong>{userProfileData.displayName}</strong> <br/> <span className="xs">{userProfileData.email}</span></p>
 
             {/* Follower + Following Counts */}
             <div className="stats-div">

@@ -1,34 +1,37 @@
 import cors from 'cors';
 import 'dotenv/config';
 import express from 'express';
-
-// TODO: remove, use express router - only for testing
-import { fetchData } from './db/testDB.js'
+import session from 'express-session';
+import authRouter from './routes/auth.js';
+import spotifyRouter from './routes/spotify.js';
 
 const app = express();
-const port = process.env.PORT || 5000; // default port: 5000
+const port = process.env.PORT || 8888;
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL,
+  credentials: true,
+}));
 app.use(express.json());
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: true,
+  saveUninitialized: true,
+  cookie: {
+    secure: false,
+    httpOnly: true,
+    sameSite: 'lax',
+  }
+}));
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+// routers must come AFTER session
+app.use('/auth', authRouter);
+app.use('/spotify', spotifyRouter);
 
 app.get('/', (req, res) => {
   res.json('Welcome to root.');
-})
+});
 
-// TODO: remove, use express router - only for testing
-app.get('/test', (req, res) => {
-  const getData = async () => {
-    try {
-      const response = await fetchData()
-      res.status(200).json(response);
-    }
-      catch(error) {
-      res.status(500).json(`Internal server error: ${error}`);
-    }
-  }
-  getData();
-})
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+});

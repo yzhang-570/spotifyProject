@@ -14,6 +14,8 @@
   background: var(--navbar-gray);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  background: #4b4d4b;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
   box-sizing: border-box;
 }
 

@@ -14,7 +14,7 @@ const ConnectionsModal = ({ isOpen, onClose }) => {
     {
       'userID': 1,
       'displayName': 'a follower',
-      'username': '@follower_username',
+      'email': '@follower_username',
       'profileImageURL': 'https://static.vecteezy.com/system/resources/thumbnails/057/068/323/small/single-fresh-red-strawberry-on-table-green-background-food-fruit-sweet-macro-juicy-plant-image-photo.jpg'
     }
   ])
@@ -24,22 +24,42 @@ const ConnectionsModal = ({ isOpen, onClose }) => {
     {
       'userID': 1,
       'displayName': 'a following 1',
-      'username': '@following_username',
+      'email': '@following_username',
       'profileImageURL': 'https://static.vecteezy.com/system/resources/thumbnails/057/068/323/small/single-fresh-red-strawberry-on-table-green-background-food-fruit-sweet-macro-juicy-plant-image-photo.jpg'
     },
         {
       'userID': 2,
       'displayName': 'a following 2',
-      'username': '@following_username',
+      'email': '@following_username',
       'profileImageURL': 'https://static.vecteezy.com/system/resources/thumbnails/057/068/323/small/single-fresh-red-strawberry-on-table-green-background-food-fruit-sweet-macro-juicy-plant-image-photo.jpg'
     },
         {
       'userID': 3,
       'displayName': 'a following 3',
-      'username': '@following_username',
+      'email': '@following_username',
+      'profileImageURL': 'https://static.vecteezy.com/system/resources/thumbnails/057/068/323/small/single-fresh-red-strawberry-on-table-green-background-food-fruit-sweet-macro-juicy-plant-image-photo.jpg'
+    },
+            {
+      'userID': 4,
+      'displayName': 'a following 3',
+      'email': '@following_username',
+      'profileImageURL': 'https://static.vecteezy.com/system/resources/thumbnails/057/068/323/small/single-fresh-red-strawberry-on-table-green-background-food-fruit-sweet-macro-juicy-plant-image-photo.jpg'
+    },
+            {
+      'userID': 5,
+      'displayName': 'a following 3',
+      'email': '@following_username',
+      'profileImageURL': 'https://static.vecteezy.com/system/resources/thumbnails/057/068/323/small/single-fresh-red-strawberry-on-table-green-background-food-fruit-sweet-macro-juicy-plant-image-photo.jpg'
+    },
+            {
+      'userID': 6,
+      'displayName': 'a following 3',
+      'email': '@following_username',
       'profileImageURL': 'https://static.vecteezy.com/system/resources/thumbnails/057/068/323/small/single-fresh-red-strawberry-on-table-green-background-food-fruit-sweet-macro-juicy-plant-image-photo.jpg'
     }
   ])
+
+  console.log(tabSelected);
 
   // hide if not open
   if(!isOpen) return null;
@@ -74,12 +94,14 @@ const ConnectionsModal = ({ isOpen, onClose }) => {
           </h2>
         </div>
 
-        {/* List of Profiles */}
-        {(tabSelected === 'Followers' ? (followers) : (following)).map(userData => 
-          (<div key={userData.userID}>
-            <ProfilePreview userData={userData} />
-          </div>)
-        )}
+        <div className="connections-modal-preview-list">
+          {/* List of Profiles */}
+          {(tabSelected === 'Followers' ? (followers) : (following)).map(userData => 
+            (<div key={userData.userID}>
+              <ProfilePreview userData={userData} />
+            </div>)
+          )}
+        </div>
         
       </div>
 

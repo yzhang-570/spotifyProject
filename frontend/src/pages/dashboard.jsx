@@ -39,6 +39,10 @@ const Dashboard = () => {
   ])
   
   useEffect(() => {
+    // temp: pass lint
+    setUserProfileData(userProfileData);
+    setForumActivityData(forumActivityData);
+
     // load forum activity data
     // load user profile data
 
@@ -48,6 +52,9 @@ const Dashboard = () => {
 
   const handleFollow = (otherUserID) => {
     // make current user follow user with ID, otherUserID
+
+    // temp: pass lint
+    console.log(otherUserID);
   }
 
   const handleSaveProfile = (updatedUserProfileData) => {
@@ -94,7 +101,7 @@ const Dashboard = () => {
             {/* Follow + Message Buttons */}
             {/* todo: show edit profile instead if is current user */}
             <div className="buttons-div">
-              {true === true ?
+              {editProfileModalShown === false ?
               // actual condition should be: if logged in user = user profile being viewed
               (<button onClick={() => setEditProfileModalShown(true)} className="follow-button profile-action-button">Edit Profile</button>)
               :

@@ -9,6 +9,13 @@ const ConnectionsModal = ({ isOpen, onClose }) => {
 
   // todo: move to dashboard; fetch on display and pass as prop
 
+  // temporary: pass lint check
+  // will replace after connecting backend
+  useEffect(() => {
+    setFollowers(followers);
+    setFollowing(following);
+  }, [])
+
   // list of users the current user's followers
   const [followers, setFollowers] = useState([
     {

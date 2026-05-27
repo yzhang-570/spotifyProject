@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { getLikedSongs } from "../api";
-import "./likedSongs.css";
+import "./LikedSongs.css";
 
 const LikedSongs = () => {
   const [songs, setSongs] = useState([]);
@@ -21,8 +21,9 @@ const LikedSongs = () => {
     <div className="liked-songs">
       <h1 className="page-title">Liked Songs</h1>
       <div className="songs-grid">
-        {songs.map((item) => (
+        {songs.map((item, index) => (
           <div className="song-card" key={item.track.id}>
+            <span className="song-rank">#{index + 1}</span>
             <img
               src={item.track.album.images[0]?.url}
               alt={item.track.name}

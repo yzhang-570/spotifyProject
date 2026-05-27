@@ -48,6 +48,14 @@
   text-overflow: ellipsis;
 }
 
+.song-rank {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1ED760;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
 .loading {
   color: white;
   padding: 2rem;

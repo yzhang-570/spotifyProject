@@ -8,7 +8,9 @@ const EditProfileModal = ({ isOpen, initialProfile, onClose, onSave }) => {
 
   // Update form input when form opens + profile info changes
   useEffect(() => {
-    if (isOpen) setFormData(initialProfile);
+    if (isOpen) {
+      prev => setFormData({...prev, initialProfile});
+    }
   }, [isOpen, initialProfile]);
 
   // Hides when not open

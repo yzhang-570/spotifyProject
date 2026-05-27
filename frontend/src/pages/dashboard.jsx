@@ -17,7 +17,8 @@ const Dashboard = () => {
   const [connectionsModalShown, setConnectionsModalShown] = useState(false);
 
   // User's Profile Information; holds "final" profile changes...
-  const [userProfileData, setUserProfileData] = useState(
+  // const [userProfileData, setUserProfileData] = useState();
+  const userProfileData = 
     {
       'displayName': 'Name',
       'email': '@email', // note: username cannot be modified (tied to Spotify)
@@ -26,22 +27,19 @@ const Dashboard = () => {
       'top_songs_isPrivate': false,
       'top_artists_isPrivate': false,
       'liked_songs_isPrivate': false
-    }
-  )
+    };
 
   // User's Forum Activity... most recent 3 comments/forum posts (or less)
-  const [forumActivityData, setForumActivityData] = useState([
+  // const [forumActivityData, setForumActivityData] = useState([]);
+  const forumActivityData = [
     {
       'id': 'someID',  // forum post document ID
       'forumTitle': '#ForumTitle',
       'forumContent': '(Content) Forum post content lalala...'
     },
-  ])
+  ];
   
   useEffect(() => {
-    // temp: pass lint
-    setUserProfileData(u => u);
-    setForumActivityData(a => a);
 
     // load forum activity data
     // load user profile data

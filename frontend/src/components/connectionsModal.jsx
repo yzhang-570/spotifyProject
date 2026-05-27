@@ -1,7 +1,7 @@
 import ProfilePreview from './profilePreview.jsx'
 import "./connectionsModal.css"
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 const ConnectionsModal = ({ isOpen, onClose }) => {
 
@@ -10,61 +10,57 @@ const ConnectionsModal = ({ isOpen, onClose }) => {
   // todo: move to dashboard; fetch on display and pass as prop
 
   // list of users the current user's followers
-  const [followers, setFollowers] = useState([
+  // const [followers, setFollowers] = useState([]);
+  const followers =   
+  [
     {
       'userID': 1,
       'displayName': 'a follower',
       'email': '@follower_username',
       'profileImageURL': 'https://static.vecteezy.com/system/resources/thumbnails/057/068/323/small/single-fresh-red-strawberry-on-table-green-background-food-fruit-sweet-macro-juicy-plant-image-photo.jpg'
     }
-  ])
-
-  // temporary: pass lint check
-  // will replace after connecting backend
-  useEffect(() => {
-    setFollowers(f => f);
-    setFollowing(f => f);
-  }, [])
+  ]
 
   // list of users the current user is following
-  const [following, setFollowing] = useState([
+  // const [following, setFollowing] = useState([])
+  const following = [
     {
       'userID': 1,
       'displayName': 'a following 1',
       'email': '@following_username',
       'profileImageURL': 'https://static.vecteezy.com/system/resources/thumbnails/057/068/323/small/single-fresh-red-strawberry-on-table-green-background-food-fruit-sweet-macro-juicy-plant-image-photo.jpg'
     },
-        {
+    {
       'userID': 2,
       'displayName': 'a following 2',
       'email': '@following_username',
       'profileImageURL': 'https://static.vecteezy.com/system/resources/thumbnails/057/068/323/small/single-fresh-red-strawberry-on-table-green-background-food-fruit-sweet-macro-juicy-plant-image-photo.jpg'
     },
-        {
+    {
       'userID': 3,
       'displayName': 'a following 3',
       'email': '@following_username',
       'profileImageURL': 'https://static.vecteezy.com/system/resources/thumbnails/057/068/323/small/single-fresh-red-strawberry-on-table-green-background-food-fruit-sweet-macro-juicy-plant-image-photo.jpg'
     },
-            {
+    {
       'userID': 4,
       'displayName': 'a following 3',
       'email': '@following_username',
       'profileImageURL': 'https://static.vecteezy.com/system/resources/thumbnails/057/068/323/small/single-fresh-red-strawberry-on-table-green-background-food-fruit-sweet-macro-juicy-plant-image-photo.jpg'
     },
-            {
+    {
       'userID': 5,
       'displayName': 'a following 3',
       'email': '@following_username',
       'profileImageURL': 'https://static.vecteezy.com/system/resources/thumbnails/057/068/323/small/single-fresh-red-strawberry-on-table-green-background-food-fruit-sweet-macro-juicy-plant-image-photo.jpg'
     },
-            {
+    {
       'userID': 6,
       'displayName': 'a following 3',
       'email': '@following_username',
       'profileImageURL': 'https://static.vecteezy.com/system/resources/thumbnails/057/068/323/small/single-fresh-red-strawberry-on-table-green-background-food-fruit-sweet-macro-juicy-plant-image-photo.jpg'
     }
-  ])
+  ];
 
   console.log(tabSelected);
 

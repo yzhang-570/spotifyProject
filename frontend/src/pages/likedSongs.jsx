@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { getLikedSongs } from "../api";
-import "./LikedSongs.css";
+import "./likedSongs.css";
 
 const LikedSongs = () => {
   const [songs, setSongs] = useState([]);

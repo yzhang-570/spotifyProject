@@ -7,12 +7,14 @@ import { ArrowRight } from 'lucide-react';
 
 // Components
 import EditProfileModal from '../components/editProfileModal';
+import ConnectionsModal from '../components/connectionsModal'
 
 const Dashboard = () => {
 
   const navigate = useNavigate();
 
   const [editProfileModalShown, setEditProfileModalShown] = useState(false);
+  const [connectionsModalShown, setConnectionsModalShown] = useState(false);
 
   // User's Profile Information; holds "final" profile changes...
   const [userProfileData, setUserProfileData] = useState(
@@ -73,8 +75,12 @@ const Dashboard = () => {
             {/* Follower + Following Counts */}
             <div className="stats-div">
               {/* todo: open a popup showing following + followers */}
-              <p className="m stat-text"><strong>27</strong> <br/> <span className="xs">Following</span></p>
-              <p className="m stat-text"><strong>1.1k+</strong> <br/> <span className="xs">Followers</span></p>
+              <p className="m stat-text" onClick={() => setConnectionsModalShown(true)}>
+                <strong>27</strong> <br/> <span className="xs">Following</span>
+              </p>
+              <p className="m stat-text" onClick={() => setConnectionsModalShown(true)}>
+                <strong>1.1k+</strong> <br/> <span className="xs">Followers</span>
+              </p>
             </div>
 
             {/* Description */}
@@ -146,6 +152,12 @@ const Dashboard = () => {
           handleSaveProfile(updated);   // should handle: persist to backend, then update displayed profile data -> add a refresh in dashboard
           setEditProfileModalShown(false);
         }}
+      />
+
+      {/* Followers/Following Popup */}
+      <ConnectionsModal 
+        isOpen={connectionsModalShown}
+        onClose={() => setConnectionsModalShown(false)}
       />
 
     </main>

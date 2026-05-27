@@ -189,7 +189,6 @@ h1, h2, h3, h4, h5, p, a {
   position: relative;
   overflow: hidden;
   cursor: pointer;
-  font-weight: 600;
   transition:
     transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
     box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),

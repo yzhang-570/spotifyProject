@@ -1,0 +1,80 @@
+/* Black semi-transparent overlay */
+.connections-modal-overlay {
+  background-color: rgba(0, 0, 0, 0.208);
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* -------------------Modal card */
+.connections-modal {
+  display: flex;
+  flex-direction: column;
+
+  background-color: var(--background-color);
+  border-radius: 12px;
+  
+  height: 100%;
+  max-height: 75vh;
+
+  width: 100%;
+  max-width: 32rem;
+  /* max-height: 90vh; */
+
+  padding: 2rem 1.5rem;
+} 
+
+.connections-modal-header {
+  display: flex;
+  flex-direction: row;
+
+  align-items: center;
+  justify-content: space-between;
+}
+
+.connections-modal-header-text {
+  padding: 1rem;
+}
+
+
+/* Follower, Following Tabs */
+.connections-modal-tabs {
+  display: flex;
+  flex-direction: row;
+
+  justify-content: space-around;
+
+  /* margin-top: 1rem; */
+  padding: 0;
+  
+  border-bottom: 2px solid rgb(90, 90, 90);
+}
+
+.connections-modal-tab-option {
+  padding: 1rem;
+  /* border-bottom: 2px solid var(--tab-option-color); */
+  color: var(--tab-option-color);
+}
+.connections-modal-tab-option:hover {
+  color: rgb(138, 199, 138);
+  border-bottom: 2px solid rgb(138, 199, 138);
+}
+
+.connections-modal-preview-list {
+  overflow-y: auto;
+}
+
+
+/* Close button */
+.connections-modal-closeX {
+  background: transparent; /*was a button*/
+  color: white;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}

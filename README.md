@@ -9,17 +9,27 @@ This application is a social media extension to Spotify where users can showcase
 - Credits
 
 ## Getting Started
-1. Add firebase API keys to .env in /backend
+1. Clone the repo into your local environment
 
-2. Change directories into frontend folder  
+3. Add firebase API keys to .env in /backend
+
+4. Change directories into frontend folder  
 `cd frontend`  
 
-3. Run react app  
+5. Run react app  
 ```bash
 npm install
 npm run dev
 ```
 
+4. Change directories into backend folder in a **different terminal**  while simultaneously running the react app
+`cd backend`  
+
+5. Run express server  
+```bash
+npm install
+npm start
+```
 
 ## Project Structure
 frontend/
@@ -31,15 +41,6 @@ frontend/
 backend/
 - /routes
 - /db           # all firebase interactions
-
-4. Change directories into backend folder in a **different terminal**  while simultaneously running the react app
-`cd backend`  
-
-5. Run express server  
-```bash
-npm install
-npm start
-```
 
 ## How to Use Project
 - Navigate to ‘http://update link’
@@ -72,12 +73,7 @@ npm start
 ## Credits
 Please contact anyone in the following list of software engineers through Github if you run into issues:
 - Anushka Arun
-[GitHub](https://www.google.com](https://github.com/Anushka1010))
 - Lina Gougil
-[GitHub](https://www.google.com](https://github.com/gougi24l))
 - Ibaad Hassan
-[GitHub](https://www.google.com](https://github.com/Ibaad18))
 - Kwanwoo Lee
-[GitHub](https://www.google.com](https://github.com/CyberboyKai))
 - Yuwen Zhang
-[GitHub](https://www.google.com](https://github.com/yzhang-570))

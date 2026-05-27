@@ -146,6 +146,17 @@ const Dashboard = ({ user }) => {
         }}
       />
 
+      <EditProfileModal
+        key={editProfileModalShown ? 'open' : 'closed'}
+        isOpen={editProfileModalShown}
+        initialProfile={userProfileData}
+        onClose={() => setEditProfileModalShown(false)}
+        onSave={(updated) => {
+          handleSaveProfile(updated);
+          setEditProfileModalShown(false);
+        }}
+      />
+
       {/* Followers/Following Popup */}
       <ConnectionsModal
         isOpen={connectionsModalShown}

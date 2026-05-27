@@ -22,8 +22,8 @@ const ConnectionsModal = ({ isOpen, onClose }) => {
   // temporary: pass lint check
   // will replace after connecting backend
   useEffect(() => {
-    setFollowers(followers);
-    setFollowing(following);
+    setFollowers(f => f);
+    setFollowing(f => f);
   }, [])
 
   // list of users the current user is following

@@ -40,8 +40,8 @@ const Dashboard = () => {
   
   useEffect(() => {
     // temp: pass lint
-    setUserProfileData(userProfileData);
-    setForumActivityData(forumActivityData);
+    setUserProfileData(u => u);
+    setForumActivityData(a => a);
 
     // load forum activity data
     // load user profile data

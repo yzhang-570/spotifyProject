@@ -98,7 +98,16 @@ const Inbox = () => {
         <div className="inbox-list-header">
           <div>
             <p className="inbox-kicker">Messages</p>
-            <h1>Inbox</h1>
+            <h1 className="inbox-title-card">
+              <svg
+                className="inbox-title-icon"
+                viewBox="0 0 20 20"
+                aria-hidden="true"
+              >
+                <path d="M0 20V2C0 1.45 0.1958 0.9792 0.5875 0.5875C0.9792 0.1958 1.45 0 2 0H18C18.55 0 19.0208 0.1958 19.4125 0.5875C19.8042 0.9792 20 1.45 20 2V14C20 14.55 19.8042 15.0208 19.4125 15.4125C19.0208 15.8042 18.55 16 18 16H4L0 20ZM3.15 14H18V2H2V15.125L3.15 14Z" />
+              </svg>
+              <span>Inbox</span>
+            </h1>
           </div>
           <button className="new-message-button" type="button" aria-label="New message">
             +

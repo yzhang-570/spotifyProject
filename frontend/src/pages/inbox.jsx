@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import "./inbox.css";
 
-const conversations = [
+const initialConversations = [
   {
     id: "maya",
     name: "Maya Chen",
@@ -66,10 +66,52 @@ const conversations = [
   },
 ];
 
+const chatUsers = [
+  {
+    id: "maya",
+    name: "Maya Chen",
+    username: "mayalistens",
+    initials: "MC",
+    status: "Looking for mellow playlists",
+  },
+  {
+    id: "jordan",
+    name: "Jordan Lee",
+    username: "jordanonshuffle",
+    initials: "JL",
+    status: "Sharing workout mixes",
+  },
+  {
+    id: "sam",
+    name: "Sam Rivera",
+    username: "samspins",
+    initials: "SR",
+    status: "Hunting for deep cuts",
+  },
+  {
+    id: "nina",
+    name: "Nina Patel",
+    username: "ninabeats",
+    initials: "NP",
+    status: "Building the perfect party queue",
+  },
+  {
+    id: "alex",
+    name: "Alex Morgan",
+    username: "alextracks",
+    initials: "AM",
+    status: "Trading new album recommendations",
+  },
+];
+
 const Inbox = () => {
+  const [conversations, setConversations] = useState(initialConversations);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isNewChatOpen, setIsNewChatOpen] = useState(false);
+  const [newChatSearch, setNewChatSearch] = useState("");
+  const [draftMessage, setDraftMessage] = useState("");
   const [selectedConversationId, setSelectedConversationId] = useState(
-    conversations[0].id
+    initialConversations[0].id
   );
 
   const filteredConversations = useMemo(() => {
@@ -85,12 +127,94 @@ const Inbox = () => {
         .toLowerCase()
         .includes(query)
     );
-  }, [searchTerm]);
+  }, [conversations, searchTerm]);
+
+  const filteredChatUsers = useMemo(() => {
+    const query = newChatSearch.trim().toLowerCase();
+
+    if (!query) {
+      return chatUsers;
+    }
+
+    return chatUsers.filter((user) =>
+      [user.name, user.username, user.status]
+        .join(" ")
+        .toLowerCase()
+        .includes(query)
+    );
+  }, [newChatSearch]);
 
   const selectedConversation =
     conversations.find(
       (conversation) => conversation.id === selectedConversationId
     ) || conversations[0];
+
+  const handleSelectChatUser = (user) => {
+    const existingConversation = conversations.find(
+      (conversation) => conversation.username === user.username
+    );
+
+    if (existingConversation) {
+      setSelectedConversationId(existingConversation.id);
+      setIsNewChatOpen(false);
+      setNewChatSearch("");
+      return;
+    }
+
+    const newConversation = {
+      id: user.id,
+      name: user.name,
+      username: user.username,
+      initials: user.initials,
+      preview: "No messages yet.",
+      lastActive: "Now",
+      messages: [],
+    };
+
+    setConversations((currentConversations) => [
+      newConversation,
+      ...currentConversations,
+    ]);
+    setSelectedConversationId(newConversation.id);
+    setSearchTerm("");
+    setNewChatSearch("");
+    setIsNewChatOpen(false);
+  };
+
+  const handleSendMessage = (event) => {
+    event.preventDefault();
+
+    const trimmedMessage = draftMessage.trim();
+
+    if (!trimmedMessage || !selectedConversation) {
+      return;
+    }
+
+    setConversations((currentConversations) =>
+      currentConversations.map((conversation) => {
+        if (conversation.id !== selectedConversation.id) {
+          return conversation;
+        }
+
+        return {
+          ...conversation,
+          preview: trimmedMessage,
+          lastActive: "Now",
+          messages: [
+            ...conversation.messages,
+            {
+              id: `${conversation.id}-${conversation.messages.length + 1}`,
+              sender: "You",
+              time: "Now",
+              text: trimmedMessage,
+              isCurrentUser: true,
+            },
+          ],
+        };
+      })
+    );
+    setDraftMessage("");
+  };
 
   return (
     <section className="inbox-page">
@@ -98,21 +222,88 @@ const Inbox = () => {
         <div className="inbox-list-header">
           <div>
             <p className="inbox-kicker">Messages</p>
-            <h1 className="inbox-title-card">
-              <svg
-                className="inbox-title-icon"
-                viewBox="0 0 20 20"
-                aria-hidden="true"
+            <div className="inbox-title-row">
+              <h1 className="inbox-title-card">
+                <svg
+                  className="inbox-title-icon"
+                  viewBox="0 0 20 20"
+                  aria-hidden="true"
+                >
+                  <path d="M0 20V2C0 1.45 0.1958 0.9792 0.5875 0.5875C0.9792 0.1958 1.45 0 2 0H18C18.55 0 19.0208 0.1958 19.4125 0.5875C19.8042 0.9792 20 1.45 20 2V14C20 14.55 19.8042 15.0208 19.4125 15.4125C19.0208 15.8042 18.55 16 18 16H4L0 20ZM3.15 14H18V2H2V15.125L3.15 14Z" />
+                </svg>
+                <span>Inbox</span>
+              </h1>
+              <button
+                className="new-message-button"
+                type="button"
+                aria-expanded={isNewChatOpen}
+                aria-label="New message"
+                onClick={() => setIsNewChatOpen((isOpen) => !isOpen)}
               >
-                <path d="M0 20V2C0 1.45 0.1958 0.9792 0.5875 0.5875C0.9792 0.1958 1.45 0 2 0H18C18.55 0 19.0208 0.1958 19.4125 0.5875C19.8042 0.9792 20 1.45 20 2V14C20 14.55 19.8042 15.0208 19.4125 15.4125C19.0208 15.8042 18.55 16 18 16H4L0 20ZM3.15 14H18V2H2V15.125L3.15 14Z" />
-              </svg>
-              <span>Inbox</span>
-            </h1>
+                +
+              </button>
+            </div>
           </div>
-          <button className="new-message-button" type="button" aria-label="New message">
-            +
-          </button>
         </div>
+
+        {isNewChatOpen && (
+          <section className="new-chat-panel" aria-label="Create a new chat">
+            <div className="new-chat-panel-header">
+              <h2>Create a new chat</h2>
+              <button
+                type="button"
+                onClick={() => setIsNewChatOpen(false)}
+                aria-label="Close new chat panel"
+              >
+                x
+              </button>
+            </div>
+
+            <label className="new-chat-search" htmlFor="new-chat-search">
+              Search users
+              <input
+                id="new-chat-search"
+                type="search"
+                placeholder="Search by name or username"
+                value={newChatSearch}
+                onChange={(event) => setNewChatSearch(event.target.value)}
+              />
+            </label>
+
+            <div className="new-chat-user-list">
+              {filteredChatUsers.map((user) => {
+                const hasExistingChat = conversations.some(
+                  (conversation) => conversation.username === user.username
+                );
+
+                return (
+                  <button
+                    className="new-chat-user"
+                    key={user.id}
+                    type="button"
+                    onClick={() => handleSelectChatUser(user)}
+                  >
+                    <span className="new-chat-user-avatar">{user.initials}</span>
+                    <span className="new-chat-user-info">
+                      <span className="new-chat-user-name">{user.name}</span>
+                      <span className="new-chat-user-username">
+                        @{user.username}
+                      </span>
+                      <span className="new-chat-user-status">{user.status}</span>
+                    </span>
+                    <span className="new-chat-user-action">
+                      {hasExistingChat ? "Open" : "Start"}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {filteredChatUsers.length === 0 && (
+              <p className="new-chat-empty">No users found.</p>
+            )}
+          </section>
+        )}
 
         <label className="inbox-search" htmlFor="inbox-search">
           <span>Search messages</span>
@@ -158,25 +349,38 @@ const Inbox = () => {
         </header>
 
         <div className="message-thread" aria-live="polite">
-          {selectedConversation.messages.map((message) => (
-            <article
-              className={`message-bubble${
-                message.isCurrentUser ? " current-user" : ""
-              }`}
-              key={message.id}
-            >
-              <div className="message-meta">
-                <strong>{message.sender}</strong>
-                <span>{message.time}</span>
-              </div>
-              <p>{message.text}</p>
-            </article>
-          ))}
+          {selectedConversation.messages.length > 0 ? (
+            selectedConversation.messages.map((message) => (
+              <article
+                className={`message-bubble${
+                  message.isCurrentUser ? " current-user" : ""
+                }`}
+                key={message.id}
+              >
+                <div className="message-meta">
+                  <strong>{message.sender}</strong>
+                  <span>{message.time}</span>
+                </div>
+                <p>{message.text}</p>
+              </article>
+            ))
+          ) : (
+            <div className="empty-message-thread">
+              <p>No messages yet.</p>
+              <span>Send the first message to start this chat.</span>
+            </div>
+          )}
         </div>
 
-        <form className="message-composer" onSubmit={(event) => event.preventDefault()}>
+        <form className="message-composer" onSubmit={handleSendMessage}>
           <label htmlFor="message-input">Message</label>
-          <input id="message-input" type="text" placeholder="Aa" />
+          <input
+            id="message-input"
+            type="text"
+            placeholder="Aa"
+            value={draftMessage}
+            onChange={(event) => setDraftMessage(event.target.value)}
+          />
           <button type="submit" aria-label="Send message">
             Send
           </button>

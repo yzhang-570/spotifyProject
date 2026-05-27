@@ -10,6 +10,7 @@
   /* Color Variables */
   --background-color: #2a2a2a; /*darkest gray*/
   --navbar-gray: #272727; /*second darkest gray*/
+  --accent-green: #1ED760;
 }
 
 .app-layout {
@@ -23,6 +24,11 @@
   min-height: 100vh;
   background-color: var(--background-color);
   position: relative;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
 }
 
 /*----------------------Typography*/

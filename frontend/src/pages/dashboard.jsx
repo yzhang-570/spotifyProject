@@ -14,6 +14,19 @@ const Dashboard = () => {
 
   const [editProfileModalShown, setEditProfileModalShown] = useState(false);
 
+  // User's Profile Information; holds "final" profile changes...
+  const [userProfileData, setUserProfileData] = useState(
+    {
+      'displayName': 'Name',
+      'username': '@username', // note: username cannot be modified (tied to Spotify)
+      'bio': 'Description lalalalaal hi! My name is [name] and...sdfgfgdgdgfdgfgdhgfdhfghfdhghdhghdfsd',
+      'isPrivate': false,
+      'top_songs_isPrivate': false,
+      'top_artists_isPrivate': false,
+      'liked_songs_isPrivate': false
+    }
+  )
+
   // User's Forum Activity... most recent 3 comments/forum posts (or less)
   const [forumActivityData, setForumActivityData] = useState([
     {
@@ -21,24 +34,23 @@ const Dashboard = () => {
       'forumTitle': '#ForumTitle',
       'forumContent': '(Content) Forum post content lalala...'
     },
-    //     {
-    //   'id': 'someID',  // forum post document ID
-    //   'forumTitle': '#ForumTitle',
-    //   'forumContent': '(Content) Forum post content lalala...'
-    // },
-    //     {
-    //   'id': 'someID',  // forum post document ID
-    //   'forumTitle': '#ForumTitle',
-    //   'forumContent': '(Content) Forum post content lalala...'
-    // }
   ])
   
   useEffect(() => {
-    // load formum activity data
+    // load forum activity data
+    // load user profile data
   }, [])
 
   const handleFollow = (otherUserID) => {
     // make current user follow user with ID, otherUserID
+  }
+
+  const handleSaveProfile = (updatedUserProfileData) => {
+    console.log('Save profile', updatedUserProfileData);
+    // try catch - if failed (assume 400/500 causes error), don't set the user profile and show error
+
+    // save the profile to db
+    // set displayed profile data to returned (updated) data; -> automatically triggers refresh
   }
 
   return (
@@ -56,7 +68,7 @@ const Dashboard = () => {
           <div className="profile-info-div">
 
             {/* Name, Username */}
-            <p className="displayname-text"><strong>Name</strong> <br/> <span className="xs">@username</span></p>
+            <p className="displayname-text"><strong>{userProfileData.displayName}</strong> <br/> <span className="xs">{userProfileData.username}</span></p>
 
             {/* Follower + Following Counts */}
             <div className="stats-div">
@@ -66,7 +78,7 @@ const Dashboard = () => {
             </div>
 
             {/* Description */}
-            <p className="xs">Description lalalalaal hi! My name is [name] and...sdfgfgdgdgfdgfgdhgfdhfghfdhghdhghdfsd</p>
+            <p className="xs">{userProfileData.bio}</p>
 
             {/* Follow + Message Buttons */}
             {/* todo: show edit profile instead if is current user */}
@@ -88,22 +100,26 @@ const Dashboard = () => {
 
         {/* Top Songs, Top Artists, and Liked Songs */}
         <section className="collectionsection-div">
+          
           <button onClick={() => navigate('/top-songs')} className="collection-div"
             style={{'--div-color': "#648DA4", '--div-color-hover': "#517184"}}>
             <ArrowRight className="arrow-icon" color="#ffffff" />
             <h3 className="collection-name-text">Top Songs</h3>
           </button>
+
           <button onClick={() => navigate('/top-artists')} className="collection-div"
             style={{'--div-color': "#A46488", "--div-color-hover": "#83506d"}}>
             <ArrowRight className="arrow-icon" color="#ffffff" />
             <h3 className="collection-name-text">Top Artists</h3>
           </button>
+
           <button onClick={() => navigate('/liked-songs')}
             style={{'--div-color': "#87AB72", '--div-color-hover': "#729161"}}
             className="collection-div">
             <ArrowRight className="arrow-icon" color="#ffffff" />
             <h3 className="collection-name-text">Liked Songs</h3>
           </button>
+
         </section>
       </div>
 
@@ -120,18 +136,14 @@ const Dashboard = () => {
         )}
       </section>
 
+      {/* Edit Profile Popup */}
       <EditProfileModal
         isOpen={editProfileModalShown}
         // todo: replace with profile that is currently loaded...
-        initialProfile={{
-          name: 'Name',
-          username: 'username',
-          description: 'Description lalalalaal hi! My name is [name] and...sdfgfgdgdgfdgfgdhgfdhfghfdhghdhghdfsd',
-        }}
+        initialProfile={userProfileData}
         onClose={() => setEditProfileModalShown(false)}
         onSave={(updated) => {
-          // todo: persist to backend, then update displayed profile data -> add a refresh
-          console.log('Save profile', updated);
+          handleSaveProfile(updated);   // should handle: persist to backend, then update displayed profile data -> add a refresh in dashboard
           setEditProfileModalShown(false);
         }}
       />
@@ -141,3 +153,21 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
+/*
+dashboard - opens form; owns:
+- form open/closed
+- display persisted profile data
+  - SO also handles db interaction, updating persisted profile data (**directly triggers auto refresh**)
+
+- pass callback to updated **form open/closed**
+- pass persisted profile data
+- pass form open/closed status
+- pass callback to update **persisted profile data**
+
+edit profile form; owns:
+- display of form based on form open/closed
+- updating temporary/in progress form changes
+  - when open, or persistent profile data changes
+- call callback to close in parent
+*/

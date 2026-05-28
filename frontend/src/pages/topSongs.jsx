@@ -1,17 +1,48 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./topSongs.css";
-
-const topSongsMock = [
-  { id: 1, title: "Song Name", artist: "Artist Name", album: "Album Name" },
-  { id: 2, title: "Song Name", artist: "Artist Name", album: "Album Name" },
-  { id: 3, title: "Song Name", artist: "Artist Name", album: "Album Name" },
-  { id: 4, title: "Song Name", artist: "Artist Name", album: "Album Name" },
-];
 
 const TopSongs = () => {
   const navigate = useNavigate();
   const [range, setRange] = useState("all_time");
+  const [songs, setSongs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const rangeMap = {
+      all_time: "long_term",
+      last_year: "medium_term",
+      last_month: "short_term",
+    };
+
+    const fetchTopSongs = async () => {
+      setLoading(true);
+      setError("");
+
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:8888/spotify/top-songs?time_range=${rangeMap[range]}`,
+          {
+            credentials: "include",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to load top songs.");
+        }
+
+        const data = await response.json();
+        setSongs(data.items || []);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTopSongs();
+  }, [range]);
 
   return (
     <section className="top-songs-page">
@@ -40,22 +71,38 @@ const TopSongs = () => {
 
       <h1 className="top-songs-title">Top Songs</h1>
 
-      <div className="top-songs-list">
-        {topSongsMock.map((song, index) => (
-          <article className="top-song-row" key={song.id}>
-            <p className="top-song-rank">#{index + 1}</p>
+      {loading ? <p>Loading top songs...</p> : null}
+      {error ? <p>{error}</p> : null}
 
-            <div className="top-song-card">
-              <div className="top-song-cover" aria-hidden="true" />
-              <div className="top-song-text">
-                <p className="top-song-name">{song.title}</p>
-                <p className="top-song-artist">{song.artist}</p>
-                <p className="top-song-album">{song.album}</p>
+      {!loading && !error ? (
+        <div className="top-songs-list">
+          {songs.map((song, index) => (
+            <article className="top-song-row" key={song.id}>
+              <p className="top-song-rank">#{index + 1}</p>
+
+              <div className="top-song-card">
+                {song.album?.images?.[0]?.url ? (
+                  <img
+                    className="top-song-cover-image"
+                    src={song.album.images[0].url}
+                    alt={`${song.name} album cover`}
+                  />
+                ) : (
+                  <div className="top-song-cover" aria-hidden="true" />
+                )}
+                <div className="top-song-text">
+                  <p className="top-song-name">{song.name}</p>
+                  <p className="top-song-artist">
+                    {song.artists?.map((artist) => artist.name).join(", ")}
+                  </p>
+                  <p className="top-song-album">{song.album?.name}</p>
+                </div>
               </div>
-            </div>
-          </article>
-        ))}
-      </div>
+            </article>
+          ))}
+          {songs.length === 0 ? <p>No songs found.</p> : null}
+        </div>
+      ) : null}
     </section>
   );
 };

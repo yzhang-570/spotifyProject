@@ -101,13 +101,6 @@
   font-weight: 700;
 }
 
-.forums-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
-  gap: 1.25rem;
-  max-width: 1180px;
-}
-
 .forum-card {
   display: flex;
   flex-direction: column;
@@ -172,14 +165,126 @@
   font-weight: 700;
 }
 
-.category-badge {
-  padding: 0.35rem 0.55rem;
+/* ==========================================================================
+   Forums Row Layout & Footer Tool Actions
+   ========================================================================== */
+
+.forums-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  max-width: 1180px;
+}
+
+/* Footer Row Container placing elements side-by-side */
+.forum-footer-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid #4F4F4F;
+}
+
+/* 1. Vote Counter Container Styling overrides matching forumPage white-card style rules */
+.forum-card .vote-counter-wrapper {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 20px;
+  padding: 0.25rem 0.5rem;
+  gap: 0.4rem;
+}
+
+.forum-card .vote-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: #121212 !important;
+  padding: 0 0.4rem;
+  transition: color 0.2s;
+}
+
+.forum-card .vote-count {
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: #121212 !important;
+  min-width: 24px;
+  text-align: center;
+}
+
+.forum-card .vote-btn.up:hover, 
+.forum-card .vote-btn.up.active, 
+.forum-card .vote-count.voted {
+  color: #1DB954 !important; /* Context green metric indicators */
+}
+
+/* 2. Replies Bubble Counter Styling */
+.forum-replies-counter {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #3B3B3B;
+  font-size: 0.92rem;
+}
+
+.chat-bubble-icon {
+  font-size: 1.1rem;
+}
+
+.replies-text-count strong {
+  color: #121212;
+}
+
+/* 3. Inline Navigation Link Overrides pulling it down into the same line row */
+/* 3. Inline Navigation Link Overrides pulling it down into the same line row */
+.forum-card-content .inline-view-btn {
+  margin-top: 0 !important;
+  margin-left: auto; /* Pushes button right-aligned naturally */
+  flex-grow: 1;      /* Instructs the button to dynamically stretch across the row */
+  max-width: 320px;  /* Stops the button from expanding excessively wide on wide monitors */
+  
+  display: inline-flex;
+  min-height: 42px;  /* Restores your uniform theme height metric */
+  align-items: center;
+  justify-content: center;
+  padding: 0 1.25rem;
+  border-radius: 10px; /* Restores the rounded button theme corners */
+  font-size: 0.92rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+
+/* Enforce precise color rendering inside the white card container */
+.forum-card-content .primary-action.inline-view-btn {
+  color: #FFFFFF !important;
+  background: #3B3B3B !important;
+}
+
+/* Green hover state style rules */
+.forum-card-content .primary-action.inline-view-btn:hover,
+.forum-card-content .primary-action.inline-view-btn:focus-visible {
+  color: #121212 !important;
+  background: #1ED760 !important;
+  transform: translateY(-1px);
+}
+
+.time-ago-badge {
+  padding: 0.35rem 0.75rem;
   border: 1px solid #1ED760;
   border-radius: 999px;
   color: #121212;
   background: #1ED760;
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 900;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.forum-header-meta {
+  min-width: 0;
 }
 
 .forum-description {
@@ -188,19 +293,14 @@
   line-height: 1.45;
 }
 
-.tag-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
-}
-
-.tag-list span {
-  padding: 0.35rem 0.6rem;
-  border-radius: 999px;
+.empty-forums-state {
+  max-width: 900px;
+  margin: 1.5rem 0 0;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
   color: #FFFFFF;
   background: #3B3B3B;
-  font-size: 0.78rem;
-  font-weight: 800;
 }
 
 .forum-preview {
@@ -269,16 +369,6 @@
   background: #1ED760;
 }
 
-.empty-forums-state {
-  max-width: 900px;
-  margin: 1.5rem 0 0;
-  padding: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 14px;
-  color: #FFFFFF;
-  background: #3B3B3B;
-}
-
 @media (max-width: 760px) {
   .forums-page {
     min-height: calc(100vh - 2rem);
@@ -302,7 +392,15 @@
   .forum-card-header {
     grid-template-columns: auto minmax(0, 1fr);
   }
-  .category-badge {
+  .forum-footer-actions-row {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .forum-card-content .inline-view-btn {
+    margin-left: 0;
+    width: 100%; /* Collapse actions to stack cleanly across micro device windows */
+  }
+  .time-ago-badge {
     width: fit-content;
     grid-column: 2;
   }

@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
     usersSnap.forEach((doc) => {
       const data = doc.data();
       if (!data.isPrivate) {
-        users.push(data);
+        users.push({ id: doc.id, ...data });
       }
     });
 
@@ -33,11 +33,12 @@ router.get('/', async (req, res) => {
 
 // update user profile
 router.put('/update', requireAuth, async (req, res) => {
-  const { bio, isPrivate, liked_songs_isPrivate, top_songs_isPrivate, top_artists_isPrivate } = req.body;
+  const { displayName, bio, isPrivate, liked_songs_isPrivate, top_songs_isPrivate, top_artists_isPrivate } = req.body;
 
   try {
     const userRef = doc(db, 'users', req.session.user.id);
     await updateDoc(userRef, {
+      'displayName': displayName,
       ...(bio !== undefined && { bio }),
       ...(isPrivate !== undefined && { isPrivate }),
       ...(liked_songs_isPrivate !== undefined && { liked_songs_isPrivate }),

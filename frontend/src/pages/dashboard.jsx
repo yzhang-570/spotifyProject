@@ -6,7 +6,8 @@ import EditProfileModal from '../components/editProfileModal';
 import ConnectionsModal from '../components/connectionsModal';
 import { getFirebaseUser, updateProfile } from '../api';
 
-const Dashboard = ({ user }) => {
+const Dashboard = ({ }) => {
+  
   const navigate = useNavigate();
 
   const [editProfileModalShown, setEditProfileModalShown] = useState(false);
@@ -137,17 +138,6 @@ const Dashboard = ({ user }) => {
 
       {/* Edit Profile Popup */}
       <EditProfileModal
-        isOpen={editProfileModalShown}
-        initialProfile={userProfileData}
-        onClose={() => setEditProfileModalShown(false)}
-        onSave={(updated) => {
-          handleSaveProfile(updated);
-          setEditProfileModalShown(false);
-        }}
-      />
-
-      <EditProfileModal
-        key={editProfileModalShown ? 'open' : 'closed'}
         isOpen={editProfileModalShown}
         initialProfile={userProfileData}
         onClose={() => setEditProfileModalShown(false)}

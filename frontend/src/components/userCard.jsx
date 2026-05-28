@@ -1,0 +1,69 @@
+import "../pages/discover.css";
+import { Link } from "react-router-dom";
+import { Lock } from "lucide-react";
+
+const UserCard = ({ userData }) => {
+  return (
+    <article
+      className="user-card"
+    >
+      <div className="user-card-header">
+        <div className="user-avatar">
+          <img src={userData.profilePicture} alt={`${userData.display_name} avatar`} />
+        </div>
+
+        <div className="user-identity">
+          <h2>{userData.displayName}</h2>
+          <p className="username">{userData.email}</p>
+        </div>
+
+        <span className={`public-badge${userData.is_private ? " is-private" : ""}`}>
+          {userData.isPrivate ? "Private" : "Public"}
+        </span>
+      </div>
+
+      <div className="user-card-content">
+        <p className={`user-bio${userData.bio ? "" : " is-empty"}`}>
+          {userData.bio || "[Bio is empty]"}
+        </p>
+
+        <dl className={`music-preview${userData.is_private ? " is-private" : ""}`}>
+          <div>
+            <dt>Top artist</dt>
+            {userData.topArtists.length ? (
+              <dd>{userData.topArtists[0].name}</dd>
+            ) : (
+              <dd className="is-empty">None</dd>
+            )}
+          </div>
+          <div>
+            <dt>Top song</dt>
+            {userData.topSongs.length ? (
+              <dd>{userData.topSongs[0].name}</dd>
+            ) : (
+              <dd className="is-empty">None</dd>
+            )}
+          </div>
+          {userData.isPrivate && (
+            <div className="music-preview-lock">
+              <Lock size={16} aria-hidden="true" />
+              <span>Private</span>
+            </div>
+          )}
+        </dl>
+
+        <div className="user-actions">
+          {/* to='/' */}
+          <Link className="primary-action" to="/profile">
+            View Profile
+          </Link>
+          <Link className="secondary-action" to="/inbox">
+            Message
+          </Link>
+        </div>
+      </div>
+    </article>
+  )
+};
+
+export default UserCard;

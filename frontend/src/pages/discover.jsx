@@ -1,83 +1,89 @@
-import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { useMemo, useState, useEffect } from "react";
 import "./discover.css";
+import axios from 'axios';
 
-const publicUsers = [
-  {
-    id: "maya",
-    name: "Maya Chen",
-    username: "mayalistens",
-    bio: "Late-night synth pop, soft R&B, and new albums on repeat.",
-    genres: ["Indie Pop", "R&B"],
-    topArtist: "SZA",
-    topSong: "Good Days",
-    status: "Looking for mellow playlists",
-    initials: "MC",
-    avatarColor: "#8f7cf6",
-  },
-  {
-    id: "jordan",
-    name: "Jordan Lee",
-    username: "jordanonshuffle",
-    bio: "Building playlists for runs, road trips, and rainy mornings.",
-    genres: ["Hip-Hop", "House"],
-    topArtist: "Kaytranada",
-    topSong: "Freefall",
-    status: "Sharing workout mixes",
-    initials: "JL",
-    avatarColor: "#2eb67d",
-  },
-  {
-    id: "sam",
-    name: "Sam Rivera",
-    username: "samspins",
-    bio: "Always looking for guitar-driven tracks and underrated albums.",
-    genres: ["Alt Rock", "Folk"],
-    topArtist: "Boygenius",
-    topSong: "Not Strong Enough",
-    status: "Hunting for deep cuts",
-    initials: "SR",
-    avatarColor: "#f4a261",
-  },
-  {
-    id: "nina",
-    name: "Nina Patel",
-    username: "ninabeats",
-    bio: "Pop hooks, dance tracks, and anything with a huge chorus.",
-    genres: ["Dance Pop", "Disco"],
-    topArtist: "Dua Lipa",
-    topSong: "Levitating",
-    status: "Building the perfect party queue",
-    initials: "NP",
-    avatarColor: "#e76f51",
-  },
-];
+import UserCard from '../components/userCard.jsx'
+
+// const publicUsers = [
+//   {
+//     id: "maya",
+//     display_name: "Maya Chen",
+//     email: "maya.chen@example.com",
+//     bio: "Late-night synth pop, soft R&B, and new albums on repeat.",
+//     top_artists: [{ name: "SZA" }],
+//     top_songs: [{ name: "Good Days" }],
+//     profile_img: "https://i.pravatar.cc/160?u=maya",
+//     is_private: false,
+//   },
+//   {
+//     id: "jordan",
+//     display_name: "Jordan Lee",
+//     email: "jordan.lee@example.com",
+//     bio: "Building playlists for runs, road trips, and rainy mornings.",
+//     top_artists: [{ name: "Kaytranada" }],
+//     top_songs: [{ name: "Freefall" }],
+//     profile_img: "https://i.pravatar.cc/160?u=jordan",
+//     is_private: false,
+//   },
+//   {
+//     id: "sam",
+//     display_name: "Sam Rivera",
+//     email: "sam.rivera@example.com",
+//     bio: "Always looking for guitar-driven tracks and underrated albums.",
+//     top_artists: [{ name: "Boygenius" }],
+//     top_songs: [{ name: "Not Strong Enough" }],
+//     profile_img: "https://i.pravatar.cc/160?u=sam",
+//     is_private: true,
+//   },
+//   {
+//     id: "nina",
+//     display_name: "Nina Patel",
+//     email: "nina.patel@example.com",
+//     bio: "Pop hooks, dance tracks, and anything with a huge chorus.",
+//     top_artists: [{ name: "Dua Lipa" }],
+//     top_songs: [{ name: "Levitating" }],
+//     profile_img: "https://i.pravatar.cc/160?u=nina",
+//     is_private: false,
+//   },
+// ];
 
 const Discover = () => {
+  const [usersData, setUsersData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    const getData = async () => {
+      const response = await axios.get('http://localhost:8888/users');
+      setUsersData(response.data);
+    }
+    getData();
+  }, [])
 
   const filteredUsers = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
 
     if (!query) {
-      return publicUsers;
+      return usersData;
     }
 
-    return publicUsers.filter((user) => {
+    return usersData.filter((user) => {
       const searchableText = [
-        user.name,
-        user.username,
+        user.displayName,
+        user.email,
         user.bio,
-        user.topArtist,
-        user.topSong,
-        ...user.genres,
+        // user.top_artists, - or get top artist/song and filter by
+        // user.top_songs
       ]
         .join(" ")
         .toLowerCase();
 
       return searchableText.includes(query);
     });
-  }, [searchTerm]);
+  }, [searchTerm, usersData]);
+
+  console.log('usersData', usersData);
+  console.log('filteredUsers', filteredUsers);
+  // console.log(searchTerm);
 
   return (
     <section className="discover-page">
@@ -110,60 +116,18 @@ const Discover = () => {
         </div>
       </div>
 
-      <div className="discover-grid" aria-live="polite">
-        {filteredUsers.map((user) => (
-          <article
-            className="user-card"
-            key={user.id}
-            style={{ "--avatar-color": user.avatarColor }}
-          >
-            <div className="user-card-header">
-              <div className="user-avatar">{user.initials}</div>
-
-              <div className="user-identity">
-                <h2>{user.name}</h2>
-                <p className="username">@{user.username}</p>
-              </div>
-
-              <span className="public-badge">Public</span>
+      {usersData &&
+        <div className="discover-grid" aria-live="polite">
+          {filteredUsers.map((userData) => (
+            <div key={userData.id}>
+                <UserCard userData={userData}/>
             </div>
-
-            <div className="user-card-content">
-              <p className="user-status">{user.status}</p>
-              <p className="user-bio">{user.bio}</p>
-
-              <div className="genre-list">
-                {user.genres.map((genre) => (
-                  <span key={genre}>{genre}</span>
-                ))}
-              </div>
-
-              <dl className="music-preview">
-                <div>
-                  <dt>Top artist</dt>
-                  <dd>{user.topArtist}</dd>
-                </div>
-                <div>
-                  <dt>Top song</dt>
-                  <dd>{user.topSong}</dd>
-                </div>
-              </dl>
-
-              <div className="user-actions">
-                <Link className="primary-action" to="/profile">
-                  View Profile
-                </Link>
-                <Link className="secondary-action" to="/inbox">
-                  Message
-                </Link>
-              </div>
-            </div>
-          </article>
-        ))}
-      </div>
+          ))}
+        </div>
+      }
 
       {filteredUsers.length === 0 && (
-        <p className="empty-discover-state">No public users found.</p>
+        <p className="empty-discover-state">No users found.</p>
       )}
     </section>
   );

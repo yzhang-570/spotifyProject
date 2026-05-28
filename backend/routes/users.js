@@ -2,6 +2,8 @@ import express from 'express';
 import db from '../firebase.js';
 import { doc, getDoc, updateDoc, collection, getDocs } from 'firebase/firestore';
 
+import { fetchUserFollowings, fetchUserFollowers, createFollow, deleteFollow } from '../db/followsDB.js'
+
 const router = express.Router();
 
 const requireAuth = (req, res, next) => {
@@ -11,7 +13,7 @@ const requireAuth = (req, res, next) => {
   next();
 };
 
-// get all public users (for Discover page)
+// get all users (for Discover page)
 router.get('/', async (req, res) => {
   try {
     const usersRef = collection(db, 'users');
@@ -20,9 +22,7 @@ router.get('/', async (req, res) => {
     const users = [];
     usersSnap.forEach((doc) => {
       const data = doc.data();
-      if (!data.isPrivate) {
-        users.push({ id: doc.id, ...data });
-      }
+      users.push({ id: doc.id, ...data });
     });
 
     res.json(users);
@@ -65,6 +65,59 @@ router.get('/:id', async (req, res) => {
     res.json(userSnap.data());
   } catch (error) {
     res.status(500).json(`Error fetching user: ${error}`);
+  }
+});
+
+
+/*Follows------------------- */
+
+// fetchUserFollowings, fetchUserFollowers, createFollow, deleteFollow
+
+// Get followers for a user
+router.get('/:userID/followers', async (req, res) => {
+  const { userID } = req.params;
+  try {
+    const followerData = await fetchUserFollowers(userID);
+    res.status(200).json(followerData);
+  } catch (error) {
+    res.status(500).json(`Error fetching followers: ${error}`);
+  }
+});
+
+// Get following for a user
+router.get('/:userID/following', async (req, res) => {
+  const { userID } = req.params;
+  try {
+    const followingData = await fetchUserFollowings(userID);
+    res.status(200).json(followingData);
+  } catch (error) {
+    res.status(500).json(`Error fetching following: ${error}`);
+  }
+});
+
+// Create a follow
+// Requires body: { followerID, followedID }
+router.post('/follow', async (req, res) => {
+  const { followerID, followedID } = req.body;
+  try {
+    await createFollow(followerID, followedID);
+    res.status(201);
+  }
+  catch (error) {
+    res.status(500).json(`Error creating follow: ${error}`);
+  }
+});
+
+// Delete a follow
+// Requires body: { { followerID, followedID }
+router.delete('/follow', async (req, res) => {
+  const { followerID, followedID } = req.body;
+  try {
+    await deleteFollow(followerID, followedID);
+    res.status(204);
+  }
+  catch (error) {
+    res.status(500).json(`Error deleting follower: ${error}`);
   }
 });
 

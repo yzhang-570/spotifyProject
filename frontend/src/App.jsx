@@ -44,8 +44,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Discover />} />
             <Route path="/discover" element={<Discover />} />
-            <Route path="/dashboard" element={<Dashboard user={user} />} />
-            <Route path="/dashboard/:userID" element={<Dashboard user={user}/>} />
+            <Route path="/dashboard/:userID" element={<Dashboard currentUser={user}/>} />
             <Route path="/liked-songs" element={<LikedSongs />} />
             <Route path="/top-artists" element={<TopArtists />} />
             <Route path="/top-songs" element={<TopSongs />} />

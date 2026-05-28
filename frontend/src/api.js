@@ -30,10 +30,16 @@ export const getTopSongs = async (timeRange = 'medium_term') => {
 };
 
 export const getFirebaseUser = async (id) => {
-  const response = await fetch(`${BASE_URL}/users/${id}`, {
-    credentials: 'include',
-  });
-  return response.json();
+  try {
+    const response = await fetch(`${BASE_URL}/users/${id}`, {
+      credentials: 'include',
+    });
+    if (response.status === 404) return null;
+    return response.json();
+  }
+  catch (error) {
+    console.log(`An error occured while fetching user profile data: ${error}`)
+  }
 };
 
 export const getAllUsers = async () => {

@@ -4,49 +4,6 @@ import axios from 'axios';
 
 import UserCard from '../components/userCard.jsx'
 
-// const publicUsers = [
-//   {
-//     id: "maya",
-//     display_name: "Maya Chen",
-//     email: "maya.chen@example.com",
-//     bio: "Late-night synth pop, soft R&B, and new albums on repeat.",
-//     top_artists: [{ name: "SZA" }],
-//     top_songs: [{ name: "Good Days" }],
-//     profile_img: "https://i.pravatar.cc/160?u=maya",
-//     is_private: false,
-//   },
-//   {
-//     id: "jordan",
-//     display_name: "Jordan Lee",
-//     email: "jordan.lee@example.com",
-//     bio: "Building playlists for runs, road trips, and rainy mornings.",
-//     top_artists: [{ name: "Kaytranada" }],
-//     top_songs: [{ name: "Freefall" }],
-//     profile_img: "https://i.pravatar.cc/160?u=jordan",
-//     is_private: false,
-//   },
-//   {
-//     id: "sam",
-//     display_name: "Sam Rivera",
-//     email: "sam.rivera@example.com",
-//     bio: "Always looking for guitar-driven tracks and underrated albums.",
-//     top_artists: [{ name: "Boygenius" }],
-//     top_songs: [{ name: "Not Strong Enough" }],
-//     profile_img: "https://i.pravatar.cc/160?u=sam",
-//     is_private: true,
-//   },
-//   {
-//     id: "nina",
-//     display_name: "Nina Patel",
-//     email: "nina.patel@example.com",
-//     bio: "Pop hooks, dance tracks, and anything with a huge chorus.",
-//     top_artists: [{ name: "Dua Lipa" }],
-//     top_songs: [{ name: "Levitating" }],
-//     profile_img: "https://i.pravatar.cc/160?u=nina",
-//     is_private: false,
-//   },
-// ];
-
 const Discover = () => {
   const [usersData, setUsersData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -71,7 +28,7 @@ const Discover = () => {
         user.displayName,
         user.email,
         user.bio,
-        // user.top_artists, - or get top artist/song and filter by
+        // user.top_artists, - or get top artist/song and filter by -> spotify doesn't seem to have rankings (?)
         // user.top_songs
       ]
         .join(" ")

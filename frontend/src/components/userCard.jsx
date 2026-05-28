@@ -53,8 +53,7 @@ const UserCard = ({ userData }) => {
         </dl>
 
         <div className="user-actions">
-          {/* to='/' */}
-          <Link className="primary-action" to="/profile">
+          <Link className="primary-action" to={`/dashboard/${userData.id}`}>
             View Profile
           </Link>
           <Link className="secondary-action" to="/inbox">

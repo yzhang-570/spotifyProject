@@ -1,28 +1,37 @@
 import '../styles/dashboard.css'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
 import EditProfileModal from '../components/editProfileModal';
 import ConnectionsModal from '../components/connectionsModal';
 import { getFirebaseUser, updateProfile } from '../api';
 
-const Dashboard = ({ }) => {
+const Dashboard = ({ currentUser }) => {
   
   const navigate = useNavigate();
 
+  const params = useParams()
   const [editProfileModalShown, setEditProfileModalShown] = useState(false);
   const [connectionsModalShown, setConnectionsModalShown] = useState(false);
   const [userProfileData, setUserProfileData] = useState(null);
 
+  const [userNotFound, setUserNotFound] = useState(false);
+
   useEffect(() => {
     const loadProfile = async () => {
-      if (user?.id) {
-        const firebaseUser = await getFirebaseUser(user.id);
-        setUserProfileData(firebaseUser);
+      if (params.userID) {
+        const userDocument = await getFirebaseUser(params.userID);
+
+        if (userDocument === null) setUserNotFound(true);
+
+        setUserProfileData(userDocument);
       }
     };
     loadProfile();
-  }, [user]);
+  }, [params]);
+
+  if (userNotFound) return <p style={{ color: 'white', padding: '2rem' }}>User not found.</p>;
+  if (!userProfileData) return <p style={{ color: 'white', padding: '2rem' }}>Loading...</p>;
 
   const handleFollow = (otherUserID) => {
     console.log(otherUserID);
@@ -38,8 +47,6 @@ const Dashboard = ({ }) => {
       console.error('Error saving profile:', error);
     }
   }
-
-  if (!userProfileData) return <p style={{ color: 'white', padding: '2rem' }}>Loading...</p>;
 
   return (
     <main className="dashboard">
@@ -81,7 +88,7 @@ const Dashboard = ({ }) => {
 
             {/* Buttons */}
             <div className="buttons-div">
-              {editProfileModalShown === false ?
+              {currentUser.id === params.userID ?
                 (<button onClick={() => setEditProfileModalShown(true)} className="follow-button profile-action-button">Edit Profile</button>)
                 :
                 (<>
@@ -94,7 +101,9 @@ const Dashboard = ({ }) => {
         </section>
 
         {/* Top Songs, Top Artists, and Liked Songs */}
-        <section className="collectionsection-div">
+        {(userProfileData && !userProfileData.isPrivate)
+        ?
+        (<section className={"collectionsection-div"} >
 
           {!userProfileData.top_songs_isPrivate && (
             <button onClick={() => navigate('/top-songs')} className="collection-div"
@@ -122,6 +131,9 @@ const Dashboard = ({ }) => {
           )}
 
         </section>
+        )
+        :
+        (<p>This profile is private.</p>)}
       </div>
 
       {/* Recent Activity - Forum Posts */}

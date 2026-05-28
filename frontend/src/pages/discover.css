@@ -242,26 +242,26 @@
 }
 
 .music-preview.is-private > div:not(.music-preview-lock) {
-  filter: blur(6px);
+  filter: blur(100px);
   user-select: none;
   pointer-events: none;
 }
 
 .music-preview-lock {
   position: absolute;
-  inset: 0.85rem 0 0;
+  inset: 0.6rem 0 0;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.45rem;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(72, 72, 72, 0.274);
   color: #FFFFFF;
   font-size: 0.85rem;
   font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   border-radius: 6px;
-  backdrop-filter: blur(1px);
+  backdrop-filter: blur(5px);
 }
 
 .music-preview div {

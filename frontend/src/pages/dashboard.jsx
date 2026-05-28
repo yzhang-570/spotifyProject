@@ -2,12 +2,14 @@ import '../styles/dashboard.css'
 
 import { useNavigate, useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react';
-import { ArrowRight } from 'lucide-react';
 
 import axios from 'axios';
 
 import EditProfileModal from '../components/editProfileModal';
 import ConnectionsModal from '../components/connectionsModal';
+import CollectionCard from '../components/collectionCard'
+
+import { ArrowRight } from 'lucide-react';
 
 import { getFirebaseUser, updateProfile } from '../api';
 
@@ -49,19 +51,14 @@ const Dashboard = ({ loggedInUser }) => {
 
   useEffect(() => {
     const updateFollowingStatus = async () => {
-      console.log('update following status');
       // if profile doesn't belong to logged in user, add following status
       if (loggedInUser && loggedInUser.id !== params.userID) {
-        console.log('checking following status');
         const response = await axios.get(`http://localhost:8888/users/${loggedInUser.id}/following/${params.userID}`);
-        console.log('following response', response);
         const isFollowing = response.data.isFollowing;
         if (isFollowing) {
-          console.log('setting following true')
           setFollowing(true);
         }
         else {
-          console.log('setting following false');
           setFollowing(false);
         }
       }
@@ -87,8 +84,6 @@ const Dashboard = ({ loggedInUser }) => {
 
   if (userNotFound) return <p style={{ color: 'white', padding: '2rem' }}>User not found.</p>;
   if (!userProfileData) return <p style={{ color: 'white', padding: '2rem' }}>Loading...</p>;
-
-  console.log('following: ', following);
 
   const handleFollow = async () => {
     try {
@@ -123,8 +118,7 @@ const Dashboard = ({ loggedInUser }) => {
     }
   }
 
-  console.log('followers', userFollowersData);
-  console.log('following', userFollowingData);
+  console.log(userProfileData);
 
   return (
     <main className="dashboard">
@@ -188,6 +182,7 @@ const Dashboard = ({ loggedInUser }) => {
         ?
         (<section className={"collectionsection-div"} >
           {
+            // if not collections are displayed
             userProfileData.top_songs_isPrivate && userProfileData.top_artists_isPrivate
             && userProfileData.liked_songs_isPrivate && (
               <div className="collectionsection-is-empty">
@@ -195,29 +190,19 @@ const Dashboard = ({ loggedInUser }) => {
               </div>
             )
           }
+          
+          {/* Collections */}
           {!userProfileData.top_songs_isPrivate && (
-            <button onClick={() => navigate('/top-songs')} className="collection-div"
-              style={{'--div-color': "#648DA4", '--div-color-hover': "#517184"}}>
-              <ArrowRight className="arrow-icon" color="#ffffff" />
-              <h3 className="collection-name-text">Top Songs</h3>
-            </button>
+            <CollectionCard text={'Top Songs'} navLink={'/top-songs'} imageLink={userProfileData?.topSongs?.[0]?.album?.images?.[0]?.url}
+              styles={{'--div-color': "#648DA4", '--div-color-hover': "#517184"}}/>
           )}
-
           {!userProfileData.top_artists_isPrivate && (
-            <button onClick={() => navigate('/top-artists')} className="collection-div"
-              style={{'--div-color': "#A46488", "--div-color-hover": "#83506d"}}>
-              <ArrowRight className="arrow-icon" color="#ffffff" />
-              <h3 className="collection-name-text">Top Artists</h3>
-            </button>
+            <CollectionCard text={'Top Artists'} navLink={'/top-artists'} imageLink={userProfileData?.topArtists?.[0]?.images?.[0]?.url}
+              styles={{'--div-color': "#A46488", "--div-color-hover": "#83506d"}}/>
           )}
-
           {!userProfileData.liked_songs_isPrivate && (
-            <button onClick={() => navigate('/liked-songs')}
-              style={{'--div-color': "#87AB72", '--div-color-hover': "#729161"}}
-              className="collection-div">
-              <ArrowRight className="arrow-icon" color="#ffffff" />
-              <h3 className="collection-name-text">Liked Songs</h3>
-            </button>
+            <CollectionCard text={'Liked Songs'} navLink={'/liked-songs'} imageLink={userProfileData?.likedSongs?.[0]?.track?.album?.images?.[0]?.url}
+            styles={{'--div-color': "#87AB72", '--div-color-hover': "#729161"}}/>
           )}
 
         </section>

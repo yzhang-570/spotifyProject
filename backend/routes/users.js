@@ -100,10 +100,12 @@ router.get('/:userID/following/:targetUserID', async (req, res) => {
   const { userID, targetUserID } = req.params;
   try {
     const isFollowing = await fetchUserIsFollowing(userID, targetUserID);
+    console.log('isFollowing (express)', isFollowing);
     res.status(200).json({'isFollowing': isFollowing});
   } catch (error) {
     res.status(500).json(`Error checking follow status: ${error}`);
   }
+  return;
 })
 
 // Create a follow
@@ -111,7 +113,7 @@ router.post('/:userID/following/:targetUserID', async (req, res) => {
   const { userID, targetUserID } = req.params;
   try {
     await createFollow(userID, targetUserID);
-    res.status(201);
+    res.status(201).end();
   }
   catch (error) {
     res.status(500).json(`Error creating follow: ${error}`);
@@ -123,7 +125,7 @@ router.delete('/:userID/following/:targetUserID', async (req, res) => {
   const { userID, targetUserID } = req.params;
   try {
     await deleteFollow(userID, targetUserID);
-    res.status(204);
+    res.status(204).end();
   }
   catch (error) {
     res.status(500).json(`Error deleting follower: ${error}`);

@@ -91,9 +91,11 @@ const deleteFollow = async (followerID, followedID) => {
   // Find (the) document that corresponds
   const querySnapshot = await getDocs(query(collection(db, 'follows'), 
     where("followerID", "==", followerID), where("followedID", "==", followedID)));
-  await Promises.all(querySnapshot.docs.map(doc => deleteDoc(doc.ref)));
+
+  console.log('found doc to delete');
+  await Promise.all(querySnapshot.docs.map(doc => deleteDoc(doc.ref)));
     // querySnapshot.forEach(async (doc) => {await deleteDoc(doc.ref)});
-    // await doesn't work with async
+    // forEach doesn't work with async
 
   console.log('delete success');
 }

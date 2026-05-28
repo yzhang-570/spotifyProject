@@ -5,6 +5,10 @@
   align-items: center;
   padding: 1rem;
 }
+.preview-user-card:hover {
+  background-color: rgb(60, 60, 60);
+  border-radius: 7.5px;
+}
 
 /* Image + DisplayName + User name*/
 .preview-user-information {
@@ -34,6 +38,9 @@
 }
 
 /* Message User Button */
+.preview-message-button {
+  z-index: 100;
+}
 .preview-message-button:hover {
   box-shadow: 0px 4px 10px #ffffff45;
 }

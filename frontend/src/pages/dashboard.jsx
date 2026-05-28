@@ -21,42 +21,51 @@ const Dashboard = ({ loggedInUser }) => {
   const [connectionsModalShown, setConnectionsModalShown] = useState(false);
   const [userProfileData, setUserProfileData] = useState(null);
 
-  const [refresh, setRefresh] = useState(false); // toggle refresh
-
   const [userFollowersData, setUserFollowersData] = useState([]);
   const [userFollowingData, setUserFollowingData] = useState([]);
-  const [following, setFollowing] = useState(false);
+  const [following, setFollowing] = useState(true);
+  const [tabSelected, setTabSelected] = useState("");
 
   const [userNotFound, setUserNotFound] = useState(false);
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
+    const updateFollowingStatus = async () => {
+      console.log('update following status');
+      // if profile doesn't belong to logged in user, add following status
+      if (loggedInUser && loggedInUser.id !== params.userID) {
+        console.log('checking following status');
+        const response = await axios.get(`http://localhost:8888/users/${loggedInUser.id}/following/${params.userID}`);
+        console.log('following response', response);
+        const isFollowing = response.data.isFollowing;
+        if (isFollowing) {
+          console.log('setting following true')
+          setFollowing(true);
+        }
+        else {
+          console.log('setting following false');
+          setFollowing(false);
+        }
+      }
+    }
+
     const loadProfile = async () => {
       if (params) {
-        const [userDocument, followersResponse, followingResponse] = await Promise.all([
+        const [userDocument, followingResponse, followersResponse] = await Promise.all([
           getFirebaseUser(params.userID),
           axios.get(`http://localhost:8888/users/${params.userID}/following`),
           axios.get(`http://localhost:8888/users/${params.userID}/followers`)
         ]);
-
-        // if profile doesn't belong to logged in user, add following status
-        if (loggedInUser && loggedInUser.id !== params.userID) {
-          const isFollowing = axios.get(`http://localhost:8888/users/${loggedInUser.id}/following/${params.userID}`);
-          if (isFollowing) {
-            setFollowing(true);
-          }
-          else {
-            setFollowing(false);
-          }
-        }
         if (userDocument === null) setUserNotFound(true);
+        await updateFollowingStatus();
 
         setUserProfileData(userDocument);
-        setUserFollowersData(followersResponse.data);
         setUserFollowingData(followingResponse.data);
+        setUserFollowersData(followersResponse.data);
       }
     };
     loadProfile();
-  }, [params, refresh]);
+  }, [params.userID, refresh]);
 
   if (userNotFound) return <p style={{ color: 'white', padding: '2rem' }}>User not found.</p>;
   if (!userProfileData) return <p style={{ color: 'white', padding: '2rem' }}>Loading...</p>;
@@ -64,18 +73,21 @@ const Dashboard = ({ loggedInUser }) => {
   console.log('following: ', following);
 
   const handleFollow = async () => {
-
     try {
       if (following) {
         console.log('attempting to unfollow');
-        const response = await axios.delete(`http://localhost:8888/users/${loggedInUser.id}/following/${params.userID}`)
+        const response = await axios.delete(`http://localhost:8888/users/${loggedInUser.id}/following/${params.userID}`);
+        console.log('unfollowed');
       }
       else {
-        console.log('attempting to unfollow');
-        const response = await axios.post(`http://localhost:8888/users/${loggedInUser.id}/following/${params.userID}`)
+        console.log('attempting to follow');
+        const response = await axios.post(`http://localhost:8888/users/${loggedInUser.id}/following/${params.userID}`);
+        console.log('followed');
       }
       // console.log('status: ', response.status);
-      setRefresh(!refresh);
+      console.log('triggering refresh');
+      setRefresh(prev => !prev);
+      console.log('done updating');
     }
     catch (error) {
       console.log(`(React) Error occurred when attempting to create a follow: ${error}`);
@@ -93,8 +105,8 @@ const Dashboard = ({ loggedInUser }) => {
     }
   }
 
-  console.log(userFollowersData);
-  console.log(userFollowingData);
+  console.log('followers', userFollowersData);
+  console.log('following', userFollowingData);
 
   return (
     <main className="dashboard">
@@ -116,18 +128,18 @@ const Dashboard = ({ loggedInUser }) => {
             {/* Name, Username */}
             <p className="displayname-text">
               <strong>{userProfileData.displayName}</strong> <br/>
-              <span className="xs">{userProfileData.email}</span>
+              <span className="xs">Spotify ID: {userProfileData.spotifyId}</span>
             </p>
 
             {/* Follower + Following Counts */}
             <div className="stats-div">
-              <p className="m stat-text" onClick={() => setConnectionsModalShown(true)}>
-                <strong>{userProfileData.following?.length || 0}</strong> <br/>
-                <span className="xs">Following</span>
-              </p>
-              <p className="m stat-text" onClick={() => setConnectionsModalShown(true)}>
-                <strong>{userProfileData.followers?.length || 0}</strong> <br/>
+              <p className="m stat-text" onClick={() => {setConnectionsModalShown(true); setTabSelected('Followers')}}>
+                <strong>{userFollowersData?.length || 0}</strong> <br/>
                 <span className="xs">Followers</span>
+              </p>
+              <p className="m stat-text" onClick={() => {setConnectionsModalShown(true); setTabSelected('Following')}}>
+                <strong>{userFollowingData?.length || 0}</strong> <br/>
+                <span className="xs">Following</span>
               </p>
             </div>
 
@@ -215,6 +227,11 @@ const Dashboard = ({ loggedInUser }) => {
       {/* Followers/Following Popup */}
       <ConnectionsModal
         isOpen={connectionsModalShown}
+        tabSelected={tabSelected}
+        displayedData={tabSelected === 'Followers' ? (userFollowersData) : (userFollowingData)}
+        followingData={userFollowingData}
+        followersData={userFollowersData}
+        updateTab={(newSelectedTab) => setTabSelected(newSelectedTab)}
         onClose={() => setConnectionsModalShown(false)}
       />
     </main>

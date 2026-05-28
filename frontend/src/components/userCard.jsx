@@ -14,7 +14,7 @@ const UserCard = ({ userData }) => {
 
         <div className="user-identity">
           <h2>{userData.displayName}</h2>
-          <p className="username">{userData.email}</p>
+          <p className="username">Spotify ID: {userData.spotifyId}</p>
         </div>
 
         <span className={`public-badge${userData.is_private ? " is-private" : ""}`}>

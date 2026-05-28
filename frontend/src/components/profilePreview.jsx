@@ -1,17 +1,21 @@
-import { useNavigate } from "react-router-dom";
-
 import "./profilePreview.css"
 
-const ProfilePreview = ({ userData }) => {
+import { useNavigate } from "react-router-dom";
 
-  // user id: userData.userID
+const ProfilePreview = ({ userData, onClick }) => {
+
   const navigate = useNavigate();
 
+  const handleNavInbox = (e) => {
+    e.stopPropagation();
+    navigate('/inbox');
+  }
+
   return (
-    <article className="preview-user-card">
+    <article className="preview-user-card" onClick={() => onClick(e, userData.id)}>
       <div className="preview-user-information">
         <div className="preview-image-mask">
-          <img className="preview-image" src={userData.profileImageURL} />
+          <img className="preview-image" src={userData.profilePicture} />
         </div>
         <div className="preview-user-details">
             <p className="xs bold">{userData.displayName}</p>
@@ -22,11 +26,11 @@ const ProfilePreview = ({ userData }) => {
       {/* Buttons */}
       <div className="preview-actions">
         {/* todo: navgiate to user's dm using userID */}
-        <button className="preview-message-button" onClick={() => navigate('/inbox')}>Message</button>
+        <button className="preview-message-button" onClick={handleNavInbox}>Message</button>
         {/* todo: popup confirm remove follower/unfollow using userID */}
-        <button className="connections-modal-closeX" onClick={() => {}} aria-label="Close">
+        {/* <button className="connections-modal-closeX" onClick={() => {}} aria-label="Close">
           ×
-        </button>
+        </button> */}
       </div>
     </article>
   )

@@ -171,8 +171,8 @@
 .username {
   margin: 0.15rem 0 0;
   color: #4F4F4F;
-  font-size: 0.95rem;
-  font-weight: 700;
+  font-size: 0.8rem;
+  /* font-weight: 700; */
 }
 
 .public-badge {

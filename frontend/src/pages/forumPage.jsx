@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { nestComments } from '../components/commentTree';
 import Comment from '../components/Comment';
 import { mockThreadPayload } from '../components/mockPosts'; 
@@ -7,42 +7,37 @@ import "./forumPage.css";
 
 export default function ForumPage() {
   const { postId } = useParams();
-  const [mainPost, setMainPost] = useState(null);
-  const [flatComments, setFlatComments] = useState([]);
-  const [commentTree, setCommentTree] = useState([]);
+  const [mainPost, setMainPost] = useState(() => mockThreadPayload.mainPost || null);
+  const [flatComments, setFlatComments] = useState(() => mockThreadPayload.comments || []);
   const [newCommentText, setNewCommentText] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [sortBy, setSortBy] = useState('oldest');
-
-  // 1. ADD STATE FOR GLOBAL TRIGGERING (Stores an object containing target state + event timestamp)
+  const [mainLikes, setMainLikes] = useState(() => mockThreadPayload.mainPost?.likes || 0);
+  const [mainUserVote, setMainUserVote] = useState(null);
   const [globalToggle, setGlobalToggle] = useState({ collapse: false, timestamp: null });
 
-  const [mainLikes, setMainLikes] = useState(0);
-  const [mainUserVote, setMainUserVote] = useState(null);
-
-  useEffect(() => {
-    if (mockThreadPayload.mainPost) {
-      setMainPost(mockThreadPayload.mainPost);
-      setMainLikes(mockThreadPayload.mainPost.likes || 0);
-    }
-    setFlatComments(mockThreadPayload.comments || []);
-    setIsLoading(false);
-  }, [postId]);
-
-  useEffect(() => {
+  const commentTree = useMemo(() => {
     const nested = nestComments(flatComments);
+
     const sortTreeData = (nodes) => {
       nodes.sort((a, b) => {
-        if (sortBy === 'likes') return (b.likes || 0) - (a.likes || 0);
-        else if (sortBy === 'newest') return new Date(b.created_time) - new Date(a.created_time);
-        else return new Date(a.created_time) - new Date(b.created_time);
+        if (sortBy === 'likes') {
+          return (b.likes || 0) - (a.likes || 0);
+        } else if (sortBy === 'newest') {
+          return new Date(b.created_time) - new Date(a.created_time);
+        } else {
+          return new Date(a.created_time) - new Date(b.created_time);
+        }
       });
       nodes.forEach(node => {
-        if (node.replies && node.replies.length > 0) sortTreeData(node.replies);
+        if (node.replies && node.replies.length > 0) {
+          sortTreeData(node.replies);
+        }
       });
     };
+
     sortTreeData(nested);
-    setCommentTree(nested);
+    return nested; // Returns the data directly, bypassing setCommentTree completely!
   }, [flatComments, sortBy]);
 
   const handleMainVote = (type) => {
@@ -73,7 +68,6 @@ export default function ForumPage() {
     setFlatComments(prevComments => [...prevComments, payload]);
   };
 
-  // 2. HANDLER FOR THE MASTER TOGGLE BUTTON
   const handleGlobalCollapseToggle = (shouldCollapse) => {
     setGlobalToggle({
       collapse: shouldCollapse,
@@ -126,7 +120,6 @@ export default function ForumPage() {
         <div className="discussion-section-header">
           <h3>Discussion</h3>
           
-          {/* 3. UPDATED TOOLBAR WRAPPER BLOCK CONTAINS THE DUAL CONTROLS SIDE-BY-SIDE */}
           <div className="discussion-controls-toolbar">
             <div className="global-collapse-actions">
               <button onClick={() => handleGlobalCollapseToggle(true)} className="text-action-link">Collapse All</button>
@@ -150,7 +143,7 @@ export default function ForumPage() {
             key={rootComment.id} 
             comment={rootComment} 
             onReplySubmit={handleAddComment} 
-            globalToggle={globalToggle} // 4. Pass down master toggle reference indicators
+            globalToggle={globalToggle}
           />
         ))}
       </div>

@@ -1,26 +1,30 @@
-import { useState, useEffect } from 'react'; // 1. Import useEffect
+import { useState, useEffect } from 'react'; 
 
-export default function Comment({ comment, onReplySubmit, globalToggle }) { // 2. Accept globalToggle prop
+export default function Comment({ comment, onReplySubmit, globalToggle }) {
   const [isReplying, setIsReplying] = useState(false);
   const [replyText, setReplyText] = useState('');
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [likes, setLikes] = useState(comment.likes || 0);
   const [userVote, setUserVote] = useState(null);
 
+  // reacts based on expand/collapse state
   useEffect(() => {
-    if (globalToggle && globalToggle.timestamp !== null) {
-      if (globalToggle.collapse) {
-        // FIXED: Only collapse if it's a nested sub-reply (depth > 1)
-        // Top-level direct comments (depth === 1) remain open and visible!
-        if (comment.depth > 1) {
-          setIsCollapsed(true);
-        }
-      } else {
-        // Expand all expands everything back out unconditionally
-        setIsCollapsed(false);
+    // If there is no active timestamp payload, exit early
+    if (!globalToggle || globalToggle.timestamp === null) return;
+
+    if (globalToggle.collapse) {
+      // Only collapse if it's a nested sub-reply (depth > 1)
+      // Top-level direct comments (depth === 1) remain open and visible
+      if (comment.depth > 1) {
+        setIsCollapsed(true);
       }
+    } else {
+      // Expand all expands everything back out unconditionally
+      setIsCollapsed(false);
     }
-  }, [globalToggle, comment.depth]);
+    
+    // Added comment.depth to ensure the conditional block has stable inputs
+  }, [globalToggle.timestamp, comment.depth]);
 
 
   const handleReply = (e) => {
@@ -115,7 +119,7 @@ export default function Comment({ comment, onReplySubmit, globalToggle }) { // 2
                   key={reply.id} 
                   comment={reply} 
                   onReplySubmit={onReplySubmit} 
-                  globalToggle={globalToggle} // 4. FIXED: Forward prop into recursive rendering loops!
+                  globalToggle={globalToggle}
                 />
               ))}
             </div>

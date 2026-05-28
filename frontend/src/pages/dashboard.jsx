@@ -142,7 +142,7 @@ const Dashboard = ({ loggedInUser }) => {
           <div className="profile-image-mask">
             <img
               className="profile-image"
-              src={userProfileData.profilePicture || 'https://static.vecteezy.com/system/resources/thumbnails/057/068/323/small/single-fresh-red-strawberry-on-table-green-background-food-fruit-sweet-macro-juicy-plant-image-photo.jpg'}
+              src={userProfileData.profilePicture || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR99-ZMZeEtYlFVdT-HN3Hz0f_i64Zf76D67g&s'}
               alt="User Profile Image"
             />
           </div>

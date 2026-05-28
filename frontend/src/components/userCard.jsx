@@ -9,7 +9,7 @@ const UserCard = ({ userData }) => {
     >
       <div className="user-card-header">
         <div className="user-avatar">
-          <img src={userData.profilePicture} alt={`${userData.display_name} avatar`} />
+          <img src={userData.profilePicture || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR99-ZMZeEtYlFVdT-HN3Hz0f_i64Zf76D67g&s'} alt={`${userData.display_name} avatar`} />
         </div>
 
         <div className="user-identity">

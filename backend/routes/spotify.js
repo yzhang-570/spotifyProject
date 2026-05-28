@@ -35,6 +35,11 @@ const refreshAccessToken = async (req) => {
   );
 
   req.session.access_token = response.data.access_token;
+
+  await new Promise((resolve, reject) => {
+    req.session.save((err) => (err ? reject(err) : resolve()));
+  });
+
   return req.session.access_token;
 };
 
@@ -65,7 +70,25 @@ router.get('/top-artists', requireAuth, async (req, res) => {
   const { time_range = 'medium_term' } = req.query;
   try {
     const response = await spotifyGet(req, `/me/top/artists?time_range=${time_range}&limit=50`);
-    res.json(response.data);
+    let items = response.data.items || [];
+
+    // spotify sometimes returns empty artists but top tracks still has data
+    if (items.length === 0) {
+      const tracksResponse = await spotifyGet(req, `/me/top/tracks?time_range=${time_range}&limit=50`);
+      const seen = new Set();
+      items = [];
+
+      for (const track of tracksResponse.data.items || []) {
+        for (const artist of track.artists || []) {
+          if (!seen.has(artist.id)) {
+            seen.add(artist.id);
+            items.push(artist);
+          }
+        }
+      }
+    }
+
+    res.json({ ...response.data, items });
   } catch (error) {
     res.status(error.response?.status || 500).json({ error: 'Error fetching top artists' });
   }

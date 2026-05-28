@@ -114,7 +114,10 @@ const TopArtists = () => {
             </article>
           ))}
           {artists.length === 0 ? (
-            <p>No artists found for this time range. Try another filter or log in again.</p>
+            <p>
+              No artists found. Try another filter or{" "}
+              <a href="http://127.0.0.1:8888/auth/login">log in with Spotify again</a>.
+            </p>
           ) : null}
         </div>
       ) : null}

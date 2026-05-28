@@ -1,7 +1,6 @@
 import ProfilePreview from './profilePreview.jsx'
 import "./connectionsModal.css"
 
-import { useState } from 'react'
 import { useNavigate } from "react-router-dom";
 
 const ConnectionsModal = ({ userData, tabSelected, updateTab, isOpen, onClose, displayedData, followersData, followingData }) => {

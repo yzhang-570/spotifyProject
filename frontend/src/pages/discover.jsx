@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import UserCard from '../components/userCard.jsx'
 
-const Discover = ({ loggedInUser }) => {
+const Discover = () => {
   const [usersData, setUsersData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 

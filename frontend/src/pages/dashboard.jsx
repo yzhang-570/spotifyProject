@@ -76,12 +76,12 @@ const Dashboard = ({ loggedInUser }) => {
     try {
       if (following) {
         console.log('attempting to unfollow');
-        const response = await axios.delete(`http://localhost:8888/users/${loggedInUser.id}/following/${params.userID}`);
+        await axios.delete(`http://localhost:8888/users/${loggedInUser.id}/following/${params.userID}`);
         console.log('unfollowed');
       }
       else {
         console.log('attempting to follow');
-        const response = await axios.post(`http://localhost:8888/users/${loggedInUser.id}/following/${params.userID}`);
+        await axios.post(`http://localhost:8888/users/${loggedInUser.id}/following/${params.userID}`);
         console.log('followed');
       }
       // console.log('status: ', response.status);

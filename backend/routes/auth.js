@@ -2,7 +2,7 @@ import express from 'express';
 import axios from 'axios';
 import db from '../firebase.js';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { upsertSessionUser } from '../db/users.js';
+import { upsertSessionUser } from '../db/usersDB.js';
 
 const router = express.Router();
 
@@ -106,6 +106,8 @@ router.get('/callback', async (req, res) => {
     }
 
     try {
+      // console.log('--------------');
+      // console.log('user fetched from spotify', userResponse.data);
       await upsertSessionUser(userResponse.data);
     } catch (error) {
       console.warn('Unable to sync user profile to Firebase:', error.message);

@@ -5,7 +5,7 @@ import "./topArtists.css";
 
 const TopArtists = () => {
   const navigate = useNavigate();
-  const [range, setRange] = useState("all_time");
+  const [range, setRange] = useState("last_year");
   const [isPrivate, setIsPrivate] = useState(false);
   const [artists, setArtists] = useState([]);
   const [userId, setUserId] = useState("");
@@ -32,11 +32,7 @@ const TopArtists = () => {
         }
 
         const data = await getTopArtists(rangeMap[range]);
-        if (!data?.items) {
-          throw new Error("Failed to load top artists.");
-        }
-
-        setArtists(data.items);
+        setArtists(Array.isArray(data.items) ? data.items : []);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -117,7 +113,9 @@ const TopArtists = () => {
               <p className="top-artist-name">{artist.name}</p>
             </article>
           ))}
-          {artists.length === 0 ? <p>No artists found.</p> : null}
+          {artists.length === 0 ? (
+            <p>No artists found for this time range. Try another filter or log in again.</p>
+          ) : null}
         </div>
       ) : null}
     </section>

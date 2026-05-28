@@ -65,8 +65,7 @@ router.get('/callback', async (req, res) => {
     const userRef = doc(db, 'users', spotifyUser.id);
     const userSnap = await getDoc(userRef);
 
-    if (!userSnap.exists()) {
-      // fetch liked songs, top songs, top artists
+    // fetch liked songs, top songs, top artists
       const [likedSongsRes, topSongsRes, topArtistsRes] = await Promise.all([
         axios.get('https://api.spotify.com/v1/me/tracks?limit=10', {
           headers: { Authorization: `Bearer ${access_token}` }
@@ -78,6 +77,8 @@ router.get('/callback', async (req, res) => {
           headers: { Authorization: `Bearer ${access_token}` }
         }),
       ]);
+
+    if (!userSnap.exists()) {
 
       // first time login — create user in Firebase
       await setDoc(userRef, {
@@ -94,23 +95,32 @@ router.get('/callback', async (req, res) => {
         liked_songs_isPrivate: false,
         top_songs_isPrivate: false,
         top_artists_isPrivate: false,
+        country: spotifyUser.country || '',
+        spotifyLink: spotifyUser.external_urls.spotify || ''
       });
       console.log('New user created:', spotifyUser.display_name);
     } else {
       // returning user — update profile picture and display name in case they changed
-      await setDoc(userRef, {
-        displayName: spotifyUser.display_name,
-        profilePicture: spotifyUser.images?.[0]?.url || null,
-      }, { merge: true });
-      console.log('Returning user:', spotifyUser.display_name);
-    }
 
-    try {
-      // console.log('--------------');
-      // console.log('user fetched from spotify', userResponse.data);
-      await upsertSessionUser(userResponse.data);
-    } catch (error) {
-      console.warn('Unable to sync user profile to Firebase:', error.message);
+      try {
+        // console.log('--------------');
+        // console.log('user fetched from spotify', userResponse.data);
+        await setDoc(userRef, {
+          spotifyId: spotifyUser.id,
+          displayName: spotifyUser.display_name,
+          email: spotifyUser.email,
+          profilePicture: spotifyUser.images?.[0]?.url || null,
+          likedSongs: likedSongsRes.data.items,
+          topSongs: topSongsRes.data.items,
+          topArtists: topArtistsRes.data.items,
+          country: spotifyUser.country || '',
+          spotifyLink: spotifyUser.external_urls.spotify || ''
+        }, { merge: true });
+        
+      } catch (error) {
+        console.warn('Unable to sync user profile to Firebase:', error.message);
+      }
+      console.log('Returning user:', spotifyUser.display_name);
     }
 
     // redirect to frontend

@@ -68,17 +68,32 @@ const enrichArtistsWithImages = async (req, artists) => {
     .slice(0, 50)
     .join(',');
 
-  const artistsResponse = await spotifyGet(req, `/artists?ids=${ids}`);
-  const fullArtists = artistsResponse.data.artists || [];
-  const artistMap = new Map(fullArtists.map((artist) => [artist.id, artist]));
+  if (!ids) {
+    return artists;
+  }
 
-  return artists.map((artist) => {
-    const fullArtist = artistMap.get(artist.id);
-    if (fullArtist?.images?.length) {
-      return { ...artist, images: fullArtist.images, name: fullArtist.name || artist.name };
+  try {
+    const artistsResponse = await spotifyGet(req, `/artists?ids=${ids}`);
+    const fullArtists = (artistsResponse.data.artists || []).filter(Boolean);
+    const artistMap = new Map();
+
+    for (const artist of fullArtists) {
+      if (artist.id) {
+        artistMap.set(artist.id, artist);
+      }
     }
-    return artist;
-  });
+
+    return artists.map((artist) => {
+      const fullArtist = artistMap.get(artist.id);
+      if (fullArtist?.images?.length) {
+        return { ...artist, images: fullArtist.images, name: fullArtist.name || artist.name };
+      }
+      return artist;
+    });
+  } catch (error) {
+    // still return artists even if image fetch fails
+    return artists;
+  }
 };
 
 // get liked songs

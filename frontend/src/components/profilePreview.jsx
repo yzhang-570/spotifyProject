@@ -6,13 +6,12 @@ const ProfilePreview = ({ userData, onClick }) => {
 
   const navigate = useNavigate();
 
-  const handleNavInbox = (e) => {
-    e.stopPropagation();
+  const handleNavInbox = () => {
     navigate('/inbox');
   }
 
   return (
-    <article className="preview-user-card" onClick={() => onClick(e, userData.id)}>
+    <article className="preview-user-card" onClick={() => onClick(userData.id)}>
       <div className="preview-user-information">
         <div className="preview-image-mask">
           <img className="preview-image" src={userData.profilePicture} />

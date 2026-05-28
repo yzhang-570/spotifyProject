@@ -80,6 +80,7 @@ router.get('/:userID/followers', async (req, res) => {
     const followerData = await fetchUserFollowers(userID);
     res.status(200).json(followerData);
   } catch (error) {
+    console.log(`Error fetching following: ${error}`)
     res.status(500).json(`Error fetching followers: ${error}`);
   }
 });
@@ -89,8 +90,10 @@ router.get('/:userID/following', async (req, res) => {
   const { userID } = req.params;
   try {
     const followingData = await fetchUserFollowings(userID);
+    console.log(followingData);
     res.status(200).json(followingData);
   } catch (error) {
+    console.log(`Error fetching following: ${error}`)
     res.status(500).json(`Error fetching following: ${error}`);
   }
 });

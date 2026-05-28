@@ -14,7 +14,7 @@ const UserCard = ({ userData }) => {
 
         <div className="user-identity">
           <h2>{userData.displayName}</h2>
-          <p className="username">Spotify ID: {userData.spotifyId}</p>
+          <p className="username">Spotify ID:{userData.spotifyId}</p>
         </div>
 
         <span className={`public-badge${userData.is_private ? " is-private" : ""}`}>
@@ -28,27 +28,38 @@ const UserCard = ({ userData }) => {
         </p>
 
         <dl className={`music-preview${userData.is_private ? " is-private" : ""}`}>
-          <div>
-            <dt>Top artist</dt>
-            {userData.topArtists.length ? (
-              <dd>{userData.topArtists[0].name}</dd>
-            ) : (
-              <dd className="is-empty">None</dd>
-            )}
-          </div>
-          <div>
-            <dt>Top song</dt>
-            {userData.topSongs.length ? (
-              <dd>{userData.topSongs[0].name}</dd>
-            ) : (
-              <dd className="is-empty">None</dd>
-            )}
-          </div>
-          {userData.isPrivate && (
+          
+          {userData.isPrivate ? (
             <div className="music-preview-lock">
               <Lock size={16} aria-hidden="true" />
               <span>Private</span>
             </div>
+          )
+          :
+          (
+            <>
+              <div>
+                <dt>Top artist</dt>
+                {userData.top_artists_isPrivate ? (
+                  <dd className="is-empty">Private</dd>
+                ) : userData.topArtists?.length ? (
+                  <dd>{userData.topArtists[0].name}</dd>
+                ) : (
+                  <dd className="is-empty">None</dd>
+                )}
+              </div>
+
+              <div>
+                <dt>Top song</dt>
+                {userData.top_songs_isPrivate ? (
+                  <dd className="is-empty">Private</dd>
+                ) : userData.topSongs?.length ? (
+                  <dd>{userData.topSongs[0].name}</dd>
+                ) : (
+                  <dd className="is-empty">None</dd>
+                )}
+              </div>
+            </>
           )}
         </dl>
 

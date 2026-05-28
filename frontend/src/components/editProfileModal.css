@@ -128,10 +128,14 @@
   display: flex;
   flex-direction: row;
   gap: 0.5rem;
+  appearance: none;
 }
 
 .edit-modal-option-label {
   color: white;
+}
+.edit-modal-option-label.grayed {
+  color: gray;
 }
 
 .edit-modal-option-button {

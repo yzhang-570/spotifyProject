@@ -4,6 +4,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
+  width: 100%;
 }
 .preview-user-card:hover {
   background-color: rgb(60, 60, 60);

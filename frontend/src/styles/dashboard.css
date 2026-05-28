@@ -91,6 +91,16 @@ h1, h2, h3, h4, h5, p, a {
   gap: 1rem;
 }
 
+.collectionsection-is-empty {
+  background-color: rgb(68, 68, 68);
+  width: 100%;
+  height: 10vh;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* Button - navigates to collection */
 .collection-div {
   background-color: var(--div-color);

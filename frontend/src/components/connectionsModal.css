@@ -69,6 +69,16 @@
 
 .connections-modal-preview-list {
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.connections-modal-preview-empty-div{
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(63, 63, 63);
+  border-radius: 7.5px;
 }
 
 

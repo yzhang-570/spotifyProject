@@ -4,12 +4,11 @@ import "./connectionsModal.css"
 import { useState } from 'react'
 import { useNavigate } from "react-router-dom";
 
-const ConnectionsModal = ({ tabSelected, updateTab, isOpen, onClose, displayedData, followersData, followingData }) => {
+const ConnectionsModal = ({ userData, tabSelected, updateTab, isOpen, onClose, displayedData, followersData, followingData }) => {
 
   const navigate = useNavigate();
 
-  const handleNavigateToProfile = (e, userID) => {
-    e.stopPropagation();
+  const handleNavigateToProfile = (userID) => {
     navigate(`/dashboard/${userID}`);
     onClose();
   }
@@ -24,10 +23,10 @@ const ConnectionsModal = ({ tabSelected, updateTab, isOpen, onClose, displayedDa
     <div className="connections-modal-overlay" onClick={onClose}>
 
       {/* modal card */}
-      <div className="connections-modal">
+      <div className="connections-modal" onClick={(e) => (e.stopPropagation())}>
 
         <header className="connections-modal-header">
-          <h3 className="connections-modal-header-text">[Username]</h3>
+          <h3 className="connections-modal-header-text">{userData.displayName}</h3>
           <button type="button" className="connections-modal-closeX" onClick={onClose} aria-label="Close">
               ×
           </button>
@@ -36,12 +35,12 @@ const ConnectionsModal = ({ tabSelected, updateTab, isOpen, onClose, displayedDa
         {/* Tab Options (Followers, Following) */}
         <div className="connections-modal-tabs">
           <h2 className="xs connections-modal-tab-option"
-            onClick={() => updateTab('Followers')}
+            onClick={(e) => {e.stopPropagation(); updateTab('Followers')}}
             style={(tabSelected === 'Followers') ? ({'--tab-option-color': 'var(--accent-green)', 'borderBottom': '2px solid var(--tab-option-color)'}) : ({'--tab-option-color': '#ffffff79'})}>
             {followersData && followersData.length} Followers
           </h2>
           <h2 className="xs connections-modal-tab-option"
-            onClick={() => updateTab('Following')}
+            onClick={(e) => {e.stopPropagation(); updateTab('Following')}}
             style={(tabSelected === 'Following') ? ({'--tab-option-color': 'var(--accent-green)', 'borderBottom': '2px solid var(--tab-option-color)'}) : ({'--tab-option-color': '#ffffff79'})}>
             {followingData && followingData.length} Following
           </h2>
@@ -56,7 +55,9 @@ const ConnectionsModal = ({ tabSelected, updateTab, isOpen, onClose, displayedDa
             </div>)
           ))
           :
-          (<p className="">No {tabSelected.toLowerCase()} yet</p>)
+          (<div className="connections-modal-preview-empty-div">
+            <p style={{'color': 'gray'}}>No {tabSelected.toLowerCase()} yet</p>
+          </div>)
           }
         </div>
         

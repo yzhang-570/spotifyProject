@@ -7,12 +7,13 @@ const fetchUserFollowings = async (userID) => {
   const querySnapshot = await getDocs(query(collection(db, 'follows'), where("followerID", "==", userID)));
   const parsedSnapshot = querySnapshot.docs.map(doc => (doc.data().followedID));
 
-  // todo: fix, get array of promises then; promise.all()
   // get list of profile data
-  const followingsDataList = parsedSnapshot.reduce(async (dataList, followingID) => {
-    const docSnapshot = await getDoc(doc(db, 'users', followingID));
-    return [...dataList, {'id': docSnapshot.id, ...docSnapshot.data()}];
-  }, []);
+  const followingsDataList = await Promise.all(
+    parsedSnapshot.map(async (followingID) => {
+      const docSnapshot = await getDoc(doc(db, 'users', followingID));
+      return { 'id': docSnapshot.id, ...docSnapshot.data() };
+    })
+  );
 
   return followingsDataList;
 }
@@ -25,10 +26,12 @@ const fetchUserFollowers = async (userID) => {
   const parsedSnapshot = querySnapshot.docs.map(doc => (doc.data().followerID));
 
   // get list of profile data
-  const followersDataList = parsedSnapshot.reduce(async (dataList, followerID) => {
-    const docSnapshot = await getDoc(doc(db, 'users', followerID));
-    return [...dataList, {'id': docSnapshot.id, ...docSnapshot.data()}]
-  }, []);
+  const followersDataList = await Promise.all(
+    parsedSnapshot.map(async (followerID) => {
+      const docSnapshot = await getDoc(doc(db, 'users', followerID));
+      return { 'id': docSnapshot.id, ...docSnapshot.data() };
+    })
+  );
 
   return followersDataList;
 }

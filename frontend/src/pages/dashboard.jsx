@@ -169,7 +169,14 @@ const Dashboard = ({ loggedInUser }) => {
         {(userProfileData && !userProfileData.isPrivate)
         ?
         (<section className={"collectionsection-div"} >
-
+          {
+            userProfileData.top_songs_isPrivate && userProfileData.top_artists_isPrivate
+            && userProfileData.liked_songs_isPrivate && (
+              <div className="collectionsection-is-empty">
+                <p style={{'color': '#999999'}}>No collections displayed.</p>
+              </div>
+            )
+          }
           {!userProfileData.top_songs_isPrivate && (
             <button onClick={() => navigate('/top-songs')} className="collection-div"
               style={{'--div-color': "#648DA4", '--div-color-hover': "#517184"}}>
@@ -228,6 +235,7 @@ const Dashboard = ({ loggedInUser }) => {
       <ConnectionsModal
         isOpen={connectionsModalShown}
         tabSelected={tabSelected}
+        userData={userProfileData}
         displayedData={tabSelected === 'Followers' ? (userFollowersData) : (userFollowingData)}
         followingData={userFollowingData}
         followersData={userFollowersData}

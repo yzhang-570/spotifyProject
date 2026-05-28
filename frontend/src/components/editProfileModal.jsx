@@ -40,21 +40,19 @@ const EditProfileModal = ({ isOpen, initialProfile, onClose, onSave }) => {
             <textarea name="bio" value={formData.bio} onChange={handleChange} rows={4} maxLength={300}/>
           </div>
 
-          <p className="xs">I will come back and edit the styling... but functionality first</p>
-
           <div className="edit-modal-options-list row">
             <h2 className="edit-modal-label-text xs">Profile Visibility</h2>
             <div className="edit-modal-option">
               <input type="radio" name="isPrivate"
                 checked={formData.isPrivate == false}
                 onChange={(e) => setFormData(prev => ({...prev, [e.target.name]: false}))}/>
-              <span className="edit-modal-option-label">Public</span>
+              <span className={`edit-modal-option-label ${formData.isPrivate ? "grayed":""}`}>Public</span>
             </div>
             <div className="edit-modal-option">
               <input type="radio" name="isPrivate"
                 checked={formData.isPrivate == true}
                 onChange={(e) => setFormData(prev => ({...prev, [e.target.name]: true}))}/>
-              <span className="edit-modal-option-label">Private</span>
+              <span className={`edit-modal-option-label ${!formData.isPrivate ? "grayed":""}`}>Private</span>
             </div>
           </div>
 
@@ -62,21 +60,21 @@ const EditProfileModal = ({ isOpen, initialProfile, onClose, onSave }) => {
             <h2 className="edit-modal-label-text xs">Displayed on My Profile</h2>
             <div className="edit-modal-option">
               <input type="checkbox" name="top_songs_isPrivate"
-                checked={formData.top_songs_isPrivate == false}
+                checked={!formData.isPrivate && !formData.top_songs_isPrivate}
                 onChange={(e) => setFormData(prev => ({...prev, [e.target.name]: !prev[e.target.name]}))}/>
-              <span className="edit-modal-option-label">Top Songs</span>
+              <span className={`edit-modal-option-label ${formData.isPrivate ? "grayed":""}`}>Top Songs</span>
             </div>
             <div className="edit-modal-option">
               <input type="checkbox" name="top_artists_isPrivate"
-                checked={formData.top_artists_isPrivate == false}
+                checked={!formData.isPrivate && !formData.top_artists_isPrivate}
                 onChange={(e) => setFormData(prev => ({...prev, [e.target.name]: !prev[e.target.name]}))}/>
-              <span className="edit-modal-option-label">Top Artists</span>
+              <span className={`edit-modal-option-label ${formData.isPrivate ? "grayed":""}`}>Top Artists</span>
             </div>
             <div className="edit-modal-option">
               <input type="checkbox" name="liked_songs_isPrivate"
-                checked={formData.liked_songs_isPrivate == false}
+                checked={!formData.isPrivate && !formData.liked_songs_isPrivate}
                 onChange={(e) => setFormData(prev => ({...prev, [e.target.name]: !prev[e.target.name]}))}/>
-              <span className="edit-modal-option-label">Liked Songs</span>
+              <span className={`edit-modal-option-label ${formData.isPrivate ? "grayed":""}`}>Liked Songs</span>
             </div>
           </div>
 

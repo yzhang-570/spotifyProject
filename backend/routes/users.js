@@ -2,7 +2,7 @@ import express from 'express';
 import db from '../firebase.js';
 import { doc, getDoc, updateDoc, collection, getDocs } from 'firebase/firestore';
 
-import { fetchUserFollowings, fetchUserFollowers, createFollow, deleteFollow } from '../db/followsDB.js'
+import { fetchUserFollowings, fetchUserFollowers, createFollow, deleteFollow, fetchUserIsFollowing } from '../db/followsDB.js'
 
 const router = express.Router();
 
@@ -53,9 +53,9 @@ router.put('/update', requireAuth, async (req, res) => {
 });
 
 // get a user by ID
-router.get('/:id', async (req, res) => {
+router.get('/:userID', async (req, res) => {
   try {
-    const userRef = doc(db, 'users', req.params.id);
+    const userRef = doc(db, 'users', req.params.userID);
     const userSnap = await getDoc(userRef);
 
     if (!userSnap.exists()) {
@@ -95,12 +95,22 @@ router.get('/:userID/following', async (req, res) => {
   }
 });
 
-// Create a follow
-// Requires body: { followerID, followedID }
-router.post('/follow', async (req, res) => {
-  const { followerID, followedID } = req.body;
+// Get following status for a user and target user
+router.get('/:userID/following/:targetUserID', async (req, res) => {
+  const { userID, targetUserID } = req.params;
   try {
-    await createFollow(followerID, followedID);
+    const isFollowing = await fetchUserIsFollowing(userID, targetUserID);
+    res.status(200).json({'isFollowing': isFollowing});
+  } catch (error) {
+    res.status(500).json(`Error checking follow status: ${error}`);
+  }
+})
+
+// Create a follow
+router.post('/:userID/following/:targetUserID', async (req, res) => {
+  const { userID, targetUserID } = req.params;
+  try {
+    await createFollow(userID, targetUserID);
     res.status(201);
   }
   catch (error) {
@@ -109,11 +119,10 @@ router.post('/follow', async (req, res) => {
 });
 
 // Delete a follow
-// Requires body: { { followerID, followedID }
-router.delete('/follow', async (req, res) => {
-  const { followerID, followedID } = req.body;
+router.delete('/:userID/following/:targetUserID', async (req, res) => {
+  const { userID, targetUserID } = req.params;
   try {
-    await deleteFollow(followerID, followedID);
+    await deleteFollow(userID, targetUserID);
     res.status(204);
   }
   catch (error) {

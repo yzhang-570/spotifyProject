@@ -1,40 +1,85 @@
 import '../styles/dashboard.css'
+
 import { useNavigate, useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
+
+import axios from 'axios';
+
 import EditProfileModal from '../components/editProfileModal';
 import ConnectionsModal from '../components/connectionsModal';
+
 import { getFirebaseUser, updateProfile } from '../api';
 
-const Dashboard = ({ currentUser }) => {
+const Dashboard = ({ loggedInUser }) => {
   
   const navigate = useNavigate();
-
   const params = useParams()
+  // params.userID = id of user being viewed
+
   const [editProfileModalShown, setEditProfileModalShown] = useState(false);
   const [connectionsModalShown, setConnectionsModalShown] = useState(false);
   const [userProfileData, setUserProfileData] = useState(null);
+
+  const [refresh, setRefresh] = useState(false); // toggle refresh
+
+  const [userFollowersData, setUserFollowersData] = useState([]);
+  const [userFollowingData, setUserFollowingData] = useState([]);
+  const [following, setFollowing] = useState(false);
 
   const [userNotFound, setUserNotFound] = useState(false);
 
   useEffect(() => {
     const loadProfile = async () => {
-      if (params.userID) {
-        const userDocument = await getFirebaseUser(params.userID);
+      if (params) {
+        const [userDocument, followersResponse, followingResponse] = await Promise.all([
+          getFirebaseUser(params.userID),
+          axios.get(`http://localhost:8888/users/${params.userID}/following`),
+          axios.get(`http://localhost:8888/users/${params.userID}/followers`)
+        ]);
 
+        // if profile doesn't belong to logged in user, add following status
+        if (loggedInUser && loggedInUser.id !== params.userID) {
+          const isFollowing = axios.get(`http://localhost:8888/users/${loggedInUser.id}/following/${params.userID}`);
+          if (isFollowing) {
+            setFollowing(true);
+          }
+          else {
+            setFollowing(false);
+          }
+        }
         if (userDocument === null) setUserNotFound(true);
 
         setUserProfileData(userDocument);
+        setUserFollowersData(followersResponse.data);
+        setUserFollowingData(followingResponse.data);
       }
     };
     loadProfile();
-  }, [params]);
+  }, [params, refresh]);
 
   if (userNotFound) return <p style={{ color: 'white', padding: '2rem' }}>User not found.</p>;
   if (!userProfileData) return <p style={{ color: 'white', padding: '2rem' }}>Loading...</p>;
 
-  const handleFollow = (otherUserID) => {
-    console.log(otherUserID);
+  console.log('following: ', following);
+
+  const handleFollow = async () => {
+
+    try {
+      if (following) {
+        console.log('attempting to unfollow');
+        const response = await axios.delete(`http://localhost:8888/users/${loggedInUser.id}/following/${params.userID}`)
+      }
+      else {
+        console.log('attempting to unfollow');
+        const response = await axios.post(`http://localhost:8888/users/${loggedInUser.id}/following/${params.userID}`)
+      }
+      // console.log('status: ', response.status);
+      setRefresh(!refresh);
+    }
+    catch (error) {
+      console.log(`(React) Error occurred when attempting to create a follow: ${error}`);
+    }
   }
 
   const handleSaveProfile = async (updatedUserProfileData) => {
@@ -47,6 +92,9 @@ const Dashboard = ({ currentUser }) => {
       console.error('Error saving profile:', error);
     }
   }
+
+  console.log(userFollowersData);
+  console.log(userFollowingData);
 
   return (
     <main className="dashboard">
@@ -88,13 +136,18 @@ const Dashboard = ({ currentUser }) => {
 
             {/* Buttons */}
             <div className="buttons-div">
-              {currentUser.id === params.userID ?
-                (<button onClick={() => setEditProfileModalShown(true)} className="follow-button profile-action-button">Edit Profile</button>)
-                :
-                (<>
-                  <button onClick={() => handleFollow()} className="follow-button profile-action-button">Follow</button>
-                  <button onClick={() => navigate('/inbox')} className="message-button profile-action-button">Message</button>
-                </>)
+              {loggedInUser && loggedInUser.id === params.userID
+              ?
+              (<button onClick={() => setEditProfileModalShown(true)} className="follow-button profile-action-button">Edit Profile</button>)
+              :
+              (<>
+                <button onClick={handleFollow} className="follow-button profile-action-button"
+                  style={following ? ({'color': 'var(--accent-green)', 
+                    'border': '1px solid var(--accent-green)', 'backgroundColor': 'transparent'}):({})}>
+                  {following ? "Unfollow":"Follow"}
+                </button>
+                <button onClick={() => navigate('/inbox')} className="message-button profile-action-button">Message</button>
+              </>)
               }
             </div>
           </div>

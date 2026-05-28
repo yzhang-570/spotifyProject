@@ -62,7 +62,7 @@ const ConnectionsModal = ({ isOpen, onClose }) => {
     }
   ];
 
-  console.log(tabSelected);
+  // console.log(tabSelected);
 
   // hide if not open
   if(!isOpen) return null;

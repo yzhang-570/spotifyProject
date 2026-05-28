@@ -3,6 +3,7 @@ import 'dotenv/config';
 import express from 'express';
 import session from 'express-session';
 import authRouter from './routes/auth.js';
+import chatRouter from './routes/chats.js';
 import spotifyRouter from './routes/spotify.js';
 
 const app = express();
@@ -26,6 +27,7 @@ app.use(session({
 
 // routers must come AFTER session
 app.use('/auth', authRouter);
+app.use('/chats', chatRouter);
 app.use('/spotify', spotifyRouter);
 
 app.get('/', (req, res) => {

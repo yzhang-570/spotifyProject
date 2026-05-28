@@ -1,5 +1,6 @@
 import express from 'express';
 import axios from 'axios';
+import { upsertSessionUser } from '../db/users.js';
 
 const router = express.Router();
 
@@ -56,6 +57,12 @@ router.get('/callback', async (req, res) => {
     });
 
     req.session.user = userResponse.data;
+
+    try {
+      await upsertSessionUser(userResponse.data);
+    } catch (error) {
+      console.warn('Unable to sync user profile to Firebase:', error.message);
+    }
 
     // redirect to frontend
     res.redirect(process.env.FRONTEND_URL);

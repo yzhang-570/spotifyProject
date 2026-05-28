@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'; // 1. Import useEffect
+import { useState, useEffect } from 'react'; // 1. Import useEffect
 
 export default function Comment({ comment, onReplySubmit, globalToggle }) { // 2. Accept globalToggle prop
   const [isReplying, setIsReplying] = useState(false);

@@ -1,31 +1,32 @@
-import { useState, useEffect } from 'react'; 
+import { useState, useEffect } from 'react';
 
-export default function Comment({ comment, onReplySubmit, globalToggle }) {
+export default function Comment({ comment, onReplySubmit }) { 
   const [isReplying, setIsReplying] = useState(false);
   const [replyText, setReplyText] = useState('');
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [likes, setLikes] = useState(comment.likes || 0);
   const [userVote, setUserVote] = useState(null);
 
-  // reacts based on expand/collapse state
   useEffect(() => {
-    // If there is no active timestamp payload, exit early
-    if (!globalToggle || globalToggle.timestamp === null) return;
-
-    if (globalToggle.collapse) {
-      // Only collapse if it's a nested sub-reply (depth > 1)
-      // Top-level direct comments (depth === 1) remain open and visible
-      if (comment.depth > 1) {
-        setIsCollapsed(true);
+    const handleGlobalCollapse = (e) => {
+      const shouldCollapse = e.detail.collapse;
+      
+      if (shouldCollapse) {
+        // Only collapse if it's a nested sub-reply (depth > 1)
+        if (comment.depth > 1) {
+          setIsCollapsed(true);
+        }
+      } else {
+        setIsCollapsed(false);
       }
-    } else {
-      // Expand all expands everything back out unconditionally
-      setIsCollapsed(false);
-    }
-    
-    // Added comment.depth to ensure the conditional block has stable inputs
-  }, [globalToggle.timestamp, comment.depth]);
+    };
 
+    window.addEventListener('forum-global-collapse', handleGlobalCollapse);
+    
+    return () => {
+      window.removeEventListener('forum-global-collapse', handleGlobalCollapse);
+    };
+  }, [comment.depth]); 
 
   const handleReply = (e) => {
     e.preventDefault();
@@ -115,12 +116,7 @@ export default function Comment({ comment, onReplySubmit, globalToggle }) {
           {!isCollapsed && comment.replies && comment.replies.length > 0 && (
             <div className="comment-replies-list">
               {comment.replies.map((reply) => (
-                <Comment 
-                  key={reply.id} 
-                  comment={reply} 
-                  onReplySubmit={onReplySubmit} 
-                  globalToggle={globalToggle}
-                />
+                <Comment key={reply.id} comment={reply} onReplySubmit={onReplySubmit} />
               ))}
             </div>
           )}

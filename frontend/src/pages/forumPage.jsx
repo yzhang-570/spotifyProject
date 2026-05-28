@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { nestComments } from '../components/commentTree';
 import Comment from '../components/Comment';
 import { mockThreadPayload } from '../components/mockPosts'; 
@@ -7,10 +7,15 @@ import "./forumPage.css";
 
 export default function ForumPage() {
   const { postId } = useParams();
+  /* eslint-disable-next-line no-unused-vars */
   const [mainPost, setMainPost] = useState(() => mockThreadPayload.mainPost || null);
+  
   const [flatComments, setFlatComments] = useState(() => mockThreadPayload.comments || []);
   const [newCommentText, setNewCommentText] = useState('');
+  
+  /* eslint-disable-next-line no-unused-vars */
   const [isLoading, setIsLoading] = useState(false);
+
   const [sortBy, setSortBy] = useState('oldest');
   const [mainLikes, setMainLikes] = useState(() => mockThreadPayload.mainPost?.likes || 0);
   const [mainUserVote, setMainUserVote] = useState(null);
@@ -37,7 +42,7 @@ export default function ForumPage() {
     };
 
     sortTreeData(nested);
-    return nested; // Returns the data directly, bypassing setCommentTree completely!
+    return nested;
   }, [flatComments, sortBy]);
 
   const handleMainVote = (type) => {
@@ -69,11 +74,12 @@ export default function ForumPage() {
   };
 
   const handleGlobalCollapseToggle = (shouldCollapse) => {
-    setGlobalToggle({
-      collapse: shouldCollapse,
-      timestamp: Date.now() // Unique time indicator forces child components to react instantly
+    const event = new CustomEvent('forum-global-collapse', {
+      detail: { collapse: shouldCollapse }
     });
+    window.dispatchEvent(event);
   };
+
 
   if (isLoading) return <div>Loading simulated thread...</div>;
 
@@ -143,7 +149,6 @@ export default function ForumPage() {
             key={rootComment.id} 
             comment={rootComment} 
             onReplySubmit={handleAddComment} 
-            globalToggle={globalToggle}
           />
         ))}
       </div>

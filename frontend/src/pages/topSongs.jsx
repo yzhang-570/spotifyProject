@@ -5,6 +5,7 @@ import "./topSongs.css";
 const TopSongs = () => {
   const navigate = useNavigate();
   const [range, setRange] = useState("all_time");
+  const [isPrivate, setIsPrivate] = useState(false);
   const [songs, setSongs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -55,17 +56,39 @@ const TopSongs = () => {
           &larr; Back
         </button>
 
-        <div className="top-songs-filter">
-          <label htmlFor="top-songs-range">Filter by</label>
-          <select
-            id="top-songs-range"
-            value={range}
-            onChange={(event) => setRange(event.target.value)}
-          >
-            <option value="all_time">All time</option>
-            <option value="last_year">Last year</option>
-            <option value="last_month">Last month</option>
-          </select>
+        <div className="top-songs-controls">
+          <div className="top-songs-filter">
+            <label htmlFor="top-songs-range">Filter by</label>
+            <select
+              id="top-songs-range"
+              value={range}
+              onChange={(event) => setRange(event.target.value)}
+            >
+              <option value="all_time">All time</option>
+              <option value="last_year">Last year</option>
+              <option value="last_month">Last month</option>
+            </select>
+          </div>
+
+          <div className="top-songs-privacy">
+            <span className="top-songs-privacy-label">Visibility</span>
+            <div className="privacy-toggle">
+              <button
+                type="button"
+                className={!isPrivate ? "privacy-toggle-active" : ""}
+                onClick={() => setIsPrivate(false)}
+              >
+                Public
+              </button>
+              <button
+                type="button"
+                className={isPrivate ? "privacy-toggle-active" : ""}
+                onClick={() => setIsPrivate(true)}
+              >
+                Private
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 

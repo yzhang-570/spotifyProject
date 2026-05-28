@@ -23,13 +23,21 @@
   color: #1ED760;
 }
 
-.top-songs-filter {
+.top-songs-controls {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.top-songs-filter,
+.top-songs-privacy {
   display: flex;
   flex-direction: column;
   gap: 0.45rem;
 }
 
-.top-songs-filter label {
+.top-songs-filter label,
+.top-songs-privacy-label {
   color: #FFFFFF;
   font-size: 0.9rem;
   font-weight: 600;
@@ -43,6 +51,25 @@
   color: #FFFFFF;
   background: #2a2a2a;
   font: inherit;
+}
+
+.privacy-toggle {
+  display: flex;
+  border: 1px solid #4F4F4F;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.privacy-toggle button {
+  padding: 0.5rem 0.9rem;
+  color: #FFFFFF;
+  background: #2a2a2a;
+  cursor: pointer;
+}
+
+.privacy-toggle-active {
+  background: #1ED760;
+  color: #121212;
 }
 
 .top-songs-title {

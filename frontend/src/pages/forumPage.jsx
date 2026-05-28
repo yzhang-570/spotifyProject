@@ -19,6 +19,8 @@ export default function ForumPage() {
   const [sortBy, setSortBy] = useState('oldest');
   const [mainLikes, setMainLikes] = useState(() => mockThreadPayload.mainPost?.likes || 0);
   const [mainUserVote, setMainUserVote] = useState(null);
+
+  /* eslint-disable-next-line no-unused-vars */
   const [globalToggle, setGlobalToggle] = useState({ collapse: false, timestamp: null });
 
   const commentTree = useMemo(() => {

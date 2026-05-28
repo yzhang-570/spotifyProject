@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useState, useMemo } from 'react';
 import { nestComments } from '../components/commentTree';
-import Comment from '../components/Comment';
+import Comment from '../components/comment';
 import { mockThreadPayload } from '../components/mockPosts'; 
 import "./forumPage.css";
 

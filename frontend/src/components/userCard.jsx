@@ -2,7 +2,7 @@ import "../pages/discover.css";
 import { Link } from "react-router-dom";
 import { Lock } from "lucide-react";
 
-const UserCard = ({ userData }) => {
+const UserCard = ({ loggedInUser, userData }) => {
   return (
     <article
       className="user-card"
@@ -29,7 +29,7 @@ const UserCard = ({ userData }) => {
 
         <dl className={`music-preview${userData.is_private ? " is-private" : ""}`}>
           
-          {userData.isPrivate ? (
+          {userData.isPrivate && userData.id !== loggedInUser.id ? (
             <div className="music-preview-lock">
               <Lock size={16} aria-hidden="true" />
               <span>Private</span>

@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import UserCard from '../components/userCard.jsx'
 
-const Discover = () => {
+const Discover = ({ loggedInUser }) => {
   const [usersData, setUsersData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -77,7 +77,7 @@ const Discover = () => {
         <div className="discover-grid" aria-live="polite">
           {filteredUsers.map((userData) => (
             <div key={userData.id}>
-                <UserCard userData={userData}/>
+                <UserCard loggedInUser={loggedInUser} userData={userData}/>
             </div>
           ))}
         </div>

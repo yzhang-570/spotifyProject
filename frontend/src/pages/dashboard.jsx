@@ -49,7 +49,10 @@ const Dashboard = ({ loggedInUser }) => {
   const [userNotFound, setUserNotFound] = useState(false);
   const [refresh, setRefresh] = useState(false);
 
+  // Fetch user data on load
   useEffect(() => {
+
+    // Checks if current user is following user being viewed
     const updateFollowingStatus = async () => {
       // if profile doesn't belong to logged in user, add following status
       if (loggedInUser && loggedInUser.id !== params.userID) {
@@ -64,6 +67,7 @@ const Dashboard = ({ loggedInUser }) => {
       }
     }
 
+    // Loads user profile data and following, follower lists
     const loadProfile = async () => {
       if (params) {
         const [userDocument, followingResponse, followersResponse] = await Promise.all([
@@ -82,9 +86,13 @@ const Dashboard = ({ loggedInUser }) => {
     loadProfile();
   }, [params.userID, refresh]);
 
+  // Displays if user doesn't exist
   if (userNotFound) return <p style={{ color: 'white', padding: '2rem' }}>User not found.</p>;
+
+  // Displays while fetching user profile data
   if (!userProfileData) return <p style={{ color: 'white', padding: '2rem' }}>Loading...</p>;
 
+  // Handles follows/unfollows
   const handleFollow = async () => {
     try {
       if (following) {
@@ -107,6 +115,7 @@ const Dashboard = ({ loggedInUser }) => {
     }
   }
 
+  // Handles updating edited profile data
   const handleSaveProfile = async (updatedUserProfileData) => {
     console.log('saving:', updatedUserProfileData);
     try {
@@ -178,7 +187,7 @@ const Dashboard = ({ loggedInUser }) => {
         </section>
 
         {/* Top Songs, Top Artists, and Liked Songs */}
-        {(userProfileData && !userProfileData.isPrivate)
+        {(loggedInUser?.id === params?.userID || !userProfileData?.isPrivate )
         ?
         (<section className={"collectionsection-div"} >
           {

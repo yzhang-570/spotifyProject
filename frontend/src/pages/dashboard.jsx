@@ -11,6 +11,24 @@ import ConnectionsModal from '../components/connectionsModal';
 
 import { getFirebaseUser, updateProfile } from '../api';
 
+const recentActivityMock =  [
+  {
+    'id': 'someID1',  // forum post document ID
+    'forumTitle': '#ForumTitle',
+    'forumContent': '(Content) 1 Forum post content lalala...'
+  },
+  {
+    'id': 'someID2',  // forum post document ID
+    'forumTitle': '#ForumTitle',
+    'forumContent': '(Content) 2 Forum post content lalala...'
+  },
+      {
+    'id': 'someID3',  // forum post document ID
+    'forumTitle': '#ForumTitle',
+    'forumContent': '(Content) 3 Forum post content lalala...'
+  }
+]
+
 const Dashboard = ({ loggedInUser }) => {
   
   const navigate = useNavigate();
@@ -211,7 +229,7 @@ const Dashboard = ({ loggedInUser }) => {
       {/* Recent Activity - Forum Posts */}
       <section className="recentactivity-div">
         <p className="recentactivity-titletext">Recent Activity</p>
-        {[].map(forumPost =>
+        {recentActivityMock.map(forumPost =>
           (<article key={forumPost.id} className="forumpost-div">
             <p className="black forum-titletext-small">{forumPost.forumTitle}</p>
             <p className="black"><strong>{forumPost.forumContent}</strong></p>

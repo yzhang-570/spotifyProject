@@ -1,5 +1,18 @@
 const BASE_URL = 'http://127.0.0.1:8888';
 
+const parseJsonResponse = async (response) => {
+  const data = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    const message =
+      data?.error ||
+      (typeof data === 'string' ? data : 'Something went wrong.');
+    throw new Error(message);
+  }
+
+  return data;
+};
+
 export const getMe = async () => {
   const response = await fetch(`${BASE_URL}/auth/me`, {
     credentials: 'include',
@@ -57,4 +70,41 @@ export const updateProfile = async (updates) => {
     body: JSON.stringify(updates),
   });
   return response.json();
+};
+export const getChats = async () => {
+  const response = await fetch(`${BASE_URL}/chats`, {
+    credentials: 'include',
+  });
+  return parseJsonResponse(response);
+};
+
+export const getChatUsers = async () => {
+  const response = await fetch(`${BASE_URL}/chats/users`, {
+    credentials: 'include',
+  });
+  return parseJsonResponse(response);
+};
+
+export const createChat = async (recipientId) => {
+  const response = await fetch(`${BASE_URL}/chats`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    body: JSON.stringify({ recipientId }),
+  });
+  return parseJsonResponse(response);
+};
+
+export const sendChatMessage = async (chatId, text) => {
+  const response = await fetch(`${BASE_URL}/chats/${chatId}/messages`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    body: JSON.stringify({ text }),
+  });
+  return parseJsonResponse(response);
 };

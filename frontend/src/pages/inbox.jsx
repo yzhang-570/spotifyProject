@@ -1,118 +1,141 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import {
+  createChat,
+  getChatUsers,
+  getChats,
+  sendChatMessage,
+} from "../api";
 import "./inbox.css";
 
-const initialConversations = [
-  {
-    id: "maya",
-    name: "Maya Chen",
-    username: "mayalistens",
-    initials: "MC",
-    preview: "Send me that playlist when you get a chance.",
-    lastActive: "2:45 PM",
-    messages: [
-      {
-        id: "maya-1",
-        sender: "Maya Chen",
-        time: "2:41 PM",
-        text: "I found a few songs that fit your late-night playlist.",
-      },
-      {
-        id: "maya-2",
-        sender: "You",
-        time: "2:45 PM",
-        text: "Nice, send them over.",
-        isCurrentUser: true,
-      },
-    ],
-  },
-  {
-    id: "jordan",
-    name: "Jordan Lee",
-    username: "jordanonshuffle",
-    initials: "JL",
-    preview: "Are you still making the workout mix?",
-    lastActive: "11:59 AM",
-    messages: [
-      {
-        id: "jordan-1",
-        sender: "Jordan Lee",
-        time: "11:52 AM",
-        text: "Are you still making the workout mix?",
-      },
-      {
-        id: "jordan-2",
-        sender: "You",
-        time: "11:59 AM",
-        text: "Yes, I can share it later today.",
-        isCurrentUser: true,
-      },
-    ],
-  },
-  {
-    id: "sam",
-    name: "Sam Rivera",
-    username: "samspins",
-    initials: "SR",
-    preview: "How are you?",
-    lastActive: "Yesterday",
-    messages: [
-      {
-        id: "sam-1",
-        sender: "Sam Rivera",
-        time: "Yesterday",
-        text: "How are you?",
-      },
-    ],
-  },
-];
+const getInitials = (value) => {
+  if (!value) return "U";
 
-const chatUsers = [
-  {
-    id: "maya",
-    name: "Maya Chen",
-    username: "mayalistens",
-    initials: "MC",
-    status: "Looking for mellow playlists",
-  },
-  {
-    id: "jordan",
-    name: "Jordan Lee",
-    username: "jordanonshuffle",
-    initials: "JL",
-    status: "Sharing workout mixes",
-  },
-  {
-    id: "sam",
-    name: "Sam Rivera",
-    username: "samspins",
-    initials: "SR",
-    status: "Hunting for deep cuts",
-  },
-  {
-    id: "nina",
-    name: "Nina Patel",
-    username: "ninabeats",
-    initials: "NP",
-    status: "Building the perfect party queue",
-  },
-  {
-    id: "alex",
-    name: "Alex Morgan",
-    username: "alextracks",
-    initials: "AM",
-    status: "Trading new album recommendations",
-  },
-];
+  return value
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase();
+};
+
+const formatTime = (value) => {
+  if (!value) return "Now";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  const today = new Date();
+  const yesterday = new Date();
+  yesterday.setDate(today.getDate() - 1);
+
+  if (date.toDateString() === today.toDateString()) {
+    return date.toLocaleTimeString([], {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+  }
+
+  if (date.toDateString() === yesterday.toDateString()) {
+    return "Yesterday";
+  }
+
+  return date.toLocaleDateString([], {
+    month: "short",
+    day: "numeric",
+  });
+};
+
+const mapApiUser = (user = {}) => {
+  const name = user.name || user.displayName || user.username || "Unknown User";
+  const username = user.username || user.id || "unknown";
+
+  return {
+    id: user.id || username,
+    name,
+    username,
+    initials: user.initials || getInitials(name),
+    status: user.bio || "Spotify listener",
+  };
+};
+
+const mapApiChat = (chat) => {
+  const otherUser = mapApiUser(chat.otherUser || {});
+  const messages = (chat.messages || []).map((message, index) => ({
+    id: `${chat.id}-${message.sent_time || index}`,
+    sender: message.isCurrentUser ? "You" : otherUser.name,
+    time: formatTime(message.sent_time),
+    text: message.text,
+    isCurrentUser: Boolean(message.isCurrentUser),
+  }));
+  const latestMessage = messages[messages.length - 1];
+
+  return {
+    id: chat.id,
+    otherUserId: otherUser.id,
+    name: otherUser.name,
+    username: otherUser.username,
+    initials: otherUser.initials,
+    preview: latestMessage?.text || "No messages yet.",
+    lastActive:
+      latestMessage?.time || formatTime(chat.updated_time || chat.created_time),
+    messages,
+  };
+};
 
 const Inbox = () => {
-  const [conversations, setConversations] = useState(initialConversations);
+  const [conversations, setConversations] = useState([]);
+  const [chatUsers, setChatUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isNewChatOpen, setIsNewChatOpen] = useState(false);
   const [newChatSearch, setNewChatSearch] = useState("");
   const [draftMessage, setDraftMessage] = useState("");
-  const [selectedConversationId, setSelectedConversationId] = useState(
-    initialConversations[0].id
-  );
+  const [selectedConversationId, setSelectedConversationId] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [inboxError, setInboxError] = useState("");
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadInboxData = async () => {
+      try {
+        const [chatData, userData] = await Promise.all([
+          getChats(),
+          getChatUsers(),
+        ]);
+
+        if (!isMounted) return;
+
+        const mappedConversations = chatData.map(mapApiChat);
+
+        setConversations(mappedConversations);
+        setChatUsers(userData.map(mapApiUser));
+        setSelectedConversationId((currentId) => {
+          const stillExists = mappedConversations.some(
+            (conversation) => conversation.id === currentId
+          );
+          return stillExists ? currentId : mappedConversations[0]?.id || "";
+        });
+        setInboxError("");
+      } catch (error) {
+        if (!isMounted) return;
+        setInboxError(error.message || "Unable to load chats.");
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadInboxData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const filteredConversations = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
@@ -142,16 +165,18 @@ const Inbox = () => {
         .toLowerCase()
         .includes(query)
     );
-  }, [newChatSearch]);
+  }, [chatUsers, newChatSearch]);
 
   const selectedConversation =
     conversations.find(
       (conversation) => conversation.id === selectedConversationId
-    ) || conversations[0];
+    ) || conversations[0] || null;
 
-  const handleSelectChatUser = (user) => {
+  const handleSelectChatUser = async (user) => {
     const existingConversation = conversations.find(
-      (conversation) => conversation.username === user.username
+      (conversation) =>
+        conversation.otherUserId === user.id ||
+        conversation.username === user.username
     );
 
     if (existingConversation) {
@@ -161,27 +186,26 @@ const Inbox = () => {
       return;
     }
 
-    const newConversation = {
-      id: user.id,
-      name: user.name,
-      username: user.username,
-      initials: user.initials,
-      preview: "No messages yet.",
-      lastActive: "Now",
-      messages: [],
-    };
+    try {
+      const createdChat = mapApiChat(await createChat(user.id));
 
-    setConversations((currentConversations) => [
-      newConversation,
-      ...currentConversations,
-    ]);
-    setSelectedConversationId(newConversation.id);
-    setSearchTerm("");
-    setNewChatSearch("");
-    setIsNewChatOpen(false);
+      setConversations((currentConversations) => [
+        createdChat,
+        ...currentConversations.filter(
+          (conversation) => conversation.id !== createdChat.id
+        ),
+      ]);
+      setSelectedConversationId(createdChat.id);
+      setSearchTerm("");
+      setNewChatSearch("");
+      setIsNewChatOpen(false);
+      setInboxError("");
+    } catch (error) {
+      setInboxError(error.message || "Unable to create chat.");
+    }
   };
 
-  const handleSendMessage = (event) => {
+  const handleSendMessage = async (event) => {
     event.preventDefault();
 
     const trimmedMessage = draftMessage.trim();
@@ -190,30 +214,23 @@ const Inbox = () => {
       return;
     }
 
-    setConversations((currentConversations) =>
-      currentConversations.map((conversation) => {
-        if (conversation.id !== selectedConversation.id) {
-          return conversation;
-        }
+    try {
+      const updatedChat = mapApiChat(
+        await sendChatMessage(selectedConversation.id, trimmedMessage)
+      );
 
-        return {
-          ...conversation,
-          preview: trimmedMessage,
-          lastActive: "Now",
-          messages: [
-            ...conversation.messages,
-            {
-              id: `${conversation.id}-${conversation.messages.length + 1}`,
-              sender: "You",
-              time: "Now",
-              text: trimmedMessage,
-              isCurrentUser: true,
-            },
-          ],
-        };
-      })
-    );
-    setDraftMessage("");
+      setConversations((currentConversations) => [
+        updatedChat,
+        ...currentConversations.filter(
+          (conversation) => conversation.id !== updatedChat.id
+        ),
+      ]);
+      setSelectedConversationId(updatedChat.id);
+      setDraftMessage("");
+      setInboxError("");
+    } catch (error) {
+      setInboxError(error.message || "Unable to send message.");
+    }
   };
 
   return (
@@ -273,7 +290,9 @@ const Inbox = () => {
             <div className="new-chat-user-list">
               {filteredChatUsers.map((user) => {
                 const hasExistingChat = conversations.some(
-                  (conversation) => conversation.username === user.username
+                  (conversation) =>
+                    conversation.otherUserId === user.id ||
+                    conversation.username === user.username
                 );
 
                 return (
@@ -305,6 +324,8 @@ const Inbox = () => {
           </section>
         )}
 
+        {inboxError && <p className="inbox-error">{inboxError}</p>}
+
         <label className="inbox-search" htmlFor="inbox-search">
           <span>Search messages</span>
           <input
@@ -317,74 +338,92 @@ const Inbox = () => {
         </label>
 
         <div className="conversation-list">
-          {filteredConversations.map((conversation) => (
-            <button
-              className={`conversation-item${
-                conversation.id === selectedConversation.id ? " active" : ""
-              }`}
-              key={conversation.id}
-              type="button"
-              onClick={() => setSelectedConversationId(conversation.id)}
-            >
-              <span className="conversation-avatar">{conversation.initials}</span>
-              <span className="conversation-summary">
-                <span className="conversation-name">{conversation.name}</span>
-                <span className="conversation-preview">
-                  {conversation.preview}
+          {isLoading && <p className="inbox-status">Loading chats...</p>}
+          {!isLoading && filteredConversations.length === 0 && (
+            <p className="inbox-status">No chats yet.</p>
+          )}
+          {!isLoading &&
+            filteredConversations.map((conversation) => (
+              <button
+                className={`conversation-item${
+                  conversation.id === selectedConversation?.id ? " active" : ""
+                }`}
+                key={conversation.id}
+                type="button"
+                onClick={() => setSelectedConversationId(conversation.id)}
+              >
+                <span className="conversation-avatar">
+                  {conversation.initials}
                 </span>
-              </span>
-              <span className="conversation-time">{conversation.lastActive}</span>
-            </button>
-          ))}
+                <span className="conversation-summary">
+                  <span className="conversation-name">{conversation.name}</span>
+                  <span className="conversation-preview">
+                    {conversation.preview}
+                  </span>
+                </span>
+                <span className="conversation-time">
+                  {conversation.lastActive}
+                </span>
+              </button>
+            ))}
         </div>
       </aside>
 
       <div className="message-panel">
-        <header className="message-header">
-          <div className="message-avatar">{selectedConversation.initials}</div>
-          <div>
-            <h2>{selectedConversation.name}</h2>
-            <p>@{selectedConversation.username}</p>
-          </div>
-        </header>
+        {selectedConversation ? (
+          <>
+            <header className="message-header">
+              <div className="message-avatar">{selectedConversation.initials}</div>
+              <div>
+                <h2>{selectedConversation.name}</h2>
+                <p>@{selectedConversation.username}</p>
+              </div>
+            </header>
 
-        <div className="message-thread" aria-live="polite">
-          {selectedConversation.messages.length > 0 ? (
-            selectedConversation.messages.map((message) => (
-              <article
-                className={`message-bubble${
-                  message.isCurrentUser ? " current-user" : ""
-                }`}
-                key={message.id}
-              >
-                <div className="message-meta">
-                  <strong>{message.sender}</strong>
-                  <span>{message.time}</span>
+            <div className="message-thread" aria-live="polite">
+              {selectedConversation.messages.length > 0 ? (
+                selectedConversation.messages.map((message) => (
+                  <article
+                    className={`message-bubble${
+                      message.isCurrentUser ? " current-user" : ""
+                    }`}
+                    key={message.id}
+                  >
+                    <div className="message-meta">
+                      <strong>{message.sender}</strong>
+                      <span>{message.time}</span>
+                    </div>
+                    <p>{message.text}</p>
+                  </article>
+                ))
+              ) : (
+                <div className="empty-message-thread">
+                  <p>No messages yet.</p>
+                  <span>Send the first message to start this chat.</span>
                 </div>
-                <p>{message.text}</p>
-              </article>
-            ))
-          ) : (
-            <div className="empty-message-thread">
-              <p>No messages yet.</p>
-              <span>Send the first message to start this chat.</span>
+              )}
             </div>
-          )}
-        </div>
 
-        <form className="message-composer" onSubmit={handleSendMessage}>
-          <label htmlFor="message-input">Message</label>
-          <input
-            id="message-input"
-            type="text"
-            placeholder="Aa"
-            value={draftMessage}
-            onChange={(event) => setDraftMessage(event.target.value)}
-          />
-          <button type="submit" aria-label="Send message">
-            Send
-          </button>
-        </form>
+            <form className="message-composer" onSubmit={handleSendMessage}>
+              <label htmlFor="message-input">Message</label>
+              <input
+                id="message-input"
+                type="text"
+                placeholder="Aa"
+                value={draftMessage}
+                onChange={(event) => setDraftMessage(event.target.value)}
+              />
+              <button type="submit" aria-label="Send message">
+                Send
+              </button>
+            </form>
+          </>
+        ) : (
+          <div className="message-empty-state">
+            <p>Select or create a chat.</p>
+            <span>Use the plus button to start messaging another user.</span>
+          </div>
+        )}
       </div>
     </section>
   );

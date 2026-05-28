@@ -244,6 +244,26 @@
   text-align: center;
 }
 
+.inbox-error,
+.inbox-status {
+  margin: 0;
+  padding: 0.85rem;
+  border-radius: 12px;
+  font-size: 0.82rem;
+}
+
+.inbox-error {
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.inbox-status {
+  color: rgba(255, 255, 255, 0.72);
+  background: #3B3B3B;
+  text-align: center;
+}
+
 .inbox-search {
   display: grid;
   gap: 0.5rem;
@@ -461,6 +481,27 @@
   display: block;
   margin-top: 0.35rem;
   font-size: 0.85rem;
+}
+
+.message-empty-state {
+  display: grid;
+  place-content: center;
+  min-height: 100%;
+  padding: 1.5rem;
+  color: rgba(255, 255, 255, 0.72);
+  text-align: center;
+}
+
+.message-empty-state p {
+  margin: 0;
+  color: #FFFFFF;
+  font-weight: 900;
+}
+
+.message-empty-state span {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.9rem;
 }
 
 .message-composer {

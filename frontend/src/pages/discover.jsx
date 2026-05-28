@@ -77,7 +77,7 @@ const Discover = ({ loggedInUser }) => {
         <div className="discover-grid" aria-live="polite">
           {filteredUsers.map((userData) => (
             <div key={userData.id}>
-                <UserCard loggedInUser={loggedInUser} userData={userData}/>
+                <UserCard userData={userData}/>
             </div>
           ))}
         </div>

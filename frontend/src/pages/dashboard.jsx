@@ -7,7 +7,7 @@ import axios from 'axios';
 
 import EditProfileModal from '../components/editProfileModal';
 import ConnectionsModal from '../components/connectionsModal';
-import CollectionCard from '../components/collectionCard'
+import CollectionsSection from '../components/collectionsSection';
 
 import { ArrowRight } from 'lucide-react';
 
@@ -48,6 +48,9 @@ const Dashboard = ({ loggedInUser }) => {
 
   const [userNotFound, setUserNotFound] = useState(false);
   const [refresh, setRefresh] = useState(false);
+  const [collectionsPreviewShown, setCollectionsPreviewShown] = useState(false);
+
+  const isOwnProfile = loggedInUser?.id === params?.userID;
 
   // Fetch user data on load
   useEffect(() => {
@@ -169,13 +172,13 @@ const Dashboard = ({ loggedInUser }) => {
 
             {/* Buttons */}
             <div className="buttons-div">
-              {loggedInUser && loggedInUser.id === params.userID
+              {isOwnProfile
               ?
               (<button onClick={() => setEditProfileModalShown(true)} className="follow-button profile-action-button">Edit Profile</button>)
               :
               (<>
                 <button onClick={handleFollow} className="follow-button profile-action-button"
-                  style={following ? ({'color': 'var(--accent-green)', 
+                  style={following ? ({'color': 'var(--accent-green)',
                     'border': '1px solid var(--accent-green)', 'backgroundColor': 'transparent'}):({})}>
                   {following ? "Unfollow":"Follow"}
                 </button>
@@ -187,45 +190,24 @@ const Dashboard = ({ loggedInUser }) => {
         </section>
 
         {/* Top Songs, Top Artists, and Liked Songs */}
-        {(loggedInUser?.id === params?.userID || !userProfileData?.isPrivate )
-        ?
-        (<>
-          {/* {loggedInUser?.id === params?.userID && userProfileData?.isPrivate &&
-            (
-            <div className="collectionsection-is-empty">
-                <p style={{'color': '#999999'}}>Your profile is private to other users.</p>
-              </div>
-            )} */}
-          <section className={"collectionsection-div"} >
-            {
-              // if not collections are displayed
-              userProfileData.top_songs_isPrivate && userProfileData.top_artists_isPrivate
-              && userProfileData.liked_songs_isPrivate && (
-                <div className="collectionsection-is-empty">
-                  <p style={{'color': '#999999'}}>No collections displayed.</p>
-                </div>
-              )
-            }
-            
-            {/* Collections */}
-            {!userProfileData.top_songs_isPrivate && (
-              <CollectionCard text={'Top Songs'} navLink={'/top-songs'} imageLink={userProfileData?.topSongs?.[0]?.album?.images?.[0]?.url}
-                styles={{'--div-color': "#648DA4", '--div-color-hover': "#517184"}}/>
-            )}
-            {!userProfileData.top_artists_isPrivate && (
-              <CollectionCard text={'Top Artists'} navLink={'/top-artists'} imageLink={userProfileData?.topArtists?.[0]?.images?.[0]?.url}
-                styles={{'--div-color': "#A46488", "--div-color-hover": "#83506d"}}/>
-            )}
-            {!userProfileData.liked_songs_isPrivate && (
-              <CollectionCard text={'Liked Songs'} navLink={'/liked-songs'} imageLink={userProfileData?.likedSongs?.[0]?.track?.album?.images?.[0]?.url}
-              styles={{'--div-color': "#87AB72", '--div-color-hover': "#729161"}}/>
-            )}
+        {!userProfileData?.isPrivate
+          ? (<CollectionsSection userProfileData={userProfileData} />)
+          : (<p>This profile is private.</p>)
+        }
 
-          </section>
-        </>
-        )
-        :
-        (<p>This profile is private.</p>)}
+        {/* Own-profile preview: shows every collection regardless of privacy. Does not change saved settings. */}
+        {isOwnProfile && userProfileData?.isPrivate && (
+          <div className="collections-preview-div">
+            <button
+              onClick={() => setCollectionsPreviewShown(prev => !prev)}
+              className="collections-preview-button">
+              {collectionsPreviewShown ? 'Hide my collections' : 'View my collections (only you can see this)'}
+            </button>
+            {collectionsPreviewShown && (
+              <CollectionsSection userProfileData={userProfileData} showAll />
+            )}
+          </div>
+        )}
       </div>
 
       {/* Recent Activity - Forum Posts */}

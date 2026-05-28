@@ -2,7 +2,7 @@ import "../pages/discover.css";
 import { Link } from "react-router-dom";
 import { Lock } from "lucide-react";
 
-const UserCard = ({ loggedInUser, userData }) => {
+const UserCard = ({ userData }) => {
   return (
     <article
       className="user-card"

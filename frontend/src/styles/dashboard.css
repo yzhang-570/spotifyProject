@@ -105,6 +105,24 @@ h1, h2, h3, h4, h5, p, a {
   justify-content: center;
 }
 
+.collections-preview-div {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.collections-preview-button {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.504);
+  color: rgba(255, 255, 255, 0.585);
+  /* padding: 0.5rem;
+  font-size: 0.8rem; */
+}
+.collections-preview-button:hover {
+  background-color: rgb(59, 59, 59);
+}
+
 /* -------------Recent Activity */
 .recentactivity-div {
   background-color: var(--background-color);

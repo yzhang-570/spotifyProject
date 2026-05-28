@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "test": "node --check app.js && node --check firebase.js && node --check db/users.js && node --check routes/chats.js",
+    "test": "node --check app.js && node --check firebase.js && node --check db/usersDB.js && node --check routes/chats.js",
     "start": "nodemon app.js"
   },
   "type": "module",

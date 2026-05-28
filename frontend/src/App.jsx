@@ -44,7 +44,7 @@ const App = () => {
         <main className="main-content">
           <Routes>
             <Route path="/" element={<Discover />} />
-            <Route path="/discover" element={<Discover loggedInUser={user}/>} />
+            <Route path="/discover" element={<Discover/>} />
             <Route path="/dashboard/:userID" element={<Dashboard loggedInUser={user}/>} />
             <Route path="/liked-songs" element={<LikedSongs />} />
             <Route path="/top-artists" element={<TopArtists />} />

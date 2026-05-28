@@ -7,6 +7,7 @@ const Navbar = ({ user }) => {
   const links = [
     { path: "/discover", label: "Discover" },
     { path: "/dashboard/123", label: "My Dashboard" },
+    { path: "/top-songs", label: "Top Songs" },
     { path: "/inbox", label: "Inbox" },
   ];
 

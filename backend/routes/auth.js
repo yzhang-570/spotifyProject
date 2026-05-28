@@ -105,8 +105,6 @@ router.get('/callback', async (req, res) => {
       console.log('Returning user:', spotifyUser.display_name);
     }
 
-<<<<<<< HEAD
-=======
     try {
       await upsertSessionUser(userResponse.data);
     } catch (error) {
@@ -114,7 +112,6 @@ router.get('/callback', async (req, res) => {
     }
 
     // redirect to frontend
->>>>>>> 358f82a82b31e4f3cf33a4be7f84f4f9c1c6eb96
     res.redirect(process.env.FRONTEND_URL);
   } catch (error) {
     console.error('Auth error:', error);

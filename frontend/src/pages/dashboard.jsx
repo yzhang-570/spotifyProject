@@ -189,32 +189,40 @@ const Dashboard = ({ loggedInUser }) => {
         {/* Top Songs, Top Artists, and Liked Songs */}
         {(loggedInUser?.id === params?.userID || !userProfileData?.isPrivate )
         ?
-        (<section className={"collectionsection-div"} >
-          {
-            // if not collections are displayed
-            userProfileData.top_songs_isPrivate && userProfileData.top_artists_isPrivate
-            && userProfileData.liked_songs_isPrivate && (
-              <div className="collectionsection-is-empty">
-                <p style={{'color': '#999999'}}>No collections displayed.</p>
+        (<>
+          {/* {loggedInUser?.id === params?.userID && userProfileData?.isPrivate &&
+            (
+            <div className="collectionsection-is-empty">
+                <p style={{'color': '#999999'}}>Your profile is private to other users.</p>
               </div>
-            )
-          }
-          
-          {/* Collections */}
-          {!userProfileData.top_songs_isPrivate && (
-            <CollectionCard text={'Top Songs'} navLink={'/top-songs'} imageLink={userProfileData?.topSongs?.[0]?.album?.images?.[0]?.url}
-              styles={{'--div-color': "#648DA4", '--div-color-hover': "#517184"}}/>
-          )}
-          {!userProfileData.top_artists_isPrivate && (
-            <CollectionCard text={'Top Artists'} navLink={'/top-artists'} imageLink={userProfileData?.topArtists?.[0]?.images?.[0]?.url}
-              styles={{'--div-color': "#A46488", "--div-color-hover": "#83506d"}}/>
-          )}
-          {!userProfileData.liked_songs_isPrivate && (
-            <CollectionCard text={'Liked Songs'} navLink={'/liked-songs'} imageLink={userProfileData?.likedSongs?.[0]?.track?.album?.images?.[0]?.url}
-            styles={{'--div-color': "#87AB72", '--div-color-hover': "#729161"}}/>
-          )}
+            )} */}
+          <section className={"collectionsection-div"} >
+            {
+              // if not collections are displayed
+              userProfileData.top_songs_isPrivate && userProfileData.top_artists_isPrivate
+              && userProfileData.liked_songs_isPrivate && (
+                <div className="collectionsection-is-empty">
+                  <p style={{'color': '#999999'}}>No collections displayed.</p>
+                </div>
+              )
+            }
+            
+            {/* Collections */}
+            {!userProfileData.top_songs_isPrivate && (
+              <CollectionCard text={'Top Songs'} navLink={'/top-songs'} imageLink={userProfileData?.topSongs?.[0]?.album?.images?.[0]?.url}
+                styles={{'--div-color': "#648DA4", '--div-color-hover': "#517184"}}/>
+            )}
+            {!userProfileData.top_artists_isPrivate && (
+              <CollectionCard text={'Top Artists'} navLink={'/top-artists'} imageLink={userProfileData?.topArtists?.[0]?.images?.[0]?.url}
+                styles={{'--div-color': "#A46488", "--div-color-hover": "#83506d"}}/>
+            )}
+            {!userProfileData.liked_songs_isPrivate && (
+              <CollectionCard text={'Liked Songs'} navLink={'/liked-songs'} imageLink={userProfileData?.likedSongs?.[0]?.track?.album?.images?.[0]?.url}
+              styles={{'--div-color': "#87AB72", '--div-color-hover': "#729161"}}/>
+            )}
 
-        </section>
+          </section>
+        </>
         )
         :
         (<p>This profile is private.</p>)}

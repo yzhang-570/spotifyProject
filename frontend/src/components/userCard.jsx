@@ -29,7 +29,8 @@ const UserCard = ({ loggedInUser, userData }) => {
 
         <dl className={`music-preview${userData.is_private ? " is-private" : ""}`}>
           
-          {userData.isPrivate && userData.id !== loggedInUser.id ? (
+          {/* && userData.id !== loggedInUser.id */}
+          {userData.isPrivate ? (
             <div className="music-preview-lock">
               <Lock size={16} aria-hidden="true" />
               <span>Private</span>

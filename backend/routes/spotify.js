@@ -55,6 +55,32 @@ const spotifyGet = async (req, path) => {
   }
 };
 
+// track artists dont include images, so fetch full artist data
+const enrichArtistsWithImages = async (req, artists) => {
+  const needsImages = artists.some((artist) => !artist.images?.length);
+  if (!needsImages || artists.length === 0) {
+    return artists;
+  }
+
+  const ids = artists
+    .map((artist) => artist.id)
+    .filter(Boolean)
+    .slice(0, 50)
+    .join(',');
+
+  const artistsResponse = await spotifyGet(req, `/artists?ids=${ids}`);
+  const fullArtists = artistsResponse.data.artists || [];
+  const artistMap = new Map(fullArtists.map((artist) => [artist.id, artist]));
+
+  return artists.map((artist) => {
+    const fullArtist = artistMap.get(artist.id);
+    if (fullArtist?.images?.length) {
+      return { ...artist, images: fullArtist.images, name: fullArtist.name || artist.name };
+    }
+    return artist;
+  });
+};
+
 // get liked songs
 router.get('/liked-songs', requireAuth, async (req, res) => {
   try {
@@ -87,6 +113,8 @@ router.get('/top-artists', requireAuth, async (req, res) => {
         }
       }
     }
+
+    items = await enrichArtistsWithImages(req, items);
 
     res.json({ ...response.data, items });
   } catch (error) {

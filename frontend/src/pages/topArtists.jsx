@@ -77,17 +77,23 @@ const TopArtists = () => {
           </div>
 
           <div className="top-artists-privacy">
-            <label htmlFor="top-artists-privacy">Visibility</label>
-            <select
-              id="top-artists-privacy"
-              value={isPrivate ? "private" : "public"}
-              onChange={(event) =>
-                setIsPrivate(event.target.value === "private")
-              }
-            >
-              <option value="public">Public</option>
-              <option value="private">Private</option>
-            </select>
+            <span className="top-artists-privacy-label">Visibility</span>
+            <div className="privacy-toggle">
+              <button
+                type="button"
+                className={!isPrivate ? "privacy-toggle-active" : ""}
+                onClick={() => setIsPrivate(false)}
+              >
+                Public
+              </button>
+              <button
+                type="button"
+                className={isPrivate ? "privacy-toggle-active" : ""}
+                onClick={() => setIsPrivate(true)}
+              >
+                Private
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -99,8 +105,9 @@ const TopArtists = () => {
 
       {!loading && !error ? (
         <div className="top-artists-grid">
-          {artists.map((artist) => (
+          {artists.map((artist, index) => (
             <article className="top-artist-card" key={artist.id}>
+              <p className="top-artist-rank">#{index + 1}</p>
               {artist.images?.[0]?.url ? (
                 <img
                   className="top-artist-image"

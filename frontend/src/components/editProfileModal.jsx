@@ -22,8 +22,8 @@ const EditProfileModal = ({ isOpen, initialProfile, onClose, onSave }) => {
       <div className="edit-modal" aria-label="Edit Profile Popup">
 
         <header className="edit-modal-header">
-          <h2 id="edit-profile-title" className="m edit-modal-title">Edit Profile</h2>
-          <button type="button" className="edit-modal-closeX" onClick={onClose} aria-label="Close">
+          <h2 id="edit-modal-text" className="m edit-modal-title">Edit Profile</h2>
+          <button id="edit-modal-text" type="button" className="edit-modal-closeX" onClick={onClose} aria-label="Close">
             ×
           </button>
         </header>
@@ -31,17 +31,17 @@ const EditProfileModal = ({ isOpen, initialProfile, onClose, onSave }) => {
         <form className="edit-modal-form" onSubmit={handleSubmit}>
 
           <div className="edit-modal-field">
-            <h2 className="edit-modal-label-text xs">Display Name</h2>
-            <input type="text" name="displayName" value={formData.displayName} onChange={handleChange} maxLength={50} required/>
+            <h2 id="edit-modal-text" className="edit-modal-label-text xs">Display Name</h2>
+            <input type="text" id="edit-modal-text-input" name="displayName" value={formData.displayName} onChange={handleChange} maxLength={50} required/>
           </div>
 
           <div className="edit-modal-field">
-            <h2 className="edit-modal-label-text xs">Bio</h2>
-            <textarea name="bio" value={formData.bio} onChange={handleChange} rows={4} maxLength={300}/>
+            <h2 id="edit-modal-text" className="edit-modal-label-text xs">Bio</h2>
+            <textarea name="bio" id="edit-modal-text-input" value={formData.bio} onChange={handleChange} rows={4} maxLength={300}/>
           </div>
 
           <div className="edit-modal-options-list row">
-            <h2 className="edit-modal-label-text xs">Profile Visibility</h2>
+            <h2 id="edit-modal-text" className="edit-modal-label-text xs">Profile Visibility</h2>
             <div className="edit-modal-option">
               <input type="radio" name="isPrivate"
                 checked={formData.isPrivate == false}
@@ -57,7 +57,7 @@ const EditProfileModal = ({ isOpen, initialProfile, onClose, onSave }) => {
           </div>
 
           <div className="edit-modal-options-list">
-            <h2 className="edit-modal-label-text xs">Displayed on My Profile</h2>
+            <h2 id="edit-modal-text" className="edit-modal-label-text xs">Displayed on My Profile</h2>
             <div className="edit-modal-option">
               <input type="checkbox" name="top_songs_isPrivate"
                 checked={!formData.isPrivate && !formData.top_songs_isPrivate}

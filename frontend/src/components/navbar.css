@@ -11,7 +11,7 @@
   justify-content: space-between;
   padding: 2rem 1.5rem;
   font-family: 'Raleway', sans-serif;
-  background: #4F4F4F;
+  background-color: var(--secondary-background-color);
   /* var(--navbar-gray); */
   border-right: 1px solid rgba(255, 255, 255, 0.08);
   box-sizing: border-box;
@@ -20,7 +20,7 @@
 .sidebar-logo {
   font-size: 1.7rem;
   font-weight: 600;
-  color: #FFFFFF;
+  color: var(--primary-text-color);
   /* font-size: 1.5rem;
   font-weight: 700;
   color: var(--accent-green); */
@@ -37,7 +37,7 @@
 }
 
 .sidebar-links a {
-  color: #FFFFFF;
+  color: var(--primary-text-color);
   text-decoration: none;
   font-size: 1rem;
   transition: color 0.2s;
@@ -45,7 +45,7 @@
 
 .sidebar-links a:hover,
 .sidebar-links a.active {
-  color: #20d66b;
+  color: var(--accent-color);
   font-weight: 600;
 }
 
@@ -79,12 +79,12 @@
 .sidebar-name {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #FFFFFF;
+  color: var(--primary-text-color);
 }
 
 .sidebar-username {
   font-size: 0.75rem;
-  color: #FFFFFF;
+  color: var(--primary-text-color);
 }
 
 @media (max-width: 760px) {

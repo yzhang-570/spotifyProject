@@ -6,12 +6,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-
-  /* TODO: update with useContext */
-  /* Color Variables */
-  --background-color: #2a2a2a; /*darkest gray*/
-  --navbar-gray: #272727; /*second darkest gray*/
-  --accent-green: #1ED760;
+}
 
 html {
   background: #3a3a3a;
@@ -85,7 +80,6 @@ button {
   font-size: 1rem;
   font-weight: 600;
   /* background-color: gray; */
-}
 }
 
 img {

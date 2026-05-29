@@ -10,7 +10,9 @@
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  transition: background-color 0.25s ease,
+  border: 1px solid black;
+  transition: background-color 0.25s ease;
+  /* box-shadow: 0px 6px 15px rgb(190, 190, 190); */
 }
 .collection-div:hover {
   background-color: var(--div-color-hover);
@@ -36,7 +38,7 @@
 /* Collection name text */
 .collection-name-text {
   transform-origin: right bottom;
-  transition: letter-spacing 0.25s ease
+  transition: letter-spacing 0.25s ease;
 }
 .collection-div:hover .collection-name-text {
   letter-spacing: 0.02em;

@@ -8,6 +8,7 @@
 }
 .preview-user-card:hover {
   background-color: rgb(60, 60, 60);
+  background-color: var(--secondary-background-color);
   border-radius: 7.5px;
 }
 
@@ -22,6 +23,9 @@
 .prev-user-details {
   display: flex;
   flex-direction: column;
+}
+.preview-user-text {
+  color: var(--primary-text-color);
 }
 
 /* User Profile Image */
@@ -41,6 +45,8 @@
 /* Message User Button */
 .preview-message-button {
   z-index: 100;
+  color: var(--background-color);
+  background-color: var(--primary-text-color);
 }
 .preview-message-button:hover {
   box-shadow: 0px 4px 10px #ffffff45;

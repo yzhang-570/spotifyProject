@@ -18,7 +18,7 @@ const ProfilePreview = ({ userData, onClick }) => {
           <img className="preview-image" src={userData.profilePicture || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR99-ZMZeEtYlFVdT-HN3Hz0f_i64Zf76D67g&s'} />
         </div>
         <div className="preview-user-details">
-            <p className="xs bold">{userData.displayName}</p>
+            <p className="preview-user-text xs bold">{userData.displayName}</p>
             {/* <p className="xs">{userData.email}</p> */}
         </div>
       </div>

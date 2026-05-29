@@ -34,6 +34,10 @@
   flex-direction: column;
 }
 
+#edit-modal-text {
+  color: var(--primary-text-color);
+}
+
 /* ----------------------------Form wrapper - also apply column */
 .edit-modal-form {
   display: flex;
@@ -64,6 +68,10 @@
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
+}
+
+#edit-modal-text-input {
+  border: 1px solid rgb(143, 143, 143);
 }
 
 /* Input field styling */
@@ -109,8 +117,8 @@
 /* Cancel button */
 .edit-modal-save {
   /* background-color: white; */
-  background-color: white;
-  color: #1a1a1a;
+  background-color: var(--primary-text-color);
+  color: var(--background-color);
 }
 .edit-modal-save:hover {
   box-shadow: 0 6px 16px rgba(255, 255, 255, 0.25);
@@ -132,7 +140,7 @@
 }
 
 .edit-modal-option-label {
-  color: white;
+  color: var(--primary-text-color);
 }
 .edit-modal-option-label.grayed {
   color: gray;

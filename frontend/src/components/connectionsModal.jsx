@@ -35,12 +35,12 @@ const ConnectionsModal = ({ userData, tabSelected, updateTab, isOpen, onClose, d
         <div className="connections-modal-tabs">
           <h2 className="xs connections-modal-tab-option"
             onClick={(e) => {e.stopPropagation(); updateTab('Followers')}}
-            style={(tabSelected === 'Followers') ? ({'--tab-option-color': 'var(--accent-green)', 'borderBottom': '2px solid var(--tab-option-color)'}) : ({'--tab-option-color': '#ffffff79'})}>
+            style={(tabSelected === 'Followers') ? ({'--tab-option-color': 'var(--accent-color)', 'borderBottom': '2px solid var(--tab-option-color)'}) : ({'--tab-option-color': 'var(--tab-inactive-color)'})}>
             {followersData && followersData.length} Followers
           </h2>
           <h2 className="xs connections-modal-tab-option"
             onClick={(e) => {e.stopPropagation(); updateTab('Following')}}
-            style={(tabSelected === 'Following') ? ({'--tab-option-color': 'var(--accent-green)', 'borderBottom': '2px solid var(--tab-option-color)'}) : ({'--tab-option-color': '#ffffff79'})}>
+            style={(tabSelected === 'Following') ? ({'--tab-option-color': 'var(--accent-color)', 'borderBottom': '2px solid var(--tab-option-color)'}) : ({'--tab-option-color': 'var(--tab-inactive-color)'})}>
             {followingData && followingData.length} Following
           </h2>
         </div>

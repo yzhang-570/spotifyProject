@@ -121,8 +121,8 @@
   border: 1px solid #4F4F4F;
   border-radius: 14px; 
   box-sizing: border-box;
-  color: #FFFFFF;
-  background: #202020; /* FIXED: Set input boxes to use the original dark comment background color */
+  color: var(--primary-text-color);
+  background-color: var(--tertiary-background-color); /* FIXED: Set input boxes to use the original dark comment background color */
   font: inherit;
   outline: none;
   resize: vertical;
@@ -130,7 +130,8 @@
 }
 
 .root-comment-box textarea::placeholder, .reply-form textarea::placeholder {
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--primary-text-color);
+  opacity: 0.6;
 }
 
 .root-comment-box textarea:focus, .reply-form textarea:focus {
@@ -223,6 +224,10 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.add-comment-input {
+  color: var(--primary-text-color);
 }
 
 .sort-dropdown-container label {

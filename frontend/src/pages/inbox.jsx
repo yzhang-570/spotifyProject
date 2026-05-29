@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useContext } from "react";
 import {
   createChat,
   getChatUsers,
@@ -6,6 +6,7 @@ import {
   sendChatMessage,
 } from "../api";
 import "./inbox.css";
+import { DarkModeContext } from '../DarkModeContext'
 
 const getInitials = (value) => {
   if (!value) return "U";
@@ -96,6 +97,8 @@ const Inbox = () => {
   const [selectedConversationId, setSelectedConversationId] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [inboxError, setInboxError] = useState("");
+
+  const {darkModeOn } = useContext(DarkModeContext);
 
   useEffect(() => {
     let isMounted = true;
@@ -235,7 +238,7 @@ const Inbox = () => {
 
   return (
     <section className="inbox-page">
-      <aside className="inbox-list-panel" aria-label="Message conversations">
+      <aside className="inbox-list-panel" style={darkModeOn ?{'backgroundColor': '#121212'}:{'backgroundColor':'#ffffff'}} aria-label="Message conversations">
         <div className="inbox-list-header">
           <div>
             <p className="inbox-kicker">Messages</p>
@@ -245,10 +248,11 @@ const Inbox = () => {
                   className="inbox-title-icon"
                   viewBox="0 0 20 20"
                   aria-hidden="true"
+                  id="inbox-text"
                 >
                   <path d="M0 20V2C0 1.45 0.1958 0.9792 0.5875 0.5875C0.9792 0.1958 1.45 0 2 0H18C18.55 0 19.0208 0.1958 19.4125 0.5875C19.8042 0.9792 20 1.45 20 2V14C20 14.55 19.8042 15.0208 19.4125 15.4125C19.0208 15.8042 18.55 16 18 16H4L0 20ZM3.15 14H18V2H2V15.125L3.15 14Z" />
                 </svg>
-                <span>Inbox</span>
+                <span id="inbox-button-text">Inbox</span>
               </h1>
               <button
                 className="new-message-button"
@@ -327,7 +331,7 @@ const Inbox = () => {
         {inboxError && <p className="inbox-error">{inboxError}</p>}
 
         <label className="inbox-search" htmlFor="inbox-search">
-          <span>Search messages</span>
+          <span id="inbox-text">Search messages</span>
           <input
             id="inbox-search"
             type="search"
@@ -357,11 +361,11 @@ const Inbox = () => {
                 </span>
                 <span className="conversation-summary">
                   <span className="conversation-name">{conversation.name}</span>
-                  <span className="conversation-preview">
+                  <span id="inbox-text" className="conversation-preview">
                     {conversation.preview}
                   </span>
                 </span>
-                <span className="conversation-time">
+                <span id="inbox-text" className="conversation-time">
                   {conversation.lastActive}
                 </span>
               </button>
@@ -369,14 +373,14 @@ const Inbox = () => {
         </div>
       </aside>
 
-      <div className="message-panel">
+      <div className="message-panel" style={darkModeOn?{'backgroundColor': '#3B3B3B'}:{'backgroundColor':'#ffffff'}}>
         {selectedConversation ? (
           <>
             <header className="message-header">
               <div className="message-avatar">{selectedConversation.initials}</div>
               <div>
-                <h2>{selectedConversation.name}</h2>
-                <p>@{selectedConversation.username}</p>
+                <h2 id="inbox-text">{selectedConversation.name}</h2>
+                <p id="inbox-text">@{selectedConversation.username}</p>
               </div>
             </header>
 
@@ -391,9 +395,9 @@ const Inbox = () => {
                   >
                     <div className="message-meta">
                       <strong>{message.sender}</strong>
-                      <span>{message.time}</span>
+                      <span id="inbox-text-secondary">{message.time}</span>
                     </div>
-                    <p>{message.text}</p>
+                    <p id="inbox-text">{message.text}</p>
                   </article>
                 ))
               ) : (

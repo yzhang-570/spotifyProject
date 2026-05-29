@@ -1,8 +1,14 @@
 import { Link, useLocation } from "react-router-dom";
 import "./navbar.css";
 
+import { useContext } from 'react';
+import { DarkModeContext } from '../DarkModeContext.jsx'
+
 const Navbar = ({ user }) => {
   const location = useLocation();
+
+  const { darkModeOn, toggleDarkMode } = useContext(DarkModeContext);
+  console.log(darkModeOn);
 
   const links = [
     { path: "/forums", label: "Discuss" },
@@ -28,6 +34,9 @@ const Navbar = ({ user }) => {
           ))}
         </ul>
       </div>
+      <button onClick={toggleDarkMode} className="darkmode-toggle-button" style={darkModeOn ? ({'backgroundColor':'#676767', color: 'white'}):({'backgroundColor':'white'})}>
+        {darkModeOn ? "Dark Mode: On" : "Dark Mode: Off"}
+      </button>
       <div className="sidebar-user">
         {user?.images?.length > 0 ? (
             <img

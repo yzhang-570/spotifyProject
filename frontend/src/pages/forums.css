@@ -8,9 +8,17 @@
   margin-bottom: 1.75rem;
 }
 
+#forums-text {
+  color: var(--primary-text-color);
+}
+
+#forums-secondary-text {
+  color: var(--secondary-text-color);
+}
+
 .forums-kicker {
   margin: 0 0 0.5rem;
-  color: #1ED760;
+  color: var(--accent-color);
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -80,7 +88,7 @@
   padding: 0.85rem 1rem;
   border: 1px solid #4F4F4F;
   border-radius: 14px;
-  background: #3B3B3B;
+  background: var(--background-color);
 }
 
 .forums-result-count strong,
@@ -109,7 +117,7 @@
   padding: 1.2rem;
   border: 1px solid #4F4F4F;
   border-radius: 18px;
-  background: #FFFFFF;
+  background: #ffffff;
   color: #121212;
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18);
   transition: box-shadow 0.2s, transform 0.2s;

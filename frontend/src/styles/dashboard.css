@@ -76,13 +76,24 @@ h1, h2, h3, h4, h5, p, a {
   gap: 1rem;
 }
 
+.displayname-text {
+  color: var(--primary-text-color);
+}
+
 .stats-div {
   display: flex;
   gap: 1rem;
 }
 
+.stat-text {
+  color: var(--primary-text-color);
+}
 .stat-text:hover {
   cursor: pointer;
+}
+
+.bio-text {
+  color: var(--primary-text-color);
 }
 
 /* -------------Collection Section */
@@ -137,6 +148,8 @@ h1, h2, h3, h4, h5, p, a {
 
 .recentactivity-titletext {
   margin: 1rem;
+  color: var(--primary-text-color);
+  font-weight: 600;
 }
 
 /* A post made by the user */
@@ -147,12 +160,12 @@ h1, h2, h3, h4, h5, p, a {
   border-radius: 10px;
   padding: 1rem;
   cursor: pointer;
-  border: 3px solid rgb(255, 255, 255);
+  border: 1px solid black;
+  box-shadow: 0px 6px 15px rgb(190, 190, 190);
 }
 
 .forumpost-div:hover {
   background-color: rgb(209, 209, 209);
-  border: 3px solid gray;
 }
 
 /* Arrow move right: lucide-react icons render as inline svgs */
@@ -201,8 +214,8 @@ h1, h2, h3, h4, h5, p, a {
 
 /* Follow button — solid; subtle sheen sweeps across on hover */
 .follow-button {
-  background-color: white;
-  color: #1a1a1a;
+  background-color: var(--primary-text-color);
+  color: var(--background-color);
 }
 .follow-button::before {
   content: '';

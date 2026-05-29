@@ -168,7 +168,7 @@ const Dashboard = ({ loggedInUser }) => {
             </div>
 
             {/* Description */}
-            <p className="xs">{userProfileData.bio || ''}</p>
+            <p className="xs bio-text">{userProfileData.bio || ''}</p>
 
             {/* Buttons */}
             <div className="buttons-div">

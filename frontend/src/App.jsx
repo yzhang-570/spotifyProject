@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, createContext } from "react";
 import Navbar from "./components/navbar";
 import Discover from "./pages/discover";
 import Dashboard from "./pages/dashboard";
@@ -11,6 +11,7 @@ import ForumPage from "./pages/forumPage";
 import Inbox from "./pages/inbox";
 import Login from "./pages/login";
 import { getMe } from "./api";
+import { DarkModeProvider } from './DarkModeContext'
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -37,26 +38,29 @@ const App = () => {
     );
   }
 
+
   return (
-    <BrowserRouter>
-      <div className="app-layout">
-        <Navbar user={user} />
-        <main className="main-content">
-          <Routes>
-            <Route path="/" element={<Discover />} />
-            <Route path="/discover" element={<Discover/>} />
-            <Route path="/dashboard/:userID" element={<Dashboard loggedInUser={user}/>} />
-            <Route path="/liked-songs" element={<LikedSongs />} />
-            <Route path="/top-artists" element={<TopArtists />} />
-            <Route path="/top-songs" element={<TopSongs />} />
-            <Route path="/forums" element={<Forums />} />
-            <Route path="/forums/:postID" element={<ForumPage />} />
-            <Route path="/inbox" element={<Inbox />} />
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
-        </main>
-      </div>
-    </BrowserRouter>
+    <DarkModeProvider>
+      <BrowserRouter>
+        <div className="app-layout">
+          <Navbar user={user} />
+          <main className="main-content">
+            <Routes>
+              <Route path="/" element={<Discover />} />
+              <Route path="/discover" element={<Discover/>} />
+              <Route path="/dashboard/:userID" element={<Dashboard loggedInUser={user}/>} />
+              <Route path="/liked-songs" element={<LikedSongs />} />
+              <Route path="/top-artists" element={<TopArtists />} />
+              <Route path="/top-songs" element={<TopSongs />} />
+              <Route path="/forums" element={<Forums />} />
+              <Route path="/forums/:postID" element={<ForumPage />} />
+              <Route path="/inbox" element={<Inbox />} />
+              <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+          </main>
+        </div>
+      </BrowserRouter>
+    </DarkModeProvider>
   );
 };
 

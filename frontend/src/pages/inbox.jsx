@@ -391,9 +391,9 @@ const Inbox = () => {
                   >
                     <div className="message-meta">
                       <strong>{message.sender}</strong>
-                      <span>{message.time}</span>
+                      <span id="inbox-text-secondary">{message.time}</span>
                     </div>
-                    <p>{message.text}</p>
+                    <p id="inbox-text">{message.text}</p>
                   </article>
                 ))
               ) : (

@@ -1,4 +1,5 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useContext } from "react";
+import { DarkModeContext } from '../DarkModeContext'
 import "./discover.css";
 import axios from 'axios';
 
@@ -7,6 +8,9 @@ import UserCard from '../components/userCard.jsx'
 const Discover = () => {
   const [usersData, setUsersData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const { darkModeOn } = useContext(DarkModeContext);
+
+  console.log('darkModeOn from discover', darkModeOn);
 
   useEffect(() => {
     const getData = async () => {
@@ -46,8 +50,8 @@ const Discover = () => {
     <section className="discover-page">
       <div className="discover-header">
         <p className="discover-kicker">Public profiles</p>
-        <h1>Discover Other Users</h1>
-        <p>
+        <h1 id="discover-text">Discover Other Users</h1>
+        <p id="discover-text">
           Browse listeners, compare favorite artists, and start a conversation
           around the music they love.
         </p>
@@ -55,7 +59,7 @@ const Discover = () => {
 
       <div className="discover-toolbar">
         <div className="discover-search">
-          <label htmlFor="discover-user-search">Search public profiles</label>
+          <label id="discover-text" htmlFor="discover-user-search">Search public profiles</label>
           <input
             id="discover-user-search"
             type="search"
@@ -66,8 +70,8 @@ const Discover = () => {
         </div>
 
         <div className="discover-result-count">
-          <strong>{filteredUsers.length}</strong>
-          <span>
+          <strong id="discover-text-color">{filteredUsers.length}</strong>
+          <span id="discover-text-color">
             {filteredUsers.length === 1 ? "profile found" : "profiles found"}
           </span>
         </div>

@@ -121,8 +121,8 @@
   border: 1px solid #4F4F4F;
   border-radius: 14px; 
   box-sizing: border-box;
-  color: #FFFFFF;
-  background: #202020; /* FIXED: Set input boxes to use the original dark comment background color */
+  color: var(--primary-text-color);
+  background-color: var(--tertiary-background-color); /* FIXED: Set input boxes to use the original dark comment background color */
   font: inherit;
   outline: none;
   resize: vertical;

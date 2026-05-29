@@ -158,8 +158,8 @@ const Forums = () => {
       <div className="forums-header-wrapper">
         <div className="forums-header">
           <p className="forums-kicker">Forum Messaging Boards</p>
-          <h1>Discuss Music</h1>
-          <p>Talk with other users about anything music - albums, playlists, artists - as soon as it drops!</p>
+          <h1 id='forums-text'>Discuss Music</h1>
+          <p id='forums-text'>Talk with other users about anything music - albums, playlists, artists - as soon as it drops!</p>
         </div>
         <button className="create-post-trigger-btn" onClick={() => { setErrorMessage(""); setIsModalOpen(true); }}>
           + Create Post
@@ -168,7 +168,7 @@ const Forums = () => {
 
       <div className="forums-toolbar">
         <div className="forums-search">
-          <label htmlFor="forums-board-search">Search forums</label>
+          <label id="forums-text" htmlFor="forums-board-search">Search forums</label>
           <input
             id="forums-board-search"
             type="search"
@@ -178,8 +178,8 @@ const Forums = () => {
           />
         </div>
         <div className="forums-result-count">
-          <strong>{filteredForums.length}</strong>
-          <span>{filteredForums.length === 1 ? "forum found" : "forums found"}</span>
+          <strong id="forums-secondary-text">{filteredForums.length}</strong>
+          <span id="forums-secondary-text">{filteredForums.length === 1 ? "forum found" : "forums found"}</span>
         </div>
       </div>
 

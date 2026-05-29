@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getPosts, createMainPost, votePost } from "../api";
 import "./forums.css";
 
@@ -77,7 +77,17 @@ const ForumCard = ({ forum }) => {
           <h2>{forum.title}</h2>
           <p className="author-name">By @{forum.author.name}</p>
         </div>
-        <span className="time-ago-badge">{formatTimeAgo(forum.created_time)}</span>
+        <div className="forum-time-badges">
+          <span className="time-ago-badge">
+            {formatTimeAgo(forum.created_time)}
+          </span>
+
+          {forum.recent_time && forum.recent_time !== forum.created_time && (
+            <span className="recent-activity-badge">
+              ACTIVE {formatTimeAgo(forum.recent_time).replace("POSTED ", "")}
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="forum-card-content">
@@ -117,6 +127,7 @@ const Forums = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({ title: "", content: "" });
   const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     let isMounted = true;
@@ -190,6 +201,7 @@ const Forums = () => {
       });
 
       setIsModalOpen(false);
+      navigate(`/forums/${newPost.id}`);
     } catch (error) {
       setErrorMessage(
         error.message || "Unable to create post."
@@ -198,7 +210,12 @@ const Forums = () => {
   };
 
   if (isLoading) {
-    return <p>Loading forums...</p>;
+    return (
+      <div className="page-loading-state">
+        <div className="loading-spinner" />
+        <p>Loading forums...</p>
+      </div>
+    );
   }
 
   if (forumsError) {

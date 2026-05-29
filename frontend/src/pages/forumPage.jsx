@@ -136,7 +136,14 @@ export default function ForumPage() {
   };
 
 
-  if (isLoading) return <div>Loading thread...</div>;
+  if (isLoading) {
+    return (
+      <div className="page-loading-state">
+        <div className="loading-spinner" />
+        <p>Loading discussion...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="forum-page-container">

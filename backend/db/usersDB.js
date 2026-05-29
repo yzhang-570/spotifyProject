@@ -38,11 +38,16 @@ export const normalizeUserProfile = (id, data = {}) => {
     bio: data.bio || data.status || '',
     initials: data.initials || getInitials(displayName || username),
     isPrivate: Boolean(data.isPrivate),
-    profile_img: data.profile_img || data.profileImageURL || '',
+    profilePicture: data.profile_img || data.profileImageURL || '',
   };
 };
 
+// update user profile (insert/create if not exists)
+  // updates user document with (ONLY) **information from Spotify
 export const upsertSessionUser = async (spotifyUser) => {
+
+  // console.log('inside upsertSessionUser');
+
   if (!spotifyUser?.id) {
     return null;
   }
@@ -50,31 +55,42 @@ export const upsertSessionUser = async (spotifyUser) => {
   const userRef = doc(db, 'users', spotifyUser.id);
   const profileImage = spotifyUser.images?.[0]?.url || '';
 
+  // setDoc vs. updateDoc
+  // setDoc - if doc trying to update doesn't exist, create it
+  // updateDoc - if doc trying to update doesn't exist, error
   await setDoc(
     userRef,
     {
-      username: spotifyUser.id,
-      spotifyId: spotifyUser.id,
+      // username: spotifyUser.id,   // no username in schema!! bruh
+      spotifyId: spotifyUser.account_id,
       displayName: spotifyUser.display_name || spotifyUser.id,
       email: spotifyUser.email || '',
-      bio: '',
-      isPrivate: false,
-      likes_isPrivate: false,
-      top_songs_isPrivate: false,
-      top_artists_isPrivate: false,
-      profile_img: profileImage,
+      // bio: '',                   // don't override user's account personal preferences
+      // isPrivate: false,             when updating spotify information...
+      // likes_isPrivate: false,
+      // top_songs_isPrivate: false,
+      // top_artists_isPrivate: false,
+      profile_img: spotifyUser.profileImage || '',
+      country: spotifyUser.country || '',
+      spotifyLink: spotifyUser.external_urls.spotify || '',
       updated_time: serverTimestamp(),
     },
     { merge: true }
   );
 
-  return normalizeUserProfile(spotifyUser.id, {
+  const normalizedProfile = normalizeUserProfile(spotifyUser.id, {
     username: spotifyUser.id,
     displayName: spotifyUser.display_name,
     email: spotifyUser.email,
     profile_img: profileImage,
   });
+  // console.log('normalized user profile', normalizedProfile);
+  return normalizedProfile;
 };
+
+
+
+
 
 export const getUserProfile = async (userId) => {
   if (!userId) {

@@ -17,7 +17,7 @@ import {
   getPublicUsers,
   getUserProfile,
   upsertSessionUser,
-} from '../db/users.js';
+} from '../db/usersDB.js';
 
 const router = express.Router();
 

@@ -5,16 +5,16 @@ const Navbar = ({ user }) => {
   const location = useLocation();
 
   const links = [
-    { path: "/discover", label: "Discover" },
     { path: "/forums", label: "Discuss" },
-    { path: "/dashboard/123", label: "My Dashboard" },
+    { path: "/discover", label: "Discover" },
+    { path: `/dashboard/${user.id}`, label: "My Dashboard" },
     { path: "/inbox", label: "Inbox" },
   ];
 
   return (
     <nav className="sidebar">
       <div className="sidebar-top">
-        <div className="sidebar-logo">Spotifeed ♪</div>
+        <Link style={{'textDecoration': 'none'}} to="/forums"><div className="sidebar-logo">Spotifeed ♪</div></Link>
         <ul className="sidebar-links">
           {links.map((link) => (
             <li key={link.path}>

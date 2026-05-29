@@ -26,6 +26,8 @@
   max-width: 32rem;
   /* max-height: 90vh; */
 
+  gap: 0.5rem;
+
   padding: 2rem 1.5rem;
 } 
 
@@ -56,7 +58,7 @@
 }
 
 .connections-modal-tab-option {
-  padding: 1rem;
+  padding: 0 1rem 1rem 1rem;
   /* border-bottom: 2px solid var(--tab-option-color); */
   color: var(--tab-option-color);
 }
@@ -67,6 +69,16 @@
 
 .connections-modal-preview-list {
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.connections-modal-preview-empty-div{
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(63, 63, 63);
+  border-radius: 7.5px;
 }
 
 

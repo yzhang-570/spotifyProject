@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useState, useEffect, createContext } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "./components/navbar";
 import Discover from "./pages/discover";
 import Dashboard from "./pages/dashboard";

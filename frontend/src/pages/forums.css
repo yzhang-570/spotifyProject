@@ -134,10 +134,18 @@
   height: 82px;
   border-radius: 50%;
   color: #FFFFFF;
+  overflow: hidden;
   background: #4F4F4F;
   font-size: 1.2rem;
   font-weight: 800;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+}
+
+.forum-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .forum-identity {

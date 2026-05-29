@@ -233,12 +233,11 @@
   letter-spacing: 0.03em;
 }
 
-/* Custom Dropdown formatting styled exactly like a premium dark mode theme */
 .forum-sort-select {
   background-color: #202020;
   color: #FFFFFF;
   border: 1px solid #4F4F4F;
-  border-radius: 20px; /* Rounded pill styling */
+  border-radius: 20px;
   padding: 0.35rem 1rem;
   font-size: 0.85rem;
   font-weight: 600;

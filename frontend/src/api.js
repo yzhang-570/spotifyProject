@@ -79,3 +79,48 @@ export const sendChatMessage = async (chatId, text) => {
   });
   return parseJsonResponse(response);
 };
+
+export const getPosts = async () => {
+  const response = await fetch(`${BASE_URL}/posts`, {
+    credentials: 'include',
+  });
+
+  return parseJsonResponse(response);
+};
+
+export const getPostById = async (postId) => {
+  const response = await fetch(`${BASE_URL}/posts/${postId}`, {
+    credentials: 'include',
+  });
+
+  return parseJsonResponse(response);
+};
+
+export const createMainPost = async (title, content) => {
+  const response = await fetch(`${BASE_URL}/posts`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    body: JSON.stringify({
+      title,
+      content,
+    }),
+  });
+
+  return parseJsonResponse(response);
+};
+
+export const votePost = async (postId, vote) => {
+  const response = await fetch(`${BASE_URL}/posts/${postId}/vote`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify({ vote }),
+  });
+
+  return parseJsonResponse(response);
+};

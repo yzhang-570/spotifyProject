@@ -1,0 +1,178 @@
+.top-songs-page {
+  min-height: calc(100vh - 4rem);
+  color: #FFFFFF;
+}
+
+.top-songs-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.top-songs-back-button {
+  border: 1px solid #4F4F4F;
+  color: #FFFFFF;
+  background: transparent;
+  cursor: pointer;
+}
+
+.top-songs-back-button:hover {
+  border-color: #1ED760;
+  color: #1ED760;
+}
+
+.top-songs-controls {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.top-songs-filter,
+.top-songs-privacy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.top-songs-filter label,
+.top-songs-privacy-label {
+  color: #FFFFFF;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.top-songs-filter select {
+  min-height: 42px;
+  padding: 0 0.8rem;
+  border: 1px solid #4F4F4F;
+  border-radius: 8px;
+  color: #FFFFFF;
+  background: #2a2a2a;
+  font: inherit;
+}
+
+.privacy-toggle {
+  display: flex;
+  border: 1px solid #4F4F4F;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.privacy-toggle button {
+  padding: 0.5rem 0.9rem;
+  border: none;
+  border-radius: 0;
+  color: #FFFFFF;
+  background: #2a2a2a;
+  cursor: pointer;
+}
+
+.privacy-toggle button.privacy-toggle-active {
+  background: #1ED760;
+  color: #121212;
+  font-weight: 700;
+}
+
+.top-songs-title {
+  margin-bottom: 1.25rem;
+}
+
+.top-songs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 980px;
+}
+
+.top-song-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.top-song-rank {
+  min-width: 4.5rem;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.top-song-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  min-height: 110px;
+  padding: 1rem;
+  border: 1px solid #4F4F4F;
+  border-radius: 12px;
+  background: #3B3B3B;
+}
+
+.top-song-cover {
+  width: 72px;
+  height: 72px;
+  border-radius: 10px;
+  background: #4F4F4F;
+  flex-shrink: 0;
+}
+
+.top-song-cover-image {
+  width: 72px;
+  height: 72px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.top-song-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.top-song-name {
+  color: #FFFFFF;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.top-song-artist {
+  color: #FFFFFF;
+  opacity: 0.9;
+}
+
+.top-song-album {
+  color: #FFFFFF;
+  opacity: 0.7;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 760px) {
+  .top-songs-header-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .top-song-rank {
+    min-width: 3rem;
+    font-size: 2rem;
+  }
+
+  .top-song-card {
+    min-height: 96px;
+    padding: 0.85rem;
+  }
+
+  .top-song-cover {
+    width: 56px;
+    height: 56px;
+  }
+
+  .top-song-cover-image {
+    width: 56px;
+    height: 56px;
+  }
+}

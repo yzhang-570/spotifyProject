@@ -32,7 +32,11 @@ export const getTopArtists = async (timeRange = 'medium_term') => {
   const response = await fetch(`${BASE_URL}/spotify/top-artists?time_range=${timeRange}`, {
     credentials: 'include',
   });
-  return response.json();
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data?.error || 'Failed to load top artists.');
+  }
+  return data;
 };
 
 export const getTopSongs = async (timeRange = 'medium_term') => {

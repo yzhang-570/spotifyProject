@@ -1,0 +1,551 @@
+/* ==========================================================================
+   Forum Page Container & Layout
+   ========================================================================== */
+.forum-page-container {
+  min-height: calc(100vh - 4rem);
+  color: #FFFFFF;
+  max-width: 900px; 
+  margin: 0 auto;
+}
+
+/* ==========================================================================
+   Main Thread Card (Top Header)
+   ========================================================================== */
+.main-post-card {
+  margin-bottom: 2.5rem;
+  padding: 1.5rem;          
+  background: #FFFFFF;      /* Pure white main thread surface block card */
+  border: 1px solid #FFFFFF; 
+  border-radius: 16px;      
+  display: flex;
+  flex-direction: column;
+}
+
+/* Adjust header typography colors on the white card overlay surface */
+.main-post-card .comment-display-name,
+.main-post-card h1 {
+  color: #121212 !important;
+}
+
+.main-post-card .comment-author,
+.main-post-card .comment-timestamp {
+  color: #555555 !important;
+}
+
+.main-post-card h1 {
+  margin: 0.5rem 0 0.75rem 0;
+  font-size: clamp(1.6rem, 4vw, 2.2rem); 
+  line-height: 1.2;
+  font-weight: 600;
+}
+
+.main-post-content {
+  margin: 0 0 1.25rem 0;
+  color: #2A2A2A; 
+  font-size: 1.05rem;
+  line-height: 1.6; 
+}
+
+/* Specific avatar styling overrides for main post header background colors */
+.comment-user-avatar.main-post-avatar {
+  background: #202020;
+  color: #FFFFFF;
+}
+
+/* Adjust main post card buttons layout elements for black styling */
+.main-post-card .vote-counter-wrapper {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.main-post-card .vote-btn,
+.main-post-card .vote-count {
+  color: #121212 !important;
+}
+
+.main-post-card .vote-btn.up:hover, 
+.main-post-card .vote-btn.up.active,
+.main-post-card .vote-count.voted {
+  color: #1DB954 !important; /* Premium clear green context highlight */
+}
+
+/* ==========================================================================
+   Action Row Buttons Hover Definitions
+   ========================================================================== */
+.reply-trigger-btn {
+  background: transparent !important;
+  border: none !important;
+  color: #1ED760 !important; 
+  padding: 0 !important;
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  transition: opacity 0.2s ease; /* Adds a smooth transition on hover */
+}
+
+.reply-trigger-btn:hover {
+  text-decoration: none !important; 
+  opacity: 0.7; 
+}
+
+/* Also make sure this legacy action rule isn't overriding it anywhere */
+.comment-actions button:hover {
+  text-decoration: none !important;
+  opacity: 0.7;
+}
+
+/* ==========================================================================
+   Input Forms (Root Discussion Box & Nested Reply Inputs)
+   ========================================================================== */
+.root-comment-box, .reply-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-bottom: 2.5rem;
+  width: 100%;
+}
+
+.reply-form {
+  margin-top: 0.75rem;
+  margin-bottom: 1rem;
+  align-self: stretch;
+}
+
+.root-comment-box textarea, .reply-form textarea {
+  width: 100%;
+  min-height: 110px;
+  padding: 1rem 1.15rem;
+  border: 1px solid #4F4F4F;
+  border-radius: 14px; 
+  box-sizing: border-box;
+  color: #FFFFFF;
+  background: #202020; /* FIXED: Set input boxes to use the original dark comment background color */
+  font: inherit;
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.root-comment-box textarea::placeholder, .reply-form textarea::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.root-comment-box textarea:focus, .reply-form textarea:focus {
+  border-color: #1ED760;
+  box-shadow: 0 0 0 4px rgba(30, 215, 96, 0.18);
+  background: #272727; /* Shifts slightly lighter upon focus engagement */
+}
+
+/* Form Action Buttons */
+.root-comment-box button, .reply-form button[type="submit"] {
+  align-self: flex-end;
+  min-height: 44px;
+  padding: 0 1.5rem;
+  border: none;
+  border-radius: 10px; 
+  font-size: 0.92rem;
+  font-weight: 800;
+  cursor: pointer;
+  color: #121212;
+  background: #1ED760;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.root-comment-box button:hover, .reply-form button[type="submit"]:hover {
+  transform: translateY(-1px);
+  opacity: 0.9;
+}
+
+.reply-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.reply-form button[type="button"] {
+  background: transparent;
+  color: #FFFFFF;
+  border: 1px solid #4F4F4F;
+  border-radius: 10px;
+  min-height: 44px;
+  padding: 0 1.5rem;
+  font-size: 0.92rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.reply-form button[type="button"]:hover {
+  border-color: #FFFFFF;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* ==========================================================================
+   Discussion List Header
+   ========================================================================== */
+.comments-section h3 {
+  margin: 0 0 1.5rem 0;
+  color: #1ED760; 
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   Discussion List Header & Sorting Widget
+   ========================================================================== */
+.discussion-section-header {
+  display: flex;
+  justify-content: space-between; /* Pushes the title to the left and dropdown to the right */
+  align-items: center;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #4F4F4F; /* Bottom underline bar separating section layouts */
+  padding-bottom: 0.75rem;
+}
+
+/* Clear margins so elements align centered on the flex row */
+.discussion-section-header h3 {
+  margin: 0 !important; 
+  color: #1ED760; 
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Dropdown Pill container alignment properties */
+.sort-dropdown-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sort-dropdown-container label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.forum-sort-select {
+  background-color: #202020;
+  color: #FFFFFF;
+  border: 1px solid #4F4F4F;
+  border-radius: 20px;
+  padding: 0.35rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: inherit;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.forum-sort-select:hover {
+  border-color: #1ED760; /* Highlights green on hover */
+  background-color: #272727;
+}
+
+.forum-sort-select:focus {
+  border-color: #1ED760;
+  box-shadow: 0 0 0 3px rgba(30, 215, 96, 0.15);
+}
+
+/* Ensures custom styling carries through option selections cleanly */
+.forum-sort-select option {
+  background-color: #202020;
+  color: #FFFFFF;
+}
+
+.discussion-controls-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem; /* Gap spacing separating the link grouping from dropdown selector boxes */
+}
+
+.global-collapse-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  user-select: none;
+}
+
+/* Text Action Links configured identically to iconless reply text configurations */
+.text-action-link {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  color: #1ED760 !important; /* Green primary theme indicator */
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.text-action-link:hover {
+  text-decoration: none !important; /* Retains text cleanliness on cursor hover engagement */
+  opacity: 0.7;
+}
+
+.action-divider {
+  color: #4F4F4F;
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+/* ==========================================================================
+   Reddit Nested Trees Component Styling
+   ========================================================================== */
+.comment-container {
+  margin-top: 0.75rem;
+  width: 100%; /* Ensure comments expand fully to fill their local space width */
+  min-width: 0;
+}
+
+.comment-layout {
+  display: flex;
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+/* Vertical Thread Line positioning rules */
+.comment-indent-line {
+  width: 2px;
+  background-color: #4F4F4F; 
+  margin-right: 12px; /* Uniform clean gap distance from the vertical line indicator */
+  cursor: pointer;
+  position: relative;
+  left: 2px;
+  align-self: stretch; /* Forces line to run full height alongside text boxes and replies */
+  transition: background-color 0.2s ease;
+}
+
+.comment-indent-line:hover {
+  background-color: #1ED760; 
+}
+
+.comment-wrapper-branch {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Individual Card Surface configured to match #3B3B3B background instruction */
+.comment-content-box {
+  background: #3B3B3B; 
+  border: 1px solid #4F4F4F; 
+  border-radius: 16px; /* Smooth rounded corners matching image entry */
+  padding: 1.2rem;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+}
+
+/* Flex Grid structure splits avatar panel away from text panel */
+.comment-main-flex {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  width: 100%;
+}
+
+/* Left Profile Pic Container */
+.comment-user-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #555555;
+  color: #FFFFFF;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  user-select: none;
+  overflow: hidden;
+}
+
+/* Right Content Body Container */
+.comment-body-column {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Header bar spacing setup */
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.65rem;
+  user-select: none;
+}
+
+.comment-user-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.comment-display-name {
+  color: #FFFFFF;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.comment-author {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+}
+
+.comment-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.comment-timestamp {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+}
+
+.collapse-toggle-btn {
+  color: #1ED760;
+  font-weight: 700;
+  font-family: monospace;
+  cursor: pointer;
+}
+
+.comment-body {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0 0 1rem 0;
+  white-space: pre-wrap;
+}
+
+/* ==========================================================================
+   Action Row & Vote Interface Elements (Matching Attached Image)
+   ========================================================================== */
+.comment-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  user-select: none;
+}
+
+.vote-counter-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.15); /* Recessed background pill wrapper */
+  padding: 0.25rem 0.65rem;
+  border-radius: 30px;
+}
+
+.vote-btn {
+  background: transparent !important;
+  border: none !important;
+  color: #FFFFFF !important;
+  padding: 0 !important;
+  font-size: 1.2rem !important;
+  font-weight: 700 !important;
+  cursor: pointer;
+  transition: color 0.2s, transform 0.1s;
+}
+
+.vote-btn:active {
+  transform: scale(1.15);
+}
+
+.vote-btn.up:hover, .vote-btn.up.active {
+  color: #1ED760 !important; /* Glows your green theme color when liked */
+}
+
+.vote-btn.down:hover, .vote-btn.down.active {
+  color: #e53e3e !important; /* Light crimson red for downvotes */
+}
+
+.vote-count {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  min-width: 14px;
+  text-align: center;
+}
+
+.vote-count.voted {
+  color: #1ED760;
+}
+
+/* Reply trigger layout styling matches image item spacing */
+.reply-trigger-btn {
+  background: transparent !important;
+  border: none !important;
+  color: #FFFFFF !important;
+  padding: 0 !important;
+  font-size: 0.92rem !important;
+  font-weight: 700 !important;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.reply-trigger-btn:hover {
+  color: #1ED760 !important;
+  text-decoration: underline;
+}
+
+.comment-replies-list {
+  margin-top: 0.5rem;
+  padding-left: 14px; /* Adjust this value up or down to globally set your uniform indent width */
+  background: transparent;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.page-loading-state {
+  min-height: 60vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 16px;
+
+  color: #6b7280;
+
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.loading-spinner {
+  width: 42px;
+  height: 42px;
+
+  border-radius: 50%;
+
+  border: 4px solid #e5e7eb;
+  border-top-color: #111827;
+
+  animation: forumSpinner 0.8s linear infinite;
+}
+
+@keyframes forumSpinner {
+  to {
+    transform: rotate(360deg);
+  }
+}

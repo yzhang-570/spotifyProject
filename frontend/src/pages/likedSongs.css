@@ -1,0 +1,62 @@
+.liked-songs {
+  padding: 2rem;
+}
+
+.songs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.song-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1rem;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+
+.song-card:hover {
+  background: rgba(30, 215, 96, 0.1);
+}
+
+.song-image {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+}
+
+.song-name {
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.song-artist {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.8rem;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.song-rank {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1ED760;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.loading {
+  color: white;
+  padding: 2rem;
+}

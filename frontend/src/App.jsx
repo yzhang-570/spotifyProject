@@ -7,6 +7,7 @@ import LikedSongs from "./pages/likedSongs";
 import TopArtists from "./pages/topArtists";
 import TopSongs from "./pages/topSongs";
 import Forums from "./pages/forums";
+import ForumPage from "./pages/forumPage";
 import Inbox from "./pages/inbox";
 import Login from "./pages/login";
 import { getMe } from "./api";
@@ -43,12 +44,13 @@ const App = () => {
         <main className="main-content">
           <Routes>
             <Route path="/" element={<Discover />} />
-            <Route path="/discover" element={<Discover />} />
-            <Route path="/dashboard/:userID" element={<Dashboard />} />
+            <Route path="/discover" element={<Discover/>} />
+            <Route path="/dashboard/:userID" element={<Dashboard loggedInUser={user}/>} />
             <Route path="/liked-songs" element={<LikedSongs />} />
             <Route path="/top-artists" element={<TopArtists />} />
             <Route path="/top-songs" element={<TopSongs />} />
             <Route path="/forums" element={<Forums />} />
+            <Route path="/forums/:postId" element={<ForumPage />} />
             <Route path="/inbox" element={<Inbox />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

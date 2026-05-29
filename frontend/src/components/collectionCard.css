@@ -1,0 +1,52 @@
+/* Button - navigates to collection */
+.collection-div {
+  background-color: var(--div-color);
+  flex: 1 0 30%;
+  height: fit-content;
+  display: flex;
+  align-items: end;
+  justify-content: end;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  transition: background-color 0.25s ease,
+}
+.collection-div:hover {
+  background-color: var(--div-color-hover);
+  cursor: pointer;
+}
+.is-private {
+  position: absolute;
+  inset: 0.6rem 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  background: rgba(72, 72, 72, 0.274);
+  color: #FFFFFF;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-radius: 6px;
+  backdrop-filter: blur(5px);
+}
+
+/* Collection name text */
+.collection-name-text {
+  transform-origin: right bottom;
+  transition: letter-spacing 0.25s ease
+}
+.collection-div:hover .collection-name-text {
+  letter-spacing: 0.02em;
+}
+
+/* Arrow icon */
+.arrow-icon {
+  margin-top: 0.5rem;
+  transition: transform 0.25s ease;
+}
+.collection-div:hover .arrow-icon {
+  transform: translateX(0.4rem);
+}

@@ -3,13 +3,16 @@ import 'dotenv/config';
 import express from 'express';
 import session from 'express-session';
 import authRouter from './routes/auth.js';
+import chatRouter from './routes/chats.js';
 import spotifyRouter from './routes/spotify.js';
+import usersRouter from './routes/users.js';
+import postRouter from './routes/posts.js';
 
 const app = express();
 const port = process.env.PORT || 8888;
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL,
+  origin: ['http://127.0.0.1:5173', 'http://localhost:5173', 'http://127.0.0.1:5174', 'http://localhost:5174'],
   credentials: true,
 }));
 app.use(express.json());
@@ -24,9 +27,11 @@ app.use(session({
   }
 }));
 
-// routers must come AFTER session
 app.use('/auth', authRouter);
+app.use('/chats', chatRouter);
 app.use('/spotify', spotifyRouter);
+app.use('/users', usersRouter);
+app.use('/posts', postRouter)
 
 app.get('/', (req, res) => {
   res.json('Welcome to root.');

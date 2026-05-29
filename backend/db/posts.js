@@ -1,6 +1,6 @@
 import { addDoc, collection, doc, getDocs, getDoc, query, orderBy, serverTimestamp, updateDoc, increment } from 'firebase/firestore'; 
 import db from '../firebase.js'; 
-import { getUserProfile } from './users.js';
+import { getUserProfile } from './usersDB.js';
 
 const serializeTimestamp = (value) => {
   if (!value) return null;

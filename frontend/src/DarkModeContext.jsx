@@ -23,6 +23,9 @@ const DarkModeProvider = ({ children }) => {
     root.style.setProperty('--secondary-background-color', darkModeOn ? '#4F4F4F': '#d9d9d9');
     root.style.setProperty('--primary-text-color', darkModeOn ? '#ffffff': '#2a2a2a');
     root.style.setProperty('--secondary-text-color', darkModeOn ? '#ffffff': '#4F4F4F');
+    root.style.setProperty('--conversation-hover-color', darkModeOn ? '#3B3B3B': '#d9d9d9');
+    root.style.setProperty('--inbox-border-color', darkModeOn ? '#4F4F4F': '#ededed');
+    root.style.setProperty('--tab-inactive-color', darkModeOn ? '#ffffff79': '#2a2a2a79');
     root.style.setProperty('--accent-color', '#1ED760');
   }, [darkModeOn])
 

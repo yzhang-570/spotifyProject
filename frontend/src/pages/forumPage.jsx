@@ -120,7 +120,7 @@ export default function ForumPage() {
       )}
 
       <div className="root-comment-box">
-        <textarea placeholder="Add to the discussion..." value={newCommentText} onChange={(e) => setNewCommentText(e.target.value)} />
+        <textarea className="add-comment-input" placeholder="Add to the discussion..." value={newCommentText} onChange={(e) => setNewCommentText(e.target.value)} />
         <button onClick={() => { handleAddComment(null, 1, newCommentText); setNewCommentText(''); }}>Comment</button>
       </div>
 

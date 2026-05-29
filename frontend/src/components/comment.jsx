@@ -7,7 +7,7 @@ export default function Comment({ comment, onReplySubmit }) {
   const [replyText, setReplyText] = useState('');
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [likes, setLikes] = useState(comment.likes || 0);
-  const [userVote, setUserVote] = useState(null);
+  const [userVote, setUserVote] = useState(comment.userVote || null);
 
   useEffect(() => {
     const handleGlobalCollapse = (e) => {
@@ -38,14 +38,6 @@ export default function Comment({ comment, onReplySubmit }) {
 
     return () => clearInterval(interval);
   }, []);
-
-  useEffect(() => {
-    setLikes(comment.likes || 0);
-  }, [comment.likes]);
-
-  useEffect(() => {
-    setUserVote(comment.userVote || null);
-  }, [comment.userVote]);
 
   const handleReply = (e) => {
     e.preventDefault();
@@ -79,7 +71,7 @@ export default function Comment({ comment, onReplySubmit }) {
       const updated = await voteComment(comment.forum, comment.id, voteValue);
       setLikes(updated.likes);
       setUserVote(updated.userVote);
-    } catch (err) {
+    } catch {
       setLikes(l => l - delta);
       setUserVote(prev);
     }

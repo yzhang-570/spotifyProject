@@ -27,6 +27,7 @@ const truncateWords = (text, maxWords) => {
 const ForumCard = ({ forum }) => {
   const [userVote, setUserVote] = useState(forum.userVote); // 1, -1, null
   const [likes, setLikes] = useState(forum.likes);
+  /* eslint-disable-next-line no-unused-vars */
   const [loadingVote, setLoadingVote] = useState(false);
 
   const handleVote = async (type) => {
@@ -52,7 +53,7 @@ const ForumCard = ({ forum }) => {
 
     try {
       await votePost(forum.id, voteValue);
-    } catch (err) {
+    } catch {
       // rollback
       setLikes((l) => l - delta);
       setUserVote(previous);
@@ -124,6 +125,7 @@ const Forums = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [forumsError, setForumsError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("recent");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({ title: "", content: "" });
   const [errorMessage, setErrorMessage] = useState("");
@@ -160,12 +162,42 @@ const Forums = () => {
 
   const filteredForums = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
-    if (!query) return forumsList;
-    return forumsList.filter((forum) => {
-      const searchableText = [forum.title, forum.author.name, forum.content].join(" ").toLowerCase();
-      return searchableText.includes(query);
+
+    let filtered = forumsList;
+
+    // Search filtering
+    if (query) {
+      filtered = forumsList.filter((forum) => {
+        const searchableText = [
+          forum.title,
+          forum.author.name,
+          forum.content,
+        ]
+          .join(" ")
+          .toLowerCase();
+
+        return searchableText.includes(query);
+      });
+    }
+
+    // Sorting
+    const sorted = [...filtered].sort((a, b) => {
+      switch (sortBy) {
+        case "created":
+          return new Date(b.created_time) - new Date(a.created_time);
+        case "recent":
+          return new Date(b.recent_time) - new Date(a.recent_time);
+        case "replies":
+          return (b.replies || 0) - (a.replies || 0);
+        case "likes":
+          return (b.likes || 0) - (a.likes || 0);
+        default:
+          return new Date(b.recent_time) - new Date(a.recent_time);
+      }
     });
-  }, [searchTerm, forumsList]);
+
+    return sorted;
+  }, [forumsList, searchTerm, sortBy]);
 
   // Dynamic counter to check input layout array length states live
   const titleWordCount = useMemo(() => {
@@ -230,9 +262,35 @@ const Forums = () => {
           <h1>Discuss Music</h1>
           <p>Talk with other users about anything music - albums, playlists, artists - as soon as it drops!</p>
         </div>
-        <button className="create-post-trigger-btn" onClick={() => { setErrorMessage(""); setIsModalOpen(true); }}>
-          + Create Post
-        </button>
+        <div className="forums-header-actions">
+          <button
+            className="create-post-trigger-btn"
+            onClick={() => {
+              setErrorMessage("");
+              setIsModalOpen(true);
+            }}
+          >
+            + Create Post
+          </button>
+
+          <div className="forums-sort-panel">
+            <label htmlFor="forum-sort-select">
+              Sort Threads
+            </label>
+
+            <select
+              id="forum-sort-select"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="forums-sort-select"
+            >
+              <option value="recent">Recent Activity</option>
+              <option value="created">Newest Posts</option>
+              <option value="replies">Most Replies</option>
+              <option value="likes">Most Likes</option>
+            </select>
+          </div>
+        </div>
       </div>
 
       <div className="forums-toolbar">

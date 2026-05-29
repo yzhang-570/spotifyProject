@@ -15,7 +15,7 @@ export default function ForumPage() {
   const [sortBy, setSortBy] = useState('oldest');
   const [mainLikes, setMainLikes] = useState(0);
   const [mainUserVote, setMainUserVote] = useState(null);
-
+  /* eslint-disable-next-line no-unused-vars */
   const [globalToggle, setGlobalToggle] = useState({ collapse: false, timestamp: null });
 
   useEffect(() => {
@@ -32,8 +32,8 @@ export default function ForumPage() {
 
         setMainLikes(data.mainPost.likes || 0);
         setMainUserVote(data.mainPost.userVote || null);
-      } catch (err) {
-        console.error("Failed to load thread:", err);
+      } catch {
+        console.error("Failed to load thread:");
       } finally {
         if (mounted) setIsLoading(false);
       }
@@ -104,7 +104,7 @@ export default function ForumPage() {
       const updated = await votePost(mainPost.id, voteValue);
       setMainLikes(updated.likes);
       setMainUserVote(updated.userVote);
-    } catch (err) {
+    } catch {
       // rollback
       setMainLikes(l => l - delta);
       setMainUserVote(prevVote);
@@ -123,8 +123,8 @@ export default function ForumPage() {
 
       setFlatComments(prev => [...prev, newComment]);
 
-    } catch (err) {
-      console.error("Failed to create comment:", err);
+    } catch {
+      console.error("Failed to create comment:");
     }
   };
 

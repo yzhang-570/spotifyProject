@@ -1,5 +1,8 @@
 import express from 'express';
 import axios from 'axios';
+import db from '../firebase.js';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { upsertSessionUser } from '../db/usersDB.js';
 
 const router = express.Router();
 
@@ -46,16 +49,79 @@ router.get('/callback', async (req, res) => {
 
     const { access_token, refresh_token } = response.data;
 
-    // store tokens in session
-    req.session.access_token = access_token;
-    req.session.refresh_token = refresh_token;
-
-    // fetch and store user profile
+    // fetch Spotify profile
     const userResponse = await axios.get('https://api.spotify.com/v1/me', {
       headers: { Authorization: `Bearer ${access_token}` }
     });
 
-    req.session.user = userResponse.data;
+    const spotifyUser = userResponse.data;
+
+    // store tokens in session
+    req.session.access_token = access_token;
+    req.session.refresh_token = refresh_token;
+    req.session.user = spotifyUser;
+
+    // check if user already exists in Firebase
+    const userRef = doc(db, 'users', spotifyUser.id);
+    const userSnap = await getDoc(userRef);
+
+    // fetch liked songs, top songs, top artists
+      const [likedSongsRes, topSongsRes, topArtistsRes] = await Promise.all([
+        axios.get('https://api.spotify.com/v1/me/tracks?limit=10', {
+          headers: { Authorization: `Bearer ${access_token}` }
+        }),
+        axios.get('https://api.spotify.com/v1/me/top/tracks?time_range=medium_term&limit=10', {
+          headers: { Authorization: `Bearer ${access_token}` }
+        }),
+        axios.get('https://api.spotify.com/v1/me/top/artists?time_range=medium_term&limit=10', {
+          headers: { Authorization: `Bearer ${access_token}` }
+        }),
+      ]);
+
+    if (!userSnap.exists()) {
+
+      // first time login — create user in Firebase
+      await setDoc(userRef, {
+        spotifyId: spotifyUser.id,
+        displayName: spotifyUser.display_name,
+        email: spotifyUser.email,
+        profilePicture: spotifyUser.images?.[0]?.url || null,
+        isPrivate: false,
+        bio: '',
+        createdAt: new Date().toISOString(),
+        likedSongs: likedSongsRes.data.items,
+        topSongs: topSongsRes.data.items,
+        topArtists: topArtistsRes.data.items,
+        liked_songs_isPrivate: false,
+        top_songs_isPrivate: false,
+        top_artists_isPrivate: false,
+        country: spotifyUser.country || '',
+        spotifyLink: spotifyUser.external_urls.spotify || ''
+      });
+      console.log('New user created:', spotifyUser.display_name);
+    } else {
+      // returning user — update profile picture and display name in case they changed
+
+      try {
+        // console.log('--------------');
+        // console.log('user fetched from spotify', userResponse.data);
+        await setDoc(userRef, {
+          spotifyId: spotifyUser.id,
+          displayName: spotifyUser.display_name,
+          email: spotifyUser.email,
+          profilePicture: spotifyUser.images?.[0]?.url || null,
+          likedSongs: likedSongsRes.data.items,
+          topSongs: topSongsRes.data.items,
+          topArtists: topArtistsRes.data.items,
+          country: spotifyUser.country || '',
+          spotifyLink: spotifyUser.external_urls.spotify || ''
+        }, { merge: true });
+        
+      } catch (error) {
+        console.warn('Unable to sync user profile to Firebase:', error.message);
+      }
+      console.log('Returning user:', spotifyUser.display_name);
+    }
 
     // redirect to frontend
     res.redirect(process.env.FRONTEND_URL);

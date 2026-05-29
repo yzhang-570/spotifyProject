@@ -135,16 +135,19 @@
 }
 
 .user-avatar {
-  display: grid;
-  place-items: center;
   width: 82px;
   height: 82px;
   border-radius: 50%;
-  color: #FFFFFF;
+  overflow: hidden;
   background: #4F4F4F;
-  font-size: 1.2rem;
-  font-weight: 800;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+}
+
+.user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .user-identity {
@@ -168,18 +171,25 @@
 .username {
   margin: 0.15rem 0 0;
   color: #4F4F4F;
-  font-size: 0.95rem;
-  font-weight: 700;
+  font-size: 0.8rem;
+  /* font-weight: 700; */
 }
 
 .public-badge {
   padding: 0.35rem 0.55rem;
   border: 1px solid #1ED760;
   border-radius: 999px;
-  color: #121212;
+  color: #ffffff;
   background: #1ED760;
   font-size: 0.72rem;
   font-weight: 900;
+}
+
+.public-badge.is-private {
+  border-color: #4F4F4F;
+  background: #3B3B3B;
+  color: #B3B3B3;
+  opacity: 0.75;
 }
 
 .user-status {
@@ -190,9 +200,20 @@
 }
 
 .user-bio {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  min-height: calc(1.45em);
   margin: 0;
+  overflow: hidden;
   color: #3B3B3B;
   line-height: 1.45;
+  text-overflow: ellipsis;
+}
+
+.user-bio.is-empty {
+  color: #8A8A8A;
+  font-style: italic;
 }
 
 .genre-list {
@@ -211,12 +232,37 @@
 }
 
 .music-preview {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.75rem;
   margin: 0;
   padding-top: 0.85rem;
   border-top: 1px solid #4F4F4F;
+  height: 4rem;
+}
+
+.music-preview.is-private > div:not(.music-preview-lock) {
+  filter: blur(100px);
+  user-select: none;
+  pointer-events: none;
+}
+
+.music-preview-lock {
+  position: absolute;
+  inset: 0.6rem 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  background: rgba(72, 72, 72, 0.274);
+  color: #FFFFFF;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-radius: 6px;
+  backdrop-filter: blur(5px);
 }
 
 .music-preview div {
@@ -237,6 +283,12 @@
   font-weight: 800;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.music-preview dd.is-empty {
+  color: #8A8A8A;
+  font-style: italic;
+  font-weight: 600;
 }
 
 .user-actions {

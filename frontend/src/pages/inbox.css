@@ -70,6 +70,7 @@
 
 .new-message-button {
   display: grid;
+  position: relative;
   width: 40px;
   height: 40px;
   place-items: center;
@@ -78,10 +79,28 @@
   color: #FFFFFF;
   background: #3B3B3B;
   font: inherit;
-  font-size: 1.35rem;
+  font-size: 0;
   line-height: 1;
   cursor: pointer;
   transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.new-message-button::before,
+.new-message-button::after {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.new-message-button::before {
+  width: 12px;
+  height: 2px;
+}
+
+.new-message-button::after {
+  width: 2px;
+  height: 12px;
 }
 
 .new-message-button:hover,
@@ -115,6 +134,7 @@
 
 .new-chat-panel-header button {
   display: grid;
+  position: relative;
   width: 30px;
   height: 30px;
   place-items: center;
@@ -123,9 +143,28 @@
   color: #FFFFFF;
   background: #121212;
   font: inherit;
+  font-size: 0;
   font-weight: 900;
   line-height: 1;
   cursor: pointer;
+}
+
+.new-chat-panel-header button::before,
+.new-chat-panel-header button::after {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.new-chat-panel-header button::before {
+  transform: rotate(45deg);
+}
+
+.new-chat-panel-header button::after {
+  transform: rotate(-45deg);
 }
 
 .new-chat-search {
@@ -241,6 +280,26 @@
   border: 1px dashed #4F4F4F;
   border-radius: 12px;
   color: rgba(255, 255, 255, 0.72);
+  text-align: center;
+}
+
+.inbox-error,
+.inbox-status {
+  margin: 0;
+  padding: 0.85rem;
+  border-radius: 12px;
+  font-size: 0.82rem;
+}
+
+.inbox-error {
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.inbox-status {
+  color: rgba(255, 255, 255, 0.72);
+  background: #3B3B3B;
   text-align: center;
 }
 
@@ -461,6 +520,27 @@
   display: block;
   margin-top: 0.35rem;
   font-size: 0.85rem;
+}
+
+.message-empty-state {
+  display: grid;
+  place-content: center;
+  min-height: 100%;
+  padding: 1.5rem;
+  color: rgba(255, 255, 255, 0.72);
+  text-align: center;
+}
+
+.message-empty-state p {
+  margin: 0;
+  color: #FFFFFF;
+  font-weight: 900;
+}
+
+.message-empty-state span {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.9rem;
 }
 
 .message-composer {

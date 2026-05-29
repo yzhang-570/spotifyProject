@@ -19,7 +19,7 @@ const spotifyAPI = (token) => axios.create({
 // get liked songs
 router.get('/liked-songs', requireAuth, async (req, res) => {
   try {
-    const response = await spotifyAPI(req.session.access_token).get('/me/tracks?limit=50');
+    const response = await spotifyAPI(req.session.access_token).get('/me/tracks?limit=10');
     res.json(response.data);
   } catch (error) {
     res.status(500).json(`Error fetching liked songs: ${error}`);
@@ -30,7 +30,7 @@ router.get('/liked-songs', requireAuth, async (req, res) => {
 router.get('/top-artists', requireAuth, async (req, res) => {
   const { time_range = 'medium_term' } = req.query;
   try {
-    const response = await spotifyAPI(req.session.access_token).get(`/me/top/artists?time_range=${time_range}&limit=50`);
+    const response = await spotifyAPI(req.session.access_token).get(`/me/top/artists?time_range=${time_range}&limit=10`);
     res.json(response.data);
   } catch (error) {
     res.status(500).json(`Error fetching top artists: ${error}`);
@@ -41,7 +41,7 @@ router.get('/top-artists', requireAuth, async (req, res) => {
 router.get('/top-songs', requireAuth, async (req, res) => {
   const { time_range = 'medium_term' } = req.query;
   try {
-    const response = await spotifyAPI(req.session.access_token).get(`/me/top/tracks?time_range=${time_range}&limit=50`);
+    const response = await spotifyAPI(req.session.access_token).get(`/me/top/tracks?time_range=${time_range}&limit=10`);
     res.json(response.data);
   } catch (error) {
     res.status(500).json(`Error fetching top songs: ${error}`);

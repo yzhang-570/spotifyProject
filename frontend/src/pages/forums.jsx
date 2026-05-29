@@ -1,27 +1,7 @@
-import { useState, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState, useMemo } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { getPosts, createMainPost, votePost } from "../api";
 import "./forums.css";
-
-const initialForums = [
-  {
-    id: "thread_spotify_123",
-    title: "Spotify Wrapped 2026 Discussion",
-    creator: "Alex_Melody",
-    content: "What does your wrapped say about you this year? Share your top tracks and let's compare stats! If you haven't seen your stats yet, make sure to check the main mobile application homepage canvas banner since that is where they are rolling out first across regional database server stacks globally.",
-    replies: 42,
-    likes: 310,
-    created_time: "2026-05-27T21:15:00.000Z"
-  },
-  {
-    id: "thread_vinyl_456",
-    title: "Is vinyl actually worth the premium price?",
-    creator: "BeatCollector",
-    content: "Thinking of starting a collection but setup costs look steep. Looking for honest feedback regarding player setups, preamp modules, and weighted dynamic tonearm balances.",
-    replies: 15,
-    likes: 89,
-    created_time: "2026-05-27T01:15:00.000Z"
-  }
-];
 
 const formatTimeAgo = (timestamp) => {
   const now = new Date();
@@ -45,20 +25,38 @@ const truncateWords = (text, maxWords) => {
 };
 
 const ForumCard = ({ forum }) => {
+  const [userVote, setUserVote] = useState(forum.userVote); // 1, -1, null
   const [likes, setLikes] = useState(forum.likes);
-  const [userVote, setUserVote] = useState(null);
+  /* eslint-disable-next-line no-unused-vars */
+  const [loadingVote, setLoadingVote] = useState(false);
 
-  const handleVote = (type) => {
-    if (userVote === type) {
-      setLikes(prev => type === 'up' ? prev - 1 : prev + 1);
+  const handleVote = async (type) => {
+    const voteValue = type === "up" ? 1 : -1;
+
+    const previous = userVote;
+
+    // optimistic UI
+    let delta = 0;
+
+    if (previous === voteValue) {
       setUserVote(null);
+      delta = voteValue === 1 ? -1 : 1;
+    } else if (!previous) {
+      setUserVote(voteValue);
+      delta = voteValue;
     } else {
-      if (userVote) {
-        setLikes(prev => type === 'up' ? prev + 2 : prev - 2);
-      } else {
-        setLikes(prev => type === 'up' ? prev + 1 : prev - 1);
-      }
-      setUserVote(type);
+      setUserVote(voteValue);
+      delta = voteValue === 1 ? 2 : -2;
+    }
+
+    setLikes((l) => l + delta);
+
+    try {
+      await votePost(forum.id, voteValue);
+    } catch {
+      // rollback
+      setLikes((l) => l - delta);
+      setUserVote(previous);
     }
   };
 
@@ -66,13 +64,31 @@ const ForumCard = ({ forum }) => {
     <article className="forum-card">
       <div className="forum-card-header">
         <div className="forum-avatar">
-          {forum.creator.substring(0, 2).toUpperCase()}
+          {forum.author.profile_img ? (
+            <img
+              src={forum.author.profile_img}
+              alt={forum.author.name}
+              className="forum-avatar-img"
+            />
+          ) : (
+            forum.author.initials
+          )}
         </div>
         <div className="forum-header-meta">
           <h2>{forum.title}</h2>
-          <p className="author-name">By @{forum.creator}</p>
+          <p className="author-name">By @{forum.author.name}</p>
         </div>
-        <span className="time-ago-badge">{formatTimeAgo(forum.created_time)}</span>
+        <div className="forum-time-badges">
+          <span className="time-ago-badge">
+            {formatTimeAgo(forum.created_time)}
+          </span>
+
+          {forum.recent_time && forum.recent_time !== forum.created_time && (
+            <span className="recent-activity-badge">
+              ACTIVE {formatTimeAgo(forum.recent_time).replace("POSTED ", "")}
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="forum-card-content">
@@ -105,20 +121,83 @@ const ForumCard = ({ forum }) => {
 };
 
 const Forums = () => {
-  const [forumsList, setForumsList] = useState(initialForums);
+  const [forumsList, setForumsList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [forumsError, setForumsError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("recent");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({ title: "", content: "" });
   const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadForums = async () => {
+      try {
+        const posts = await getPosts();
+
+        if (!isMounted) return;
+
+        setForumsList(posts);
+        setForumsError("");
+      } catch (error) {
+        if (!isMounted) return;
+
+        setForumsError(error.message || "Unable to load forums.");
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadForums();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const filteredForums = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
-    if (!query) return forumsList;
-    return forumsList.filter((forum) => {
-      const searchableText = [forum.title, forum.creator, forum.content].join(" ").toLowerCase();
-      return searchableText.includes(query);
+
+    let filtered = forumsList;
+
+    // Search filtering
+    if (query) {
+      filtered = forumsList.filter((forum) => {
+        const searchableText = [
+          forum.title,
+          forum.author.name,
+          forum.content,
+        ]
+          .join(" ")
+          .toLowerCase();
+
+        return searchableText.includes(query);
+      });
+    }
+
+    // Sorting
+    const sorted = [...filtered].sort((a, b) => {
+      switch (sortBy) {
+        case "created":
+          return new Date(b.created_time) - new Date(a.created_time);
+        case "recent":
+          return new Date(b.recent_time) - new Date(a.recent_time);
+        case "replies":
+          return (b.replies || 0) - (a.replies || 0);
+        case "likes":
+          return (b.likes || 0) - (a.likes || 0);
+        default:
+          return new Date(b.recent_time) - new Date(a.recent_time);
+      }
     });
-  }, [searchTerm, forumsList]);
+
+    return sorted;
+  }, [forumsList, searchTerm, sortBy]);
 
   // Dynamic counter to check input layout array length states live
   const titleWordCount = useMemo(() => {
@@ -127,7 +206,7 @@ const Forums = () => {
     return trimmed.split(/\s+/).length;
   }, [formData.title]);
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage("");
 
@@ -136,22 +215,44 @@ const Forums = () => {
       return;
     }
 
-    if (!formData.title.trim() || !formData.content.trim()) return;
+    if (!formData.title.trim() || !formData.content.trim()) {
+      return;
+    }
 
-    const newThread = {
-      id: `thread_${Date.now()}`,
-      title: formData.title,
-      creator: "CurrentUser",
-      content: formData.content,
-      replies: 0,
-      likes: 0,
-      created_time: new Date().toISOString()
-    };
+    try {
+      const newPost = await createMainPost(
+        formData.title,
+        formData.content
+      );
 
-    setForumsList(prev => [newThread, ...prev]);
-    setFormData({ title: "", content: "" });
-    setIsModalOpen(false);
+      setForumsList((prev) => [newPost, ...prev]);
+
+      setFormData({
+        title: "",
+        content: "",
+      });
+
+      setIsModalOpen(false);
+      navigate(`/forums/${newPost.id}`);
+    } catch (error) {
+      setErrorMessage(
+        error.message || "Unable to create post."
+      );
+    }
   };
+
+  if (isLoading) {
+    return (
+      <div className="page-loading-state">
+        <div className="loading-spinner" />
+        <p>Loading forums...</p>
+      </div>
+    );
+  }
+
+  if (forumsError) {
+    return <p>{forumsError}</p>;
+  }
 
   return (
     <section className="forums-page">
@@ -161,9 +262,35 @@ const Forums = () => {
           <h1>Discuss Music</h1>
           <p>Talk with other users about anything music - albums, playlists, artists - as soon as it drops!</p>
         </div>
-        <button className="create-post-trigger-btn" onClick={() => { setErrorMessage(""); setIsModalOpen(true); }}>
-          + Create Post
-        </button>
+        <div className="forums-header-actions">
+          <button
+            className="create-post-trigger-btn"
+            onClick={() => {
+              setErrorMessage("");
+              setIsModalOpen(true);
+            }}
+          >
+            + Create Post
+          </button>
+
+          <div className="forums-sort-panel">
+            <label htmlFor="forum-sort-select">
+              Sort Threads
+            </label>
+
+            <select
+              id="forum-sort-select"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="forums-sort-select"
+            >
+              <option value="recent">Recent Activity</option>
+              <option value="created">Newest Posts</option>
+              <option value="replies">Most Replies</option>
+              <option value="likes">Most Likes</option>
+            </select>
+          </div>
+        </div>
       </div>
 
       <div className="forums-toolbar">

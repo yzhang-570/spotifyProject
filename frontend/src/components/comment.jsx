@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
+import { formatTimeAgo } from './timeAgo';
+import { voteComment } from "../api";
 
 export default function Comment({ comment, onReplySubmit }) { 
   const [isReplying, setIsReplying] = useState(false);
   const [replyText, setReplyText] = useState('');
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [likes, setLikes] = useState(comment.likes || 0);
-  const [userVote, setUserVote] = useState(null);
+  const [userVote, setUserVote] = useState(comment.userVote || null);
 
   useEffect(() => {
     const handleGlobalCollapse = (e) => {
@@ -28,6 +30,15 @@ export default function Comment({ comment, onReplySubmit }) {
     };
   }, [comment.depth]); 
 
+  const [, forceUpdate] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      forceUpdate(prev => prev + 1);
+    }, 60000); // every minute
+
+    return () => clearInterval(interval);
+  }, []);
+
   const handleReply = (e) => {
     e.preventDefault();
     if (!replyText.trim()) return;
@@ -36,31 +47,34 @@ export default function Comment({ comment, onReplySubmit }) {
     setIsReplying(false);
   };
 
-  const handleVote = (type) => {
-    if (userVote === type) {
-      setLikes(prev => type === 'up' ? prev - 1 : prev + 1);
-      setUserVote(null);
-    } else {
-      if (userVote) setLikes(prev => type === 'up' ? prev + 2 : prev - 2);
-      else setLikes(prev => type === 'up' ? prev + 1 : prev - 1);
-      setUserVote(type);
-    }
-  };
+  const handleVote = async (type) => {
+    const voteValue = type === "up" ? 1 : -1;
 
-  const formatTimeAgo = (timestamp) => {
-    if (!timestamp) return 'Just now';
-    const seconds = Math.floor((new Date() - new Date(timestamp)) / 1000);
-    let interval = seconds / 31536000;
-    if (interval > 1) return Math.floor(interval) + " yrs ago";
-    interval = seconds / 2592000;
-    if (interval > 1) return Math.floor(interval) + " mo ago";
-    interval = seconds / 86400;
-    if (interval > 1) return Math.floor(interval) + " days ago";
-    interval = seconds / 3600;
-    if (interval > 1) return Math.floor(interval) + " hrs ago";
-    interval = seconds / 60;
-    if (interval > 1) return Math.floor(interval) + " min ago";
-    return "Just now";
+    const prev = userVote;
+
+    let delta = 0;
+
+    if (prev === voteValue) {
+      setUserVote(null);
+      delta = voteValue === 1 ? -1 : 1;
+    } else if (!prev) {
+      setUserVote(voteValue);
+      delta = voteValue;
+    } else {
+      setUserVote(voteValue);
+      delta = voteValue === 1 ? 2 : -2;
+    }
+
+    setLikes(l => l + delta);
+
+    try {
+      const updated = await voteComment(comment.forum, comment.id, voteValue);
+      setLikes(updated.likes);
+      setUserVote(updated.userVote);
+    } catch {
+      setLikes(l => l - delta);
+      setUserVote(prev);
+    }
   };
 
   return (
@@ -74,14 +88,18 @@ export default function Comment({ comment, onReplySubmit }) {
             <div className="comment-main-flex">
               <div className="comment-avatar-column">
                 <div className="comment-user-avatar">
-                  {comment.creator ? comment.creator.charAt(0).toUpperCase() : 'U'}
+                  {comment.author?.profile_img ? (
+                  <img src={comment.author.profile_img} />
+                ) : (
+                  comment.author?.initials || "U"
+                )}
                 </div>
               </div>
               <div className="comment-body-column">
                 <div className="comment-header" onClick={() => setIsCollapsed(!isCollapsed)}>
                   <div className="comment-user-info">
-                    <span className="comment-display-name">User Name</span>
-                    <span className="comment-author">@{comment.creator}</span>
+                    <span className="comment-display-name">{comment.author?.name}</span>
+                    <span className="comment-author">@{comment.author?.username}</span>
                   </div>
                   <div className="comment-header-right">
                     <span className="comment-timestamp">{formatTimeAgo(comment.created_time)}</span>

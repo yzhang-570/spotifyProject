@@ -1,5 +1,5 @@
 import express from 'express'; 
-import { fetchAllPosts, fetchPostById, createMainPost, voteOnPost } from '../db/posts.js'; 
+import { fetchAllPosts, fetchPostById, createMainPost, voteOnPost, voteOnComment, createComment } from '../db/posts.js'; 
 
 const router = express.Router(); 
 
@@ -29,7 +29,8 @@ router.get('/', async (req, res) => {
 router.get('/:postId', async (req, res) => { 
   try {
     const { postId } = req.params; 
-    const threadData = await fetchPostById(postId); 
+    const userId = req.session.user?.id;
+    const threadData = await fetchPostById(postId, userId); 
     res.status(200).json(threadData); 
   } catch (error) { 
     console.error('Error getting discussion thread:', error); 
@@ -37,6 +38,7 @@ router.get('/:postId', async (req, res) => {
   } 
 }); 
 
+// POST - Creates a main post
 router.post('/', async (req, res) => {
   const title = req.body.title?.trim();
   const content = req.body.content?.trim();
@@ -64,6 +66,7 @@ router.post('/', async (req, res) => {
   }
 });
 
+// Updates a main post vote count
 router.patch("/:postId/vote", async (req, res) => {
   const { postId } = req.params;
   const { vote } = req.body; // 1 or -1
@@ -87,3 +90,56 @@ router.patch("/:postId/vote", async (req, res) => {
 });
 
 export default router;
+
+// updates a reply/comment vote count
+router.patch("/:postId/comments/:commentId/vote", async (req, res) => {
+  const { postId, commentId } = req.params;
+  const userId = req.session.user?.id;
+  const { vote } = req.body;
+
+  if (!userId) return res.status(401).json({ error: "Not logged in" });
+  if (![1, -1].includes(vote)) return res.status(400).json({ error: "Invalid vote" });
+
+  try {
+    const updated = await voteOnComment(postId, commentId, userId, vote);
+    res.json(updated);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+router.post('/:postId/comments', async (req, res) => {
+  const { postId } = req.params;
+  const content = req.body.content?.trim();
+  const depth = Number(req.body.depth);
+  const reply_to = req.body.reply_to;
+
+  if (!content) {
+    return res.status(400).json({
+      error: 'Comment content is required.',
+    });
+  }
+
+  if (!reply_to) {
+    return res.status(400).json({
+      error: 'reply_to is required.',
+    });
+  }
+
+  try {
+    const newComment = await createComment({
+      author: req.session.user.id,
+      postId,
+      content,
+      depth,
+      reply_to,
+    });
+    res.status(201).json(newComment);
+
+  } catch (error) {
+    console.error('Error creating comment:', error);
+    res.status(500).json({
+      error: 'Unable to create comment.',
+    });
+  }
+});

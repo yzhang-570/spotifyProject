@@ -36,17 +36,18 @@ export const fetchAllPosts = async (currentUserId) => {
 };
 
 // Fetch a single post and its nested replies subcollection
-export const fetchPostById = async (postId) => {
-  // Fetch the main forum post
+export const fetchPostById = async (postId, currentUserId) => {
   const mainPostRef = doc(db, 'posts', postId);
   const mainPostSnap = await getDoc(mainPostRef);
-  
+
   if (!mainPostSnap.exists()) {
-    throw new Error("Post not found");
+    throw new Error(`Post not found: ${postId}`);
   }
 
   const mainPostData = mainPostSnap.data();
+
   const authorProfile = await getUserProfile(mainPostData.author);
+  const votes = mainPostData.votes || {};
 
   const mainPost = {
     id: mainPostSnap.id,
@@ -54,28 +55,30 @@ export const fetchPostById = async (postId) => {
     author: authorProfile,
     created_time: serializeTimestamp(mainPostData.created_time),
     recent_time: serializeTimestamp(mainPostData.recent_time),
+    userVote: currentUserId ? (votes[currentUserId] || null) : null,
   };
-    
-  // Fetch all nested documents inside the 'replies' subcollection
+
   const repliesRef = collection(db, 'posts', postId, 'replies');
-  const querySnapshot = await getDocs(repliesRef);
-  
+  const repliesSnap = await getDocs(repliesRef);
+
   const replies = await Promise.all(
-    querySnapshot.docs.map(async (document) => {
-      const data = document.data();
+    repliesSnap.docs.map(async (docSnap) => {
+      const data = docSnap.data();
 
       const authorProfile = await getUserProfile(data.author);
+      const votes = data.votes || {};
 
       return {
-        id: document.id,
+        id: docSnap.id,
         ...data,
         author: authorProfile,
         created_time: serializeTimestamp(data.created_time),
+        userVote: currentUserId ? (votes[currentUserId] || null) : null,
       };
     })
   );
-  
-  return { mainPost, replies }; 
+
+  return { mainPost, replies };
 };
 
 export const createMainPost = async ({ author, title, content }) => {
@@ -141,4 +144,71 @@ export const voteOnPost = async (postId, userId, newVote) => {
   const updatedSnap = await getDoc(postRef);
 
   return { id: updatedSnap.id, ...updatedSnap.data() };
+};
+
+export const voteOnComment = async (postId, commentId, userId, newVote) => {
+  const ref = doc(db, "posts", postId, "replies", commentId);
+  const snap = await getDoc(ref);
+
+  if (!snap.exists()) throw new Error("Comment not found");
+
+  const data = snap.data();
+  const votes = data.votes || {};
+
+  const previous = votes[userId] || 0;
+  const finalVote = previous === newVote ? 0 : newVote;
+
+  const updatedVotes = { ...votes };
+
+  if (finalVote === 0) delete updatedVotes[userId];
+  else updatedVotes[userId] = finalVote;
+
+  const delta = finalVote - previous;
+
+  await updateDoc(ref, {
+    votes: updatedVotes,
+    likes: (data.likes || 0) + delta,
+  });
+
+  const updated = await getDoc(ref);
+
+  return {
+    id: updated.id,
+    ...updated.data(),
+    userVote: updatedVotes[userId] || null
+  };
+};
+
+export const createComment = async ({ author, postId, content, depth, reply_to,}) => {
+  const commentRef = await addDoc(collection(db, 'posts', postId, 'replies'), {
+      author,
+      content,
+      votes: {
+        [author]: 1, // auto-upvote creator
+      },
+      likes: 1,
+      depth,
+      forum: postId,
+      reply_to,
+      created_time: serverTimestamp(),
+    }
+  );
+
+  // update parent post metadata
+  await updateDoc(doc(db, 'posts', postId), {
+    replies: increment(1),
+    recent_time: serverTimestamp(),
+  });
+
+  const commentSnap = await getDoc(commentRef);
+  const data = commentSnap.data();
+  const authorProfile = await getUserProfile(author);
+
+  return {
+    id: commentSnap.id,
+    ...data,
+    author: authorProfile,
+    created_time: serializeTimestamp(data.created_time),
+    userVote: 1,
+  };
 };

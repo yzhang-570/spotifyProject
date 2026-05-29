@@ -88,14 +88,6 @@ export const getPosts = async () => {
   return parseJsonResponse(response);
 };
 
-export const getPostById = async (postId) => {
-  const response = await fetch(`${BASE_URL}/posts/${postId}`, {
-    credentials: 'include',
-  });
-
-  return parseJsonResponse(response);
-};
-
 export const createMainPost = async (title, content) => {
   const response = await fetch(`${BASE_URL}/posts`, {
     method: 'POST',
@@ -122,5 +114,38 @@ export const votePost = async (postId, vote) => {
     body: JSON.stringify({ vote }),
   });
 
+  return parseJsonResponse(response);
+};
+
+export const getThread = async (postId) => {
+  const res = await fetch(`${BASE_URL}/posts/${postId}`, {
+    credentials: 'include',
+  });
+  return parseJsonResponse(res);
+};
+
+export const voteComment = async (postId, commentId, vote) => {
+  const response = await fetch(`${BASE_URL}/posts/${postId}/comments/${commentId}/vote`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify({ vote }),
+  });
+
+  return parseJsonResponse(response);
+};
+
+export const createComment = async (postId, content, depth, reply_to) => {
+  const response = await fetch(`${BASE_URL}/posts/${postId}/comments`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify({content, depth, reply_to}),
+    }
+  );
   return parseJsonResponse(response);
 };

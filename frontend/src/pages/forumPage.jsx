@@ -1,27 +1,50 @@
 import { useParams } from "react-router-dom";
-import { useState, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
+import { getThread, votePost, createComment } from "../api";
 import { nestComments } from '../components/commentTree';
+import { formatTimeAgo } from '../components/timeAgo';
 import Comment from '../components/comment';
-import { mockThreadPayload } from '../components/mockPosts'; 
 import "./forumPage.css";
 
 export default function ForumPage() {
   const { postId } = useParams();
-  /* eslint-disable-next-line no-unused-vars */
-  const [mainPost, setMainPost] = useState(() => mockThreadPayload.mainPost || null);
-  
-  const [flatComments, setFlatComments] = useState(() => mockThreadPayload.comments || []);
+  const [mainPost, setMainPost] = useState(null);
+  const [flatComments, setFlatComments] = useState([]);
   const [newCommentText, setNewCommentText] = useState('');
-  
-  /* eslint-disable-next-line no-unused-vars */
-  const [isLoading, setIsLoading] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(true);
   const [sortBy, setSortBy] = useState('oldest');
-  const [mainLikes, setMainLikes] = useState(() => mockThreadPayload.mainPost?.likes || 0);
+  const [mainLikes, setMainLikes] = useState(0);
   const [mainUserVote, setMainUserVote] = useState(null);
 
-  /* eslint-disable-next-line no-unused-vars */
   const [globalToggle, setGlobalToggle] = useState({ collapse: false, timestamp: null });
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadThread = async () => {
+      try {
+        const data = await getThread(postId);
+
+        if (!mounted) return;
+
+        setMainPost(data.mainPost);
+        setFlatComments(data.replies);
+
+        setMainLikes(data.mainPost.likes || 0);
+        setMainUserVote(data.mainPost.userVote || null);
+      } catch (err) {
+        console.error("Failed to load thread:", err);
+      } finally {
+        if (mounted) setIsLoading(false);
+      }
+    };
+
+    loadThread();
+
+    return () => {
+      mounted = false;
+    };
+  }, [postId]);
 
   const commentTree = useMemo(() => {
     const nested = nestComments(flatComments);
@@ -47,32 +70,62 @@ export default function ForumPage() {
     return nested;
   }, [flatComments, sortBy]);
 
-  const handleMainVote = (type) => {
-    if (mainUserVote === type) {
-      setMainLikes(prev => type === 'up' ? prev - 1 : prev + 1);
+  const [, forceUpdate] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      forceUpdate(prev => prev + 1);
+    }, 60000); // every minute
+
+    return () => clearInterval(interval);
+  }, []);
+
+
+  const handleMainVote = async (type) => {
+    const voteValue = type === "up" ? 1 : -1;
+
+    const prevVote = mainUserVote;
+
+    let delta = 0;
+
+    if (prevVote === voteValue) {
       setMainUserVote(null);
+      delta = voteValue === 1 ? -1 : 1;
+    } else if (!prevVote) {
+      setMainUserVote(voteValue);
+      delta = voteValue;
     } else {
-      if (mainUserVote) {
-        setMainLikes(prev => type === 'up' ? prev + 2 : prev - 2);
-      } else {
-        setMainLikes(prev => type === 'up' ? prev + 1 : prev - 1);
-      }
-      setMainUserVote(type);
+      setMainUserVote(voteValue);
+      delta = voteValue === 1 ? 2 : -2;
+    }
+
+    setMainLikes(l => l + delta);
+
+    try {
+      const updated = await votePost(mainPost.id, voteValue);
+      setMainLikes(updated.likes);
+      setMainUserVote(updated.userVote);
+    } catch (err) {
+      // rollback
+      setMainLikes(l => l - delta);
+      setMainUserVote(prevVote);
     }
   };
 
   const handleAddComment = async (parentId = null, targetDepth = 1, text) => {
-    const payload = {
-      id: `mock_doc_${Date.now()}`,
-      creator: "current_user_placeholder",
-      content: text,
-      likes: 0,
-      forum: postId,
-      depth: parentId ? targetDepth : 1,
-      reply_to: parentId || postId,
-      created_time: new Date().toISOString()
-    };
-    setFlatComments(prevComments => [...prevComments, payload]);
+    if (!text.trim()) return;
+    try {
+      const newComment = await createComment(
+        postId,
+        text,
+        parentId ? targetDepth : 1,
+        parentId || postId
+      );
+
+      setFlatComments(prev => [...prev, newComment]);
+
+    } catch (err) {
+      console.error("Failed to create comment:", err);
+    }
   };
 
   const handleGlobalCollapseToggle = (shouldCollapse) => {
@@ -83,7 +136,7 @@ export default function ForumPage() {
   };
 
 
-  if (isLoading) return <div>Loading simulated thread...</div>;
+  if (isLoading) return <div>Loading thread...</div>;
 
   return (
     <div className="forum-page-container">
@@ -92,17 +145,21 @@ export default function ForumPage() {
           <div className="comment-main-flex">
             <div className="comment-avatar-column">
               <div className="comment-user-avatar main-post-avatar">
-                {mainPost.creator ? mainPost.creator.charAt(0).toUpperCase() : 'U'}
+                {mainPost.author?.profile_img ? (
+                  <img src={mainPost.author.profile_img} />
+                ) : (
+                  mainPost.author?.initials || "U"
+                )}
               </div>
             </div>
             <div className="comment-body-column">
               <div className="comment-header">
                 <div className="comment-user-info">
-                  <span className="comment-display-name">User Name</span>
-                  <span className="comment-author">@{mainPost.creator}</span>
+                  <span className="comment-display-name">{mainPost.author?.name}</span>
+                  <span className="comment-author">@{mainPost.author?.username}</span>
                 </div>
                 <div className="comment-header-right">
-                  <span className="comment-timestamp">8 hrs ago</span>
+                  <span className="comment-timestamp">{formatTimeAgo(mainPost.created_time)}</span>
                 </div>
               </div>
               <h1>{mainPost.title}</h1>

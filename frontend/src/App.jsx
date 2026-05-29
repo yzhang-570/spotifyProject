@@ -50,7 +50,7 @@ const App = () => {
             <Route path="/top-artists" element={<TopArtists />} />
             <Route path="/top-songs" element={<TopSongs />} />
             <Route path="/forums" element={<Forums />} />
-            <Route path="/forums/:postID" element={<ForumPage />} />
+            <Route path="/forums/:postId" element={<ForumPage />} />
             <Route path="/inbox" element={<Inbox />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

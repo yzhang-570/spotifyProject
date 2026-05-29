@@ -6,6 +6,7 @@ import authRouter from './routes/auth.js';
 import chatRouter from './routes/chats.js';
 import spotifyRouter from './routes/spotify.js';
 import usersRouter from './routes/users.js';
+import postRouter from './routes/posts.js';
 
 const app = express();
 const port = process.env.PORT || 8888;
@@ -30,6 +31,7 @@ app.use('/auth', authRouter);
 app.use('/chats', chatRouter);
 app.use('/spotify', spotifyRouter);
 app.use('/users', usersRouter);
+app.use('/posts', postRouter)
 
 app.get('/', (req, res) => {
   res.json('Welcome to root.');
